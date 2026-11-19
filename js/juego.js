@@ -14,6 +14,7 @@
    ===================================================================== */
 (function () {
   'use strict';
+  if (window.FDT_REINICIO) return;   // v199: F5 → vuelve al inicio (no arranca el juego mientras se va)
   const R = window.ReglasCombate, C = window.Combate, N = window.Niveles, D = window.Defensa, DC = D.CONFIG;
   const CG = C.COMBO_GOLPES;             // v43: combo izquierda → izquierda → derecha (valores en js/combate.js)
   const DJ = window.Damajuana.CONFIG;    // v44: damajuana (recuperar vida) — valores en js/damajuana.js
@@ -1439,6 +1440,8 @@
       if (S.ocluye) fijar(S.ocluye.src, im => { galpon.ocluyes[i] = im; if (i) galpon.ocluye = im; });   // v157: una capa por sala
       if (S.radio && S.radio.src) fijar(S.radio.src, im => { galpon.radio = im; });
     });
+    galpon.cajas = {};   // v199: cajones de la sala principal (sectores sin trofeo)
+    for (const [r, C] of Object.entries(CAMP.CAJAS || {})) fijar(C.src, im => { galpon.cajas[r] = im; });
     const M = CAMP.MATE[sel.id]; galpon.mate = null;
     if (M) fijar(M.src, im => { galpon.mate = im; }); else galpon.faltas.push(`sentado con mate de ${sel.id}`);
     for (const club of Object.keys(CAMP.TROFEOS)) if (CAMP.TROFEOS[club].capa) fijar(CAMP.TROFEOS[club].capa, im => { galpon.capas[club] = im; });
@@ -1506,6 +1509,11 @@
     const S = CAMP.SALAS[i], f = galpon.fondos[i]; if (!S) return;
     g.save(); g.translate(ox, 0);
     if (f) g.drawImage(f, 0, 0, MUNDO.w, MUNDO.h); else { g.fillStyle = ID.carbon; g.fillRect(0, 0, MUNDO.w, MUNDO.h); }
+    if (i === 0 && CAMP.CAJAS) for (const [r, C] of Object.entries(CAMP.CAJAS)) {   // v199: cajones mientras el sector no exhibe instrumentos
+      const im = galpon.cajas && galpon.cajas[r]; if (!im) continue;
+      if (CAMP.trofeos().includes(r)) { const D = CAMP.disponer && CAMP.disponer(r, CAMP.TROFEOS[r]); if (D && D.inst && D.inst.length) continue; }
+      g.drawImage(im, C.x, C.y, anW(im), anH(im));
+    }
     for (const club of CAMP.trofeos()) { const T = CAMP.TROFEOS[club]; if (T && T.sala === i) dibujarTrofeo(club, T); }
     { const O = galpon.ocluyes && galpon.ocluyes[i]; if (S.ocluye && O) g.drawImage(O, S.ocluye.x, S.ocluye.y, anW(O), anH(O)); }   // v157: personas SIEMPRE delante de los trofeos
     if (S.radio && S.radio.src && galpon.radio) { g.drawImage(galpon.radio, S.radio.x, S.radio.y, anW(galpon.radio), anH(galpon.radio)); dibujarParlante(S.radio, galpon.radio); }

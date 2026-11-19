@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <!-- v199: F5 (recargar) en el juego vuelve SIEMPRE al inicio (selector de clubes), como antes en el link de Claude -->
+  <script>try { var nv = performance.getEntriesByType('navigation')[0]; if (nv && nv.type === 'reload' && !/[?&](debug|nivel)=/.test(location.search)) { window.FDT_REINICIO = true; location.replace('index.html'); } } catch (e) {}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#151515">
   <title>Batalla Campal · Furia de Tribuna</title>
@@ -50,6 +52,6 @@
   <script src="js/poder.js?v=168"></script>
   <script src="js/damajuana.js?v=168"></script>
   <script src="js/escala_arte.js?v=168"></script>
-  <script src="js/batalla.js?v=168"></script>
+  <script src="js/batalla.js?v=199"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@
    ===================================================================== */
 (function () {
   'use strict';
+  if (window.FDT_REINICIO) return;   // v199: F5 → vuelve al inicio (no arranca el juego mientras se va)
   const R = window.ReglasCombate, C = window.Combate, D = window.Defensa, PD = window.Poder, DMJ = window.Damajuana;
   const ID = window.IDENTIDAD || { hueso: '#F5F0E4', huesoSuave: '#D8D0BE', dorado: '#C9A44A', doradoClaro: '#FFE3A0', carbon: '#151515', carbonA: a => `rgba(21,21,21,${a})` };
 

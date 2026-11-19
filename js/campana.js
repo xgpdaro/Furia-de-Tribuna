@@ -248,6 +248,12 @@
   };
   for (const club of Object.keys(SECTORES))
     GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: {}, reposo: {}, botones: BOTONES, soloCompleta: true, sinDePie: true, sectores: SECTORES[club] };
+  /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
+     no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
+     del mismo encuadre, solo la zona que cambia). Al ganar ese rival, los cajones se retiran y se exhiben sus instrumentos. */
+  const CAJAS = (() => { const C = {"boca": {"river": [283, 479], "racing": [599, 479], "independiente": [929, 479], "san_lorenzo": [1253, 478]}, "racing": {"river": [324, 478], "boca": [636, 479], "independiente": [943, 478], "san_lorenzo": [1268, 478]}, "independiente": {"river": [324, 479], "boca": [635, 479], "racing": [943, 479], "san_lorenzo": [1267, 478]}, "san_lorenzo": {"river": [322, 479], "boca": [636, 478], "racing": [945, 478], "independiente": [1260, 478]}}, out = {};
+    for (const [club, L] of Object.entries(C)) { out[club] = {}; for (const [r, [x, y]] of Object.entries(L)) out[club][r] = { src: `assets/galpon/${club}/cajas_${r}.webp`, x, y }; }
+    return out; })();
   const DEPOSITO_PROPIO = ['river', 'boca', 'racing', 'independiente', 'san_lorenzo'];
   for (const club of DEPOSITO_PROPIO) { const G = GALPONES[club]; if (!G) continue;
     for (const r of Object.keys(G.trofeos)) if (categoriaDe(r) !== categoriaDe(club) || r === club) delete G.trofeos[r]; }
@@ -550,6 +556,7 @@
     FONDOS_PENDIENTES, DOBLADAS_PENDIENTES, disponer, ARTE_TROFEOS, PANELES, INSTRUMENTOS_FALTANTES, INSTRUMENTOS_ENTREGA, instrumentosPendientes: () => Object.keys(NOMBRES).filter(c => !ARTE_TROFEOS.inst[c]),
     // v198: con galpón propio; los del interior (soloCompleta), recién con la campaña completa
     get galpon() { const G = GALPONES[CLUB]; return !!G && (!G.soloCompleta || api.terminada()); },
+    CAJAS: CAJAS[CLUB] || null,   // v199
     SIN_DE_PIE: !!(GALPONES[CLUB] || {}).sinDePie, SECTORES: (GALPONES[CLUB] || {}).sectores || null,
     CATEGORIAS, CATEGORIA, categoriaDe,   // v197
     vencidos() { return est ? validos() : []; },                                    // v144: River, Boca, San Lorenzo, Independiente y Racing tienen galpón propio
