@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#151515">
+  <title>Batalla Campal · Furia de Tribuna</title>
+  <link rel="stylesheet" href="css/identidad.css?v=168">
+  <style>
+    html, body { margin:0; height:100%; background:var(--fdt-carbon); overflow:hidden; }
+    canvas { display:block; width:100vw; height:100dvh; object-fit:contain; image-rendering:auto; touch-action:none; }
+    /* Resultado: controles reales (mouse, toque y teclado) encima del canvas */
+    #resultado { position:fixed; inset:0; display:grid; place-items:safe center; padding:16px; background:rgba(10,10,14,.62); overflow-y:auto; font-family:Verdana,Geneva,sans-serif; color:var(--fdt-hueso); }
+    #resultado[hidden] { display:none; }
+    .res-caja { max-width:min(640px,94vw); box-sizing:border-box; padding:22px 24px; text-align:center; background:rgba(var(--fdt-carbon-rgb),.94); border:2px solid var(--fdt-dorado); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.6); }
+    #resTitulo { margin:0 0 6px; font:bold clamp(30px,6vw,56px)/1.05 Verdana,sans-serif; letter-spacing:.06em; color:var(--fdt-dorado-claro); text-shadow:0 3px 6px #000; }
+    #resTitulo.derrota { color:#ff7a6b; }
+    #resDetalle { margin:6px 0 16px; font-size:16px; line-height:1.45; }
+    .res-botones { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
+    .res-botones button { font:bold 15px Verdana,sans-serif; letter-spacing:.05em; padding:11px 20px; border-radius:10px; cursor:pointer; }
+    #resReintentar { border:2px solid var(--fdt-dorado-claro); background:var(--fdt-dorado); color:var(--fdt-carbon); box-shadow:3px 3px var(--fdt-dorado-oscuro); }
+    #resVolver { border:2px solid var(--fdt-dorado); background:rgba(0,0,0,.6); color:var(--fdt-hueso); }
+    .res-botones button:focus { outline:none; } .res-botones button:focus-visible { outline:3px solid var(--fdt-hueso); outline-offset:3px; }
+    .res-nota { margin:14px 0 0; font-size:12px; color:var(--fdt-hueso-suave); }
+  </style>
+</head>
+<body>
+  <canvas id="batallaCanvas" aria-label="Batalla Campal: 100 argentinos contra 100 ingleses, 10 contra 10 en cancha"></canvas>
+  <div id="resultado" hidden role="dialog" aria-modal="true" aria-labelledby="resTitulo">
+    <div class="res-caja">
+      <h1 id="resTitulo">VICTORIA</h1>
+      <p id="resDetalle"></p>
+      <div class="res-botones"><button type="button" id="resReintentar">REINTENTAR</button><button type="button" id="resVolver">VOLVER AL SELECTOR DE BATALLA CAMPAL</button></div>
+      <p class="res-nota">Batalla de prueba: no suma trapos, campañas ni ranking.</p>
+    </div>
+  </div>
+  <script src="js/identidad.js?v=168"></script>
+  <script src="js/reglas_combate.js?v=168"></script>
+  <script src="js/combate.js?v=168"></script>
+  <script src="js/defensa.js?v=168"></script>
+  <script src="js/sprites_referentes.js?v=168"></script>
+  <script src="js/sprites_pistola.js?v=168"></script>
+  <script src="js/sprites_enemigos.js?v=168"></script>
+  <script src="js/sprites_clubes.js?v=168"></script>
+  <script src="js/atlas_clubes.js?v=168"></script>
+<script src="js/sprites_hooligans.js?v=168"></script>
+  <script src="js/golpes_ab.js?v=168"></script>
+  <script src="js/derrotas.js?v=168"></script>
+  <script src="js/musica.js?v=168"></script>
+  <script src="js/poder.js?v=168"></script>
+  <script src="js/damajuana.js?v=168"></script>
+  <script src="js/escala_arte.js?v=168"></script>
+  <script src="js/batalla.js?v=168"></script>
+</body>
+</html>

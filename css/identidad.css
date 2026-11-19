@@ -1,0 +1,15 @@
+/* FURIA DE TRIBUNA — identidad visual de la interfaz (v52).
+   ÚNICO lugar donde se definen los colores de marca. index.html y juego.html enlazan este archivo,
+   y js/identidad.js lee estas mismas variables para lo que se dibuja en el canvas del juego.
+   No se usan para personajes, estadios, hinchadas ni barras de vida / daño / poder. */
+:root {
+  --fdt-hueso:        #F5F0E4;   /* blanco hueso: textos y títulos claros */
+  --fdt-hueso-suave:  #D8D0BE;   /* textos secundarios, ayudas */
+  --fdt-dorado:       #C9A44A;   /* dorado: marcos, botones, títulos destacados */
+  --fdt-dorado-base:  #B58C35;   /* borde de las tarjetas del selector de barras */
+  --fdt-dorado-claro: #FFE3A0;   /* selección y foco */
+  --fdt-dorado-oscuro:#5A4518;   /* sombra de botones dorados */
+  --fdt-carbon:       #151515;   /* negro / carbón: paneles y fondos de menú */
+  --fdt-carbon-rgb:   21,21,21;  /* para transparencias: rgba(var(--fdt-carbon-rgb), .8) */
+  --fdt-dorado-rgb:   201,164,74;
+}

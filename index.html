@@ -1,0 +1,1048 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<div id="devPanel" hidden role="dialog" aria-modal="true" aria-labelledby="devTitulo"><div class="dev-caja">
+    <h2 id="devTitulo">DESARROLLADOR</h2>
+    <p>Prueba directa: elegís tu barra y el rival, después el referente, y arrancás peleando. No toca tu campaña.</p>
+    <label for="devClub">Tu barra</label><select id="devClub"></select>
+    <label for="devRival">Rival (VS)</label><select id="devRival"></select>
+    <label for="devNivel">Pantalla</label><select id="devNivel"></select>
+    <div class="dev-acciones"><button type="button" id="devCancelar">Cancelar</button><button type="button" id="devContinuar">CONTINUAR</button></div>
+  </div></div>
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#151515">
+  <title>Furia de Tribuna</title>
+  <link rel="stylesheet" href="css/identidad.css?v=65">   <!-- v52: colores de marca (hueso, dorado, carbón) -->
+  <style>
+    :root { color-scheme: dark; font-family: Verdana, Geneva, sans-serif; --red:#e63a3a; --cream:var(--fdt-hueso); --ink:var(--fdt-carbon); }   /* v52: identidad Furia de Tribuna */
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100dvh; color:var(--cream); background:var(--fdt-carbon); overflow:hidden; }
+    button { font:inherit; cursor:pointer; touch-action:manipulation; }
+    .screen { width:100%; height:100dvh; min-height:360px; padding: max(12px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left)); display:grid; grid-template-rows:auto 1fr auto; gap:8px; position:relative; isolation:isolate; background:linear-gradient(90deg,#08102038 0%,#08102012 51%,#08102045 100%),var(--fondo-club, url('assets/tribuna_monumental.webp?v=36')) center center / cover no-repeat; }
+    .screen:before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.14; background:repeating-linear-gradient(0deg,transparent 0 3px,#000 4px 5px); }
+    header { display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--fdt-dorado); padding:5px 9px 9px; background:rgba(var(--fdt-carbon-rgb),.78); }
+    .eyebrow { color:var(--fdt-dorado); font:bold 10px/1.2 monospace; letter-spacing:.25em; }
+    h1 { margin:3px 0 0; font:bold clamp(19px,3.06vw,36px)/1 Verdana,sans-serif;   /* v181: −10 % */ color:var(--fdt-hueso); text-shadow:3px 3px var(--fdt-carbon); letter-spacing:-.05em; }
+    .header-actions { display:flex; align-items:center; gap:12px; }
+    .music { border:2px solid var(--fdt-dorado); color:var(--fdt-hueso); background:rgba(var(--fdt-carbon-rgb),.9); padding:8px 10px; font:bold 11px monospace; white-space:nowrap; box-shadow:3px 3px #000; }
+    .music:hover, .music:focus-visible { border-color:var(--fdt-dorado-claro); outline:none; }
+    .music[aria-pressed="true"] { background:var(--fdt-dorado); color:var(--fdt-carbon); }
+    /* v178 — botones de arriba del selector (◀ CLUBES · TABLA DE PUNTAJES · SILENCIAR) más grandes y separados */
+    .header-actions { gap:18px; }
+    .header-actions .music { padding:13px 20px; font-size:15px; letter-spacing:.5px; border-width:3px; box-shadow:4px 4px #000; }
+    @media (max-width:1400px) { .header-actions { gap:12px; } .header-actions .music { padding:11px 14px; font-size:13px; } }
+    @media (max-width:750px) and (orientation:landscape) { .header-actions { gap:8px; } .header-actions .music { padding:8px 10px; font-size:11px; border-width:2px; } }
+    .scoreboard { display:flex; gap:5px; padding:6px 8px; background:#0a0b10; border:3px solid #5b6673; box-shadow:3px 3px #060a11; }
+    .letter { display:grid; grid-template-columns:repeat(5,3px); grid-template-rows:repeat(7,3px); gap:1px; }
+    .letter.matriz { grid-template-columns:repeat(29,3px); }
+    .led { width:3px; height:3px; border-radius:50%; background:#3c3018; }
+    .led.on { background:#ffd34f; box-shadow:0 0 4px #ffb420; }
+    main { display:grid; grid-template-columns:64px minmax(220px,1fr) 64px minmax(210px,300px); gap:8px; min-height:0; align-items:stretch; }
+    .arrow { align-self:center; width:54px; height:70px; border:2px solid var(--fdt-dorado); color:var(--fdt-hueso); background:rgba(var(--fdt-carbon-rgb),.92); box-shadow:4px 4px #000; font:bold 34px monospace; }
+    .arrow:active { transform:translate(3px,3px); box-shadow:1px 1px #000; }
+    .arrow:hover, .arrow:focus-visible { border-color:var(--fdt-dorado-claro); color:var(--fdt-dorado-claro); outline:none; }
+    .stage { position:relative; min-height:0; overflow:hidden; border:2px solid rgba(var(--fdt-dorado-rgb),.55); background:linear-gradient(180deg,#07101db8 0%,#07101d9e 62%,#07101db0 100%); display:grid; place-items:center; }
+    .character { position:absolute; left:0; bottom:0; z-index:1; height:91%; width:100%; object-fit:contain; object-position:center bottom; image-rendering:auto; filter:drop-shadow(10px 8px 3px #060910d9); transform-origin:50% 96%; animation:guardia 1.8s ease-in-out infinite; }
+    @keyframes guardia { 0%,100% { transform:translateY(0) rotate(-.35deg) scaleX(1) scaleY(1); } 50% { transform:translateY(2px) rotate(.45deg) scaleX(1.006) scaleY(.988); } }
+    .stage-label { position:absolute; left:12px; top:11px; z-index:2; background:rgba(var(--fdt-carbon-rgb),.85); color:var(--fdt-hueso); border-left:4px solid var(--fdt-dorado); padding:7px 10px; font:bold 12px monospace; }
+    .panel { border:2px solid var(--fdt-dorado); padding:clamp(10px,1.5vw,20px); background:rgba(var(--fdt-carbon-rgb),.93); box-shadow:5px 5px #000; display:flex; flex-direction:column; min-height:0; overflow:auto; }
+    .counter { color:var(--fdt-dorado); font:bold 12px monospace; letter-spacing:.12em; }
+    h2 { color:var(--fdt-hueso); margin:8px 0 8px; font:bold clamp(18px,2vw,26px)/1.1 Verdana,sans-serif; text-transform:uppercase; }
+    .description { margin:0 0 13px; color:var(--fdt-hueso-suave); font:clamp(11px,1.1vw,14px)/1.4 Verdana,sans-serif; }
+    .origin { color:var(--fdt-dorado-claro); font:bold clamp(14px,1.5vw,19px)/1.2 monospace; text-transform:uppercase; letter-spacing:.4px; margin:0 0 12px; text-shadow:2px 2px #090c14; }
+    .player-name { display:block; margin:0 0 6px; font:bold 11px monospace; text-transform:uppercase; }
+    .profile { margin:0 0 12px; padding:9px 10px; border:1px solid rgba(var(--fdt-dorado-rgb),.45); background:rgba(0,0,0,.35); }
+    .profile-title { margin:0 0 5px; color:var(--fdt-dorado); font:bold 11px monospace; text-transform:uppercase; letter-spacing:.08em; }
+    .specialty { margin:0 0 5px; color:var(--fdt-dorado-claro); font:bold 12px/1.3 Verdana,sans-serif; }
+    .bio { margin:0; color:var(--fdt-hueso-suave); font:11px/1.4 Verdana,sans-serif; }
+    .damage { margin-top:8px; padding-top:7px; border-top:1px solid #3d4855; font:10px/1.35 monospace; color:#d9dfe3; }
+    .damage-title { color:#ee7471; font:bold 9px monospace; letter-spacing:.10em; text-transform:uppercase; margin-bottom:6px; }
+    .damage-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 5px; }
+    .damage-chip { display:flex; align-items:center; justify-content:space-between; gap:5px; min-width:0; padding:4px 5px; border:1px solid #44515f; background:#0a111bd9; color:#8e99a5; }
+    .damage-chip.special { border-color:#d64a4a; background:linear-gradient(90deg,#3a1116cc,#111923dd); color:#fff2cf; box-shadow:inset 2px 0 0 #ef4b4b; }
+    .damage-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:bold 8px monospace; text-transform:uppercase; }
+    .damage-value { flex:0 0 auto; color:#aeb7c0; font:bold 10px monospace; }
+    .damage-chip.special .damage-value { color:#ffd071; font-size:11px; text-shadow:0 0 7px #e54b3c66; }
+    .damage-star { display:none; color:#ff5252; margin-right:2px; }
+    .damage-chip.special .damage-star { display:inline; }
+    .name-input { width:100%; height:36px; margin:0 0 10px; padding:0 9px; border:2px solid var(--fdt-dorado-base); border-radius:0; outline:none; color:var(--fdt-hueso); background:#0c0c0c; font:bold 13px Verdana,sans-serif; }
+    .name-input:focus { border-color:var(--fdt-dorado-claro); }
+    /* v135 — barra superior: título · TU NOMBRE (centro) · botones. Panel derecho: nombre + ATRIBUTOS + ESPECIALIDADES (5 cuadraditos, sin números) */
+    header { gap:14px; }
+    .hdr-nombre { flex:0 1 300px; min-width:150px; display:flex; flex-direction:column; align-items:stretch; }
+    .hdr-nombre .player-name { color:var(--fdt-dorado); margin:0 0 4px; text-align:left; }
+    /* v180 — TU NOMBRE y «Máximo 12 caracteres» más grandes y visibles */
+    .hdr-nombre .player-name { font-size:15px; letter-spacing:.06em; margin-bottom:6px; }
+    .hdr-nombre .player-name .hint { font-size:13px; color:#fff; opacity:1; margin-left:10px; }
+    .hdr-nombre .name-input { font-size:17px; height:40px; }
+    @media (max-width:750px) and (orientation:landscape) { .hdr-nombre .player-name { font-size:11px; } .hdr-nombre .player-name .hint { font-size:10px; } .hdr-nombre .name-input { font-size:14px; height:34px; } }
+    .hdr-nombre .name-input { margin:0; height:34px; background:rgba(8,8,8,.92); border:2px solid var(--fdt-dorado); }
+    .hdr-nombre .name-input:focus { border-color:var(--fdt-dorado-claro); }
+    #origin[hidden], #description[hidden], #profile[hidden], #scoreboard[hidden] { display:none !important; }
+    .stats-grupo { margin:4px 0 12px; }
+    /* v179 — ATRIBUTOS y ESPECIALIDADES centrados de arriba abajo entre el nombre y ELEGIR REFERENTE (el espacio libre se reparte) */
+    .panel > #stats { margin-top:auto; }
+    .stats-grupo-titulo { color:#ffffff; font:bold 12px/1.2 Verdana,sans-serif; letter-spacing:.12em; text-transform:uppercase; margin:0 0 8px; padding-bottom:5px; border-bottom:1px solid rgba(var(--fdt-dorado-rgb),.45); }
+    .stats-grupo .stat-title { color:var(--fdt-dorado); justify-content:flex-start; text-transform:uppercase; }
+    .bar.cinco { height:12px; gap:4px; max-width:190px; }
+    .bar.cinco span { border:1px solid var(--fdt-dorado-base); background:rgba(10,10,10,.85); }
+    .bar.cinco span.on { background:var(--fdt-dorado); border-color:var(--fdt-dorado-claro); }
+    .stat { margin:0 0 10px; }
+    .stat-title { display:flex; justify-content:space-between; font:bold 11px monospace; margin-bottom:4px; }
+    .bar { height:10px; display:grid; grid-template-columns:repeat(5,1fr); gap:3px; }
+    .bar span { border:1px solid #3a352a; background:#222; }
+    .bar span.on { background:var(--fdt-dorado); border-color:var(--fdt-dorado-claro); }
+    .select { margin-top:auto; min-height:42px; width:100%; border:2px solid var(--fdt-dorado-claro); color:var(--fdt-carbon); background:var(--fdt-dorado); font:bold 14px monospace; text-transform:uppercase; box-shadow:3px 3px var(--fdt-dorado-oscuro); }
+    .select:hover, .select:focus-visible { background:var(--fdt-dorado-claro); outline:none; }
+    .select:active { transform:translate(2px,2px); box-shadow:1px 1px var(--fdt-dorado-oscuro); }
+    /* v102 — aviso sobre el escenario cuando el referente elegido todavía no tiene animaciones (Chacarita) */
+    .aviso-pendiente { position:absolute; left:50%; bottom:14px; transform:translateX(-50%); width:min(92%,520px); box-sizing:border-box; padding:10px 14px; background:rgba(var(--fdt-carbon-rgb),.92); border:2px solid var(--fdt-dorado); border-radius:10px; color:var(--fdt-hueso); font:bold 13px/1.35 Verdana,sans-serif; text-align:center; z-index:3; }
+    .aviso-pendiente[hidden] { display:none; }
+    .selected { margin:7px 0 0; font:11px monospace; min-height:14px; color:#a4d9b3; }
+    footer { display:flex; align-items:center; gap:5px; justify-content:center; background:rgba(var(--fdt-carbon-rgb),.78); padding:5px; }
+    .slot { width:clamp(34px,5vw,55px); height:28px; color:var(--fdt-hueso-suave); background:var(--fdt-carbon); border:1px solid var(--fdt-dorado-base); font:bold 12px monospace; }
+    .slot.active { color:var(--fdt-carbon); border-color:var(--fdt-dorado-claro); background:var(--fdt-dorado); }
+    @media (max-width:750px) and (orientation:landscape) { .screen { padding:7px 12px; gap:4px; } main { grid-template-columns:40px minmax(180px,1fr) 40px minmax(174px,36%); gap:4px; } .arrow { width:36px; height:52px; font-size:24px; } .panel { padding:8px; } .description,.origin { margin-bottom:5px; } .stat { margin-bottom:5px; } .name-input { height:31px; margin-bottom:5px; } .select { min-height:34px; } h2 { margin:4px 0; } .music { padding:5px; font-size:9px; } .header-actions { gap:4px; } }
+    @media (max-width:1100px) { header { flex-wrap:wrap; } .hdr-nombre { order:3; flex:1 1 100%; max-width:none; } }
+    @media (orientation:portrait) { body { overflow:auto; } .screen { min-height:650px; height:100dvh; } header { flex-wrap:wrap; gap:8px; } .header-actions { width:100%; justify-content:space-between; } main { grid-template-columns:38px minmax(0,1fr) 38px; grid-template-rows:minmax(220px,52%) minmax(0,1fr); } .arrow { width:36px; height:52px; font-size:24px; } .panel { grid-column:1 / -1; } }
+    @media (prefers-reduced-motion:reduce) { .character { animation:none; } }
+    .character.espejo { scale:-1 1; }   /* v63: espejo solo del dibujo (propiedad scale: se suma a la animación de guardia, no la pisa) */
+    body:not(.referentes) .screen { display:none; }
+    /* v62 — fondo de hinchada del club elegido (ver FONDOS_CLUB). Los cuatro nuevos son de día: un velo apenas más oscuro para leer la interfaz. */
+    /* v97 — NEWELL'S: la interfaz del selector toma la identidad roja y negra del club (mismos lugares que el dorado del resto). */
+    body[data-club="newells"] .screen { --fdt-dorado:#D7263D; --fdt-dorado-base:#A3172B; --fdt-dorado-claro:#FF9AA5; --fdt-dorado-oscuro:#3A0A10; --fdt-dorado-rgb:215,38,61; --fdt-carbon:#0B0B0B; }
+    /* v189 — cada club con SUS colores en el selector de referentes (bordes, botones, letras y cuadraditos), como Newell's */
+    body[data-club="river"] .screen { --fdt-dorado:#E2263A; --fdt-dorado-base:#AA1C2C; --fdt-dorado-claro:#F29DA6; --fdt-dorado-oscuro:#380A0E; --fdt-dorado-rgb:226,38,58; }
+    body[data-club="boca"] .screen { --fdt-dorado:#F2C200; --fdt-dorado-base:#B69200; --fdt-dorado-claro:#F9E48C; --fdt-dorado-oscuro:#3C3000; --fdt-dorado-rgb:242,194,0; }
+    body[data-club="san-lorenzo"] .screen { --fdt-dorado:#4F7FE8; --fdt-dorado-base:#3B5FAE; --fdt-dorado-claro:#B0C5F5; --fdt-dorado-oscuro:#14203A; --fdt-dorado-rgb:79,127,232; }
+    body[data-club="independiente"] .screen { --fdt-dorado:#E0262F; --fdt-dorado-base:#A81C23; --fdt-dorado-claro:#F19DA1; --fdt-dorado-oscuro:#380A0C; --fdt-dorado-rgb:224,38,47; }
+    body[data-club="racing"] .screen { --fdt-dorado:#6CC4F0; --fdt-dorado-base:#5193B4; --fdt-dorado-claro:#BDE4F8; --fdt-dorado-oscuro:#1B313C; --fdt-dorado-rgb:108,196,240; }
+    body[data-club="belgrano"] .screen { --fdt-dorado:#63C6EE; --fdt-dorado-base:#4A94B2; --fdt-dorado-claro:#B9E5F7; --fdt-dorado-oscuro:#19323C; --fdt-dorado-rgb:99,198,238; }
+    body[data-club="talleres"] .screen { --fdt-dorado:#5A8FE6; --fdt-dorado-base:#446BAC; --fdt-dorado-claro:#B5CDF4; --fdt-dorado-oscuro:#16243A; --fdt-dorado-rgb:90,143,230; }
+    body[data-club="central"] .screen { --fdt-dorado:#F4C51B; --fdt-dorado-base:#B79414; --fdt-dorado-claro:#FAE598; --fdt-dorado-oscuro:#3D3107; --fdt-dorado-rgb:244,197,27; }
+    body[data-club="moron"] .screen { --fdt-dorado:#E23B3B; --fdt-dorado-base:#AA2C2C; --fdt-dorado-claro:#F2A7A7; --fdt-dorado-oscuro:#380F0F; --fdt-dorado-rgb:226,59,59; }
+    body[data-club="chicago"] .screen { --fdt-dorado:#2FB35A; --fdt-dorado-base:#238644; --fdt-dorado-claro:#A1DDB5; --fdt-dorado-oscuro:#0C2D16; --fdt-dorado-rgb:47,179,90; }
+    body[data-club="chacarita"] .screen { --fdt-dorado:#E2363E; --fdt-dorado-base:#AA282E; --fdt-dorado-claro:#F2A5A8; --fdt-dorado-oscuro:#380E10; --fdt-dorado-rgb:226,54,62; }
+    body[data-club="laferrere"] .screen { --fdt-dorado:#2EAD5B; --fdt-dorado-base:#228244; --fdt-dorado-claro:#A1DAB5; --fdt-dorado-oscuro:#0C2B17; --fdt-dorado-rgb:46,173,91; }
+    body[data-club]:not([data-club="river"]) .screen { background-image:linear-gradient(180deg,rgba(8,12,20,.30) 0%,rgba(8,12,20,.18) 45%,rgba(8,12,20,.38) 100%), var(--fondo-club); }   /* v49: el selector de referentes (y su fondo) recién existe al entrar con River */
+    /* v52 — FURIA DE TRIBUNA: título arriba, selector al pie (tarjetas 95×105, 14 px), marcos dorados.
+       --filas: cantidad de filas de barras (v73: 3 — primera + dos filas de la zona inferior). Lo recalcula el script
+       contando filas reales (ajustarFilas), así la franja oscura y el límite de alto del título nunca se pisan. */
+    #barras { --filas:3; --g:min(14px,2.6vw); --w:max(52px, min(95px, calc((100vw - 24px - 4 * var(--g)) / 5), 20vh)); --pie:max(clamp(16px,4vh,34px), env(safe-area-inset-bottom));
+              --zp:min(8px,var(--g)); --alto-sel:calc(var(--filas) * var(--w) * 1.1053 + (var(--filas) - 1) * var(--g) + var(--pie)); --tope:clamp(16px,3vh,32px);
+              position:fixed; inset:0; z-index:1100; background-color:var(--fdt-carbon); background-image:linear-gradient(rgba(45,47,50,0.72),rgba(45,47,50,0.72)),url('assets/fondos/tribuna_1986_panoramica_short_negro_v2.webp'); background-repeat:no-repeat; background-position:center; background-size:cover; display:flex;   /* v134: fondo panorámico, UNA sola imagen (cover, sin repetir ni deformar); la capa oscura va aparte */ flex-direction:column; justify-content:safe flex-end; align-items:center; gap:var(--g); padding:12px 12px var(--pie); overflow-y:auto; overscroll-behavior:contain; }   /* v73: si no entra, se desplaza (safe: nunca quedan filas fuera de alcance) */
+    #barras { --titulo-alto:26vh; }   /* 28vh era el punto inicial: con 26vh el título no llega a la cara del morocho del fondo */
+    @media (max-height:500px) { #barras { --w:max(52px, min(95px, calc((100vw - 24px - 4 * var(--g)) / 5), 16vh)); --g:min(10px,2.6vw); --titulo-alto:24vh; } }   /* celular acostado / pantallas bajas */
+    #barras::before { content:''; position:absolute; left:0; right:0; bottom:0; height:calc(var(--alto-sel) + 90px); background:linear-gradient(to top, rgba(var(--fdt-carbon-rgb),0.84) 0%, rgba(var(--fdt-carbon-rgb),0.62) 55%, rgba(var(--fdt-carbon-rgb),0) 100%); pointer-events:none; }
+    #barras[hidden] { display:none; }
+    #barras .barras-leyenda { position:relative; z-index:1; margin:0; flex-shrink:0; font:bold clamp(16px,2.2vw,24px)/1.1 Verdana,Geneva,sans-serif; letter-spacing:.14em; color:var(--fdt-dorado); text-shadow:0 2px 3px rgba(0,0,0,.95), 0 0 12px rgba(0,0,0,.7); user-select:none; pointer-events:none; }   /* v124 */
+    /* v126 — neón dorado: un destello amarillo que recorre las letras de izquierda a derecha y un resplandor que va y viene */
+    #barras .barras-leyenda { color:transparent; text-shadow:none;
+      background:linear-gradient(100deg, var(--fdt-dorado) 0%, var(--fdt-dorado) 38%, #FFE27A 46%, #FFF7D1 50%, #FFE27A 54%, var(--fdt-dorado) 62%, var(--fdt-dorado) 100%);
+      background-size:260% 100%; background-position:100% 0; -webkit-background-clip:text; background-clip:text;
+      filter:drop-shadow(0 2px 2px rgba(0,0,0,.95)) drop-shadow(0 0 4px rgba(255,205,70,.35));
+      animation:leyendaBrillo 3.2s linear infinite, leyendaNeon 2.4s ease-in-out infinite alternate; }
+    @keyframes leyendaBrillo { 0% { background-position:100% 0; } 70%,100% { background-position:0% 0; } }
+    @keyframes leyendaNeon { from { filter:drop-shadow(0 2px 2px rgba(0,0,0,.95)) drop-shadow(0 0 3px rgba(255,205,70,.25)); }
+                             to   { filter:drop-shadow(0 2px 2px rgba(0,0,0,.95)) drop-shadow(0 0 10px rgba(255,214,90,.7)); } }
+    /* v127 — líneas doradas a media altura de la frase: de la S hasta el borde del primer escudo y de la A hasta el borde del último, con el mismo neón */
+    #barras .barras-leyenda-fila { position:relative; z-index:1; flex-shrink:0; display:flex; align-items:center; gap:clamp(10px,1.4vw,18px);
+      width:min(100%, calc(13 * var(--w) + 12 * var(--g))); box-sizing:border-box; pointer-events:none; }
+    #barras .ley-linea { flex:1 1 0; height:2px; border-radius:2px;
+      background:linear-gradient(100deg, var(--fdt-dorado) 0%, var(--fdt-dorado) 38%, #FFE27A 46%, #FFF7D1 50%, #FFE27A 54%, var(--fdt-dorado) 62%, var(--fdt-dorado) 100%);
+      background-size:260% 100%; background-position:100% 0; box-shadow:0 1px 2px rgba(0,0,0,.9);
+      animation:leyendaBrillo 3.2s linear infinite, leyendaNeonLinea 2.4s ease-in-out infinite alternate; }
+    @keyframes leyendaNeonLinea { from { box-shadow:0 1px 2px rgba(0,0,0,.9), 0 0 3px rgba(255,205,70,.25); } to { box-shadow:0 1px 2px rgba(0,0,0,.9), 0 0 9px rgba(255,214,90,.7); } }
+    /* v129 — botón CÓMO JUGAR: borde dorado más visible, con un destello claro que lo recorre (como «SELECCIONÁ TU BARRA») y un neón que va y viene */
+    button#btnComoSel { border:3px solid transparent;
+      background:linear-gradient(#17140F,#17140F) padding-box, linear-gradient(100deg, #8A6A22 0%, var(--fdt-dorado) 28%, #FFE27A 42%, #FFFBE6 50%, #FFE27A 58%, var(--fdt-dorado) 72%, #8A6A22 100%) border-box;
+      background-size:100% 100%, 300% 100%; background-position:0 0, 100% 0;
+      animation:comoBrillo 2.6s linear infinite, comoNeon 1.6s ease-in-out infinite alternate; }
+    button#btnComoSel:hover, button#btnComoSel:focus-visible { border-color:transparent;
+      background:linear-gradient(#241D10,#241D10) padding-box, linear-gradient(100deg, #8A6A22 0%, var(--fdt-dorado) 28%, #FFE27A 42%, #FFFBE6 50%, #FFE27A 58%, var(--fdt-dorado) 72%, #8A6A22 100%) border-box;
+      background-size:100% 100%, 300% 100%; }
+    @keyframes comoBrillo { 0% { background-position:0 0, 100% 0; } 75%,100% { background-position:0 0, 0% 0; } }
+    @keyframes comoNeon { from { box-shadow:0 4px 12px rgba(0,0,0,.45), 0 0 2px rgba(255,205,70,.3); } to { box-shadow:0 4px 12px rgba(0,0,0,.45), 0 0 16px 2px rgba(255,214,90,.8); } }
+    @media (prefers-reduced-motion:reduce) { button#btnComoSel { animation:none; background-position:0 0, 50% 0; box-shadow:0 4px 12px rgba(0,0,0,.45), 0 0 10px rgba(255,205,70,.6); } }
+    @media (prefers-reduced-motion:reduce) { #barras .barras-leyenda { animation:none; background-position:50% 0; } #barras .ley-linea { animation:none; background-position:50% 0; box-shadow:0 1px 2px rgba(0,0,0,.9), 0 0 5px rgba(255,205,70,.4); } }
+    /* v123 — los 13 escudos en UNA línea: se achican para entrar a lo ancho (en pantallas angostas, se desliza) */
+    #barras:has(.barras-linea) { --filas:1; --w:max(46px, min(95px, calc((100vw - 48px - 12 * var(--g)) / 13), 20vh)); }
+    /* v119 — SECCIÓN «CÓMO JUGAR»: CONTROLES (izquierda) y CÓMO JUGAR (derecha) salen del selector de barras y viven acá,
+       con el mismo fondo y el logo. Se abre con el botón CÓMO JUGAR y se vuelve con VOLVER AL INICIO (o Esc). */
+    #info .info-botones { display:none !important; }
+    #ayuda { position:fixed; inset:0; z-index:5; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; gap:clamp(10px,2vh,18px);
+             padding:clamp(12px,2.4vh,26px) 16px max(16px,env(safe-area-inset-bottom)); overflow-y:auto; overscroll-behavior:contain;
+             background-color:var(--fdt-carbon); background-image:linear-gradient(rgba(45,47,50,0.72),rgba(45,47,50,0.72)),url('assets/fondos/tribuna_1986_panoramica_short_negro_v2.webp'); background-repeat:no-repeat; background-size:cover; background-position:center; }
+    #ayuda[hidden] { display:none; }
+    #ayuda .ayuda-logo { width:auto; max-width:min(520px,62vw); max-height:20vh; flex-shrink:0; user-select:none; pointer-events:none; filter:drop-shadow(0 6px 14px rgba(0,0,0,.6)); }
+    #ayuda .ayuda-cols { display:grid; grid-template-columns:1fr 1fr; gap:clamp(12px,2vw,24px); width:min(1100px,100%); flex:1 1 auto; min-height:0; }
+    #ayuda .info-panel { position:relative !important; left:auto !important; right:auto !important; top:auto !important; width:auto !important; max-height:none !important; display:block !important;
+                         overflow:auto; --info-fs:15px; }
+    #ayuda #ayudaVolver { flex-shrink:0; }
+    @media (max-width:720px) { #ayuda .ayuda-cols { grid-template-columns:1fr; flex:0 0 auto; } #ayuda .info-panel { overflow:visible; } }
+    /* título: fuera de la capa gris (es una imagen aparte, encima del fondo). Arriba, centrado, sin pisar las tarjetas. */
+    #barrasTitulo { position:absolute; z-index:1; top:var(--tope); left:50%; transform:translateX(-50%); width:auto; height:auto; max-width:min(680px,70vw);
+                    max-height:min(var(--titulo-alto,28vh), calc(100vh - var(--alto-sel) - var(--tope) - 22px)); object-fit:contain; pointer-events:none; user-select:none; filter:drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
+    #barrasTitulo { top:max(4px, calc(var(--tope) - 12px)); transform:translateX(-50%) scale(.9); transform-origin:50% 0; }   /* v125: logo 10 % más chico y un poco más arriba (se ve más la cara del morocho del fondo) */
+    .barras-fila { position:relative; z-index:1; display:flex; justify-content:center; gap:var(--g); }
+    /* v74 — zona inferior (barras pendientes): UNA sola fila de 8, centrada. Las tarjetas mantienen el mismo tamaño que la fila de arriba;
+       si la pantalla es angosta, la fila se desplaza en horizontal (no se achica ni desborda). Los márgenes automáticos de la primera y la
+       última tarjeta la centran cuando entra y dejan alcanzar ambos extremos cuando no entra. El relleno --zp deja ver el foco y la tarjeta agrandada. */
+    .barras-zona { flex-wrap:nowrap; justify-content:flex-start; max-width:100%; box-sizing:border-box; overflow-x:auto; overflow-y:hidden; padding:var(--zp); margin:calc(-1 * var(--zp)) 0;
+                   overscroll-behavior-x:contain; scroll-padding-inline:var(--zp); scrollbar-width:thin; scrollbar-color:var(--fdt-dorado-base) transparent; -webkit-overflow-scrolling:touch; touch-action:pan-x; }
+    .barras-zona > .barra { flex:0 0 auto; }
+    .barras-zona > .barra:first-child { margin-left:auto; } .barras-zona > .barra:last-child { margin-right:auto; }
+    .barras-fila { flex-shrink:0; }
+    .barra { position:relative; width:var(--w); aspect-ratio:95/105; height:auto; background:rgba(0,0,0,0.6); border:2px solid var(--fdt-dorado-base); border-radius:clamp(7px,1.4vw,12px); cursor:pointer; padding:0; display:grid; place-items:center; transition:transform .15s,border-color .15s,background .15s,box-shadow .15s; -webkit-tap-highlight-color:transparent; }
+    /* v197 — categorías PRIMERA / ASCENSO (antes de elegir la barra) y botón para volver a ellas */
+    .barra[hidden] { display:none; }
+    .barra.cat { width:calc(var(--w) * 2.5); aspect-ratio:auto; height:calc(var(--w) * 105 / 95); font:bold clamp(17px,2.3vw,32px)/1 Verdana,Geneva,sans-serif; letter-spacing:.14em; color:var(--fdt-dorado-claro); text-shadow:0 2px 3px rgba(0,0,0,.9); }
+    .barra.volver-cat { color:var(--fdt-dorado-claro); font:bold clamp(10px,1.1vw,14px)/1.2 Verdana,Geneva,sans-serif; letter-spacing:.06em; grid-template-rows:auto auto; align-content:center; gap:4px; }
+    .barra.volver-cat span { font-size:clamp(20px,2.6vw,34px); line-height:1; }
+    .barra img { width:calc(78% * var(--k,1)); height:calc(78% * var(--k,1)); object-fit:contain; pointer-events:none; user-select:none; }
+    .barra:hover { border-color:#DDBB6A; background:rgba(0,0,0,0.7); }
+    .barra[aria-pressed=true] { z-index:1; border-color:var(--fdt-dorado-claro); background:rgba(0,0,0,0.74); box-shadow:0 0 0 3px rgba(var(--fdt-dorado-rgb),0.45), 0 0 14px rgba(255,227,160,0.28); transform:scale(1.06); }
+    .barra:focus { outline:none; }
+    .barra:focus-visible { z-index:2; border-color:var(--fdt-dorado-claro); outline:3px solid var(--fdt-dorado-claro); outline-offset:3px; box-shadow:0 0 0 3px rgba(var(--fdt-dorado-rgb),0.45), 0 0 18px rgba(255,227,160,0.45); }
+    /* v53 — paneles CONTROLES y CÓMO JUGAR. Posición y modo los decide ubicarInfo() (JS) midiendo título y tarjetas:
+       «lados» = dos columnas debajo de la altura del título · «fila» / «esquinas» = dos botones desplegables (pantallas chicas). */
+    #info { position:absolute; inset:0; z-index:1; pointer-events:none; font-family:Verdana,Geneva,sans-serif; color:var(--fdt-hueso); }
+    #info > * { pointer-events:auto; }
+    .info-panel { position:absolute; box-sizing:border-box; width:280px; overflow:auto; overscroll-behavior:contain; padding:14px 16px 16px; font-size:var(--info-fs,13.5px); line-height:1.45;
+                  background:rgba(0,0,0,0.66); border:1px solid var(--fdt-dorado-base); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.45); scrollbar-color:var(--fdt-dorado-base) transparent; }
+    .info-panel:focus { outline:none; } .info-panel:focus-visible { outline:2px solid var(--fdt-dorado-claro); outline-offset:2px; }
+    .info-panel h2 { margin:0 0 10px; color:var(--fdt-dorado); font:bold calc(var(--info-fs,13.5px) + 3px)/1.1 Verdana,sans-serif; letter-spacing:.08em; text-transform:uppercase; padding-bottom:7px; border-bottom:1px solid rgba(var(--fdt-dorado-rgb),.45); }
+    .info-panel h3 { margin:12px 0 6px; color:var(--fdt-dorado); font:bold calc(var(--info-fs,13.5px) - 2px)/1.2 Verdana,sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+    .info-panel p { margin:0 0 6px; }
+    .info-panel small { display:block; color:var(--fdt-hueso-suave); font-size:.86em; }
+    .fila-tecla { display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:center; margin:0 0 7px; }
+    .fila-tecla > span:first-child { justify-self:start; }
+    .teclas { display:inline-flex; align-items:center; gap:3px; flex-wrap:wrap; }
+    .teclas i { font-style:normal; color:var(--fdt-dorado); font-weight:bold; margin:0 1px; }
+    .atras { font:bold .78em Verdana,sans-serif; color:var(--fdt-dorado-claro); border:1px dashed var(--fdt-dorado-base); border-radius:4px; padding:3px 5px; letter-spacing:.03em; text-transform:uppercase; }
+    #info kbd, #ayuda kbd { display:inline-grid; place-items:center; min-width:1.95em; height:1.95em; padding:0 .38em; box-sizing:border-box; border:1px solid var(--fdt-dorado-base); border-radius:5px;
+                background:linear-gradient(#2b2b2b,#141414); color:var(--fdt-hueso); font:bold .82em/1 Verdana,sans-serif; box-shadow:0 2px 0 var(--fdt-dorado-oscuro), inset 0 1px 0 rgba(255,255,255,.12); vertical-align:middle; margin-bottom:2px; }
+    .wasd { display:inline-grid; justify-items:center; gap:3px; }
+    .wasd-abajo { display:inline-flex; gap:3px; }
+    .mas { margin-top:10px; border-top:1px solid rgba(var(--fdt-dorado-rgb),.35); padding-top:8px; }
+    .mas summary { cursor:pointer; color:var(--fdt-dorado-claro); font-weight:bold; list-style:none; padding:4px 0; }
+    .mas summary::-webkit-details-marker { display:none; }
+    .mas summary::before { content:'▸'; display:inline-block; margin-right:6px; transition:transform .15s; }
+    .mas[open] summary::before { transform:rotate(90deg); }
+    .mas summary:focus { outline:none; } .mas summary:focus-visible { outline:2px solid var(--fdt-dorado-claro); outline-offset:2px; border-radius:4px; }
+    .info-botones { position:absolute; display:none; gap:10px; pointer-events:none !important; } .info-botones > * { pointer-events:auto; }   /* v73: la franja de los botones no roba toques a las tarjetas */
+    .info-boton { font:bold 13px Verdana,sans-serif; letter-spacing:.06em; text-transform:uppercase; color:var(--fdt-hueso); background:rgba(0,0,0,0.66); border:1px solid var(--fdt-dorado-base); border-radius:999px; padding:8px 14px; cursor:pointer; white-space:nowrap; }
+    .info-boton:hover { border-color:var(--fdt-dorado-claro); }
+    .info-boton[aria-expanded=true] { background:var(--fdt-dorado); color:var(--fdt-carbon); border-color:var(--fdt-dorado-claro); }
+    .info-boton:focus { outline:none; } .info-boton:focus-visible { outline:2px solid var(--fdt-dorado-claro); outline-offset:3px; }
+    #info[data-modo=fila] .info-botones, #info[data-modo=esquinas] .info-botones { display:flex; }
+    #info[data-modo=fila] .info-panel:not(.abierto), #info[data-modo=esquinas] .info-panel:not(.abierto) { display:none; }
+    /* v75 — BATALLA CAMPAL (etapa 1: acceso + selección de referente; todavía sin combate).
+       Botón: justo arriba del panel CÓMO JUGAR y centrado sobre SU ancho (lo ubica ubicarInfo). En pantallas chicas, encima del botón «Cómo jugar». */
+    #bcCaja { position:absolute; box-sizing:border-box; display:flex; justify-content:center; align-items:center; pointer-events:none !important; }   /* v76: en «lados» es la ZONA libre sobre CÓMO JUGAR; el botón queda centrado en ambos ejes */
+    /* v77 — título «Barras VS Hooligans - México 86» + botón en UN grupo (columna centrada, 12 px entre ambos). El grupo entero se centra en la zona.
+       El título es texto (no botón): no recibe clics ni toques. Hasta dos líneas centradas si falta ancho, nunca más ancho que la columna. */
+    #bcCaja .bc-grupo { display:flex; flex-direction:column; align-items:center; gap:12px; max-width:100%; pointer-events:none; }
+    /* v120 — recuadro que agrupa «Barras VS Hooligans - México 86» y BATALLA CAMPAL (que no queden colgados) */
+    #bcCaja .bc-recuadro { display:flex; flex-direction:column; align-items:center; gap:10px; max-width:100%; box-sizing:border-box; padding:12px 16px 14px;
+                           background:rgba(0,0,0,0.55); border:1px solid var(--fdt-dorado-base); border-radius:12px; box-shadow:0 8px 22px rgba(0,0,0,.45); pointer-events:none; }
+    #bcCaja .bc-titulo { margin:0; max-width:100%; pointer-events:none; user-select:none; text-align:center; font:bold 15px/1.25 Verdana,Geneva,sans-serif; letter-spacing:.03em;
+                         color:var(--fdt-dorado-claro); text-shadow:0 1px 2px rgba(0,0,0,.95), 0 2px 8px rgba(0,0,0,.75); }
+    @media (max-width:600px) { #bcCaja .bc-titulo { font-size:13px; } }
+    /* v114 — SILENCIAR MÚSICA: mismo botón que BATALLA CAMPAL (tamaño, colores, tipografía, borde dorado). Ambos con el mismo ancho fijo. */
+    #btnBatalla, #btnMusicaSel, #btnComoSel, #ayudaVolver { width:236px; box-sizing:border-box; text-align:center; }
+    /* v191 — DESARROLLADOR: elegir barra + rival (+ pantalla) y entrar directo a pelear (partida de prueba aparte) */
+    #btnDevSel { width:236px; box-sizing:border-box; text-align:center; pointer-events:auto; font:bold 14px Verdana,Geneva,sans-serif; letter-spacing:.08em; color:var(--fdt-hueso); background:rgba(0,0,0,0.72); border:2px solid var(--fdt-dorado); border-radius:9px; padding:10px 12px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.45); }
+    #btnDevSel:hover, #btnDevSel:focus-visible { border-color:var(--fdt-dorado-claro); background:rgba(30,24,12,.86); outline:none; }
+    #devPanel { position:fixed; inset:0; z-index:100000; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.62); padding:16px; }
+    #devPanel[hidden] { display:none; }
+    #devPanel .dev-caja { width:min(460px,100%); background:rgba(14,12,10,.97); border:2px solid var(--fdt-dorado); border-radius:12px; padding:20px 22px; box-shadow:0 10px 40px rgba(0,0,0,.6); color:var(--fdt-hueso); font:15px Verdana,Geneva,sans-serif; }
+    #devPanel h2 { margin:0 0 4px; font:bold 20px Verdana,Geneva,sans-serif; letter-spacing:.08em; color:var(--fdt-dorado-claro); }
+    #devPanel p { margin:0 0 14px; font-size:13px; color:var(--fdt-hueso-suave); }
+    #devPanel label { display:block; margin:12px 0 5px; font:bold 13px Verdana,Geneva,sans-serif; letter-spacing:.06em; color:var(--fdt-dorado); text-transform:uppercase; }
+    #devPanel select { width:100%; height:40px; padding:0 10px; font:15px Verdana,Geneva,sans-serif; color:var(--fdt-hueso); background:#0b0a09; border:2px solid var(--fdt-dorado-base); border-radius:6px; }
+    #devPanel select:focus { outline:none; border-color:var(--fdt-dorado-claro); }
+    #devPanel .dev-acciones { display:flex; gap:12px; margin-top:20px; }
+    #devPanel .dev-acciones button { flex:1; height:44px; font:bold 15px Verdana,Geneva,sans-serif; letter-spacing:.06em; border-radius:8px; cursor:pointer; }
+    #devContinuar { color:#151515; background:var(--fdt-dorado); border:2px solid var(--fdt-dorado-claro); }
+    #devCancelar { color:var(--fdt-hueso); background:transparent; border:2px solid var(--fdt-dorado-base); }
+    #btnMusicaSel, #btnComoSel, #ayudaVolver { pointer-events:auto; font:bold 14px Verdana,Geneva,sans-serif; letter-spacing:.08em; color:var(--fdt-hueso); background:rgba(0,0,0,0.72); border:2px solid var(--fdt-dorado); border-radius:9px;
+                  padding:9px 18px; cursor:pointer; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,.45); text-shadow:0 1px 2px #000; transition:background .15s,border-color .15s; }
+    #btnComoSel:hover, #btnMusicaSel:hover, #ayudaVolver:hover { border-color:var(--fdt-dorado-claro); background:rgba(30,24,12,.86); }
+    #btnComoSel:focus, #btnMusicaSel:focus, #ayudaVolver:focus { outline:none; } #btnComoSel:focus-visible, #btnMusicaSel:focus-visible, #ayudaVolver:focus-visible { border-color:var(--fdt-dorado-claro); outline:3px solid var(--fdt-dorado-claro); outline-offset:3px; }
+    #btnBatalla { pointer-events:auto; font:bold 14px Verdana,Geneva,sans-serif; letter-spacing:.08em; color:var(--fdt-hueso); background:rgba(0,0,0,0.72); border:2px solid var(--fdt-dorado); border-radius:9px;
+                  padding:9px 18px; cursor:pointer; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,.45); text-shadow:0 1px 2px #000; transition:background .15s,border-color .15s; }
+    #btnBatalla:hover { border-color:var(--fdt-dorado-claro); background:rgba(30,24,12,.86); }
+    #btnBatalla:focus { outline:none; } #btnBatalla:focus-visible { border-color:var(--fdt-dorado-claro); outline:3px solid var(--fdt-dorado-claro); outline-offset:3px; }
+    /* Pantalla propia: fondo aprobado (calle al atardecer) centrado y sin deformar + capa oscura APARTE; logo, textos y tarjetas son controles reales encima. */
+    #batalla { position:fixed; inset:0; z-index:1150; overflow-y:auto; overscroll-behavior:contain; color:var(--fdt-hueso); font-family:Verdana,Geneva,sans-serif; background:var(--fdt-carbon); }
+    #batalla[hidden] { display:none; }
+    #batalla .bc-fondo { position:fixed; inset:0; background:url('assets/fondos/batalla_campal_calle_atardecer.webp') center/cover no-repeat; pointer-events:none; }
+    #batalla .bc-velo { position:fixed; inset:0; background:linear-gradient(rgba(10,10,14,.48), rgba(10,10,14,.72)); pointer-events:none; }
+    #batalla .bc-contenido { position:relative; box-sizing:border-box; max-width:1040px; min-height:100%; margin:0 auto; padding:clamp(10px,2.2vh,22px) 16px 22px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+    #batalla .bc-logo { display:block; width:auto; max-width:min(300px,62vw); height:min(90px,11vh); object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,.6)); user-select:none; }
+    #batalla h1 { margin:4px 0 0; color:var(--fdt-dorado-claro); font:bold clamp(22px,3.6vw,36px)/1.1 Verdana,Geneva,sans-serif; letter-spacing:.12em; text-shadow:0 2px 6px #000; }
+    #batalla .bc-indicacion { margin:6px 0 clamp(8px,1.8vh,16px); font-size:clamp(14px,1.8vw,17px); text-shadow:0 1px 3px #000; }
+    /* v81 — UN referente a la vez: visor central (flechas grandes a los costados) + ficha (nombre · club · posición). El visor toma el alto
+       que sobra entre el título y los botones: el personaje entra entero (object-fit:contain) y VOLVER / COMENZAR siempre quedan a la vista. */
+    #batalla .bc-contenido { height:100%; min-height:0; }
+    .bc-visor { flex:1 1 0; min-height:150px; width:100%; max-width:820px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:clamp(6px,2vw,22px); }
+    .bc-panel { position:relative; height:100%; min-height:0; display:flex; align-items:flex-end; justify-content:center; padding:clamp(6px,1.6vh,14px) clamp(8px,2vw,20px) 0; box-sizing:border-box;
+                border:2px solid rgba(var(--fdt-dorado-rgb),.55); border-radius:18px; background:radial-gradient(ellipse 70% 85% at 50% 100%, rgba(8,8,12,.55), rgba(8,8,12,.18) 70%, rgba(8,8,12,.08)); touch-action:pan-y; }
+    .bc-panel::after { content:''; position:absolute; left:22%; right:22%; bottom:6px; height:16px; border-radius:50%; background:radial-gradient(rgba(0,0,0,.55), transparent 70%); pointer-events:none; }
+    .bc-panel img { position:relative; z-index:1; display:block; max-width:100%; height:100%; width:auto; object-fit:contain; object-position:center bottom; pointer-events:none; user-select:none; filter:drop-shadow(0 6px 10px rgba(0,0,0,.65)); }
+    .bc-panel img.bc-espejo { transform:scaleX(-1); }   /* su guardia mira a la izquierda y no hay variante derecha: se refleja SOLO la imagen */
+    .bc-flecha { width:clamp(52px,7vw,76px); height:clamp(52px,7vw,76px); border-radius:50%; border:3px solid var(--fdt-dorado-claro); background:rgba(122,29,22,.92); color:var(--fdt-hueso);
+                 font:bold clamp(30px,4.4vw,46px)/1 Verdana,sans-serif; display:grid; place-items:center; padding:0 0 .12em; cursor:pointer; box-shadow:3px 3px var(--fdt-dorado-oscuro), 0 0 14px rgba(0,0,0,.6);
+                 -webkit-tap-highlight-color:transparent; user-select:none; transition:background .12s, transform .08s; }
+    .bc-flecha:hover { background:#9b261d; } .bc-flecha:active { transform:scale(.94); }
+    .bc-flecha:focus { outline:none; } .bc-flecha:focus-visible { outline:3px solid var(--fdt-hueso); outline-offset:3px; }
+    .bc-ficha { display:flex; flex-direction:column; align-items:center; gap:2px; margin:clamp(6px,1.4vh,12px) 0 clamp(8px,1.6vh,14px); padding:8px 22px; background:rgba(0,0,0,.66); border:1px solid var(--fdt-dorado-base); border-radius:10px; min-width:min(320px,80vw); box-sizing:border-box; }
+    #bcNombre { font-weight:bold; font-size:clamp(18px,2.6vw,26px); letter-spacing:.06em; text-transform:uppercase; color:var(--fdt-dorado-claro); text-shadow:0 2px 4px #000; }
+    #bcClub { font-size:clamp(13px,1.6vw,16px); color:var(--fdt-hueso); }
+    #bcPos { font-size:13px; letter-spacing:.12em; color:var(--fdt-hueso-suave); }
+    #bcEstado { position:absolute !important; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }   /* solo lectores de pantalla */
+    #bcEstado b { color:var(--fdt-dorado-claro); }
+    #bcVolver { font:bold 15px Verdana,sans-serif; padding:10px 26px; border-radius:10px; border:2px solid var(--fdt-dorado-claro); background:var(--fdt-dorado); color:var(--fdt-carbon); cursor:pointer; box-shadow:3px 3px var(--fdt-dorado-oscuro); }
+    #bcVolver:hover { background:var(--fdt-dorado-claro); } #bcVolver:focus { outline:none; } #bcVolver:focus-visible { outline:3px solid var(--fdt-hueso); outline-offset:3px; }
+    #batalla .bc-acciones { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }   /* v78 */
+    #bcComenzar { font:bold 15px Verdana,sans-serif; letter-spacing:.06em; padding:10px 22px; border-radius:10px; border:2px solid var(--fdt-dorado-claro); background:#7a1d16; color:var(--fdt-hueso); cursor:pointer; box-shadow:3px 3px var(--fdt-dorado-oscuro); }
+    #bcComenzar:hover:not(:disabled) { background:#9b261d; } #bcComenzar:disabled { opacity:.45; cursor:not-allowed; box-shadow:none; }
+    #bcComenzar:focus { outline:none; } #bcComenzar:focus-visible { outline:3px solid var(--fdt-hueso); outline-offset:3px; }
+    #batalla .bc-nota { margin:10px 0 0; font-size:12px; color:var(--fdt-hueso-suave); text-shadow:0 1px 2px #000; }
+    @media (max-height:560px) { #batalla .bc-logo { height:min(56px,12vh); } #batalla h1 { font-size:20px; } #batalla .bc-indicacion { margin:2px 0 6px; font-size:13px; }
+                                .bc-ficha { margin:4px 0 6px; padding:4px 16px; flex-direction:row; flex-wrap:wrap; justify-content:center; gap:4px 12px; } #bcNombre { font-size:17px; } #batalla .bc-nota { margin-top:4px; } }
+    @media (max-width:420px) { .bc-visor { gap:4px; } .bc-panel { padding-left:4px; padding-right:4px; } }
+    #barraNoDisp { position:fixed; inset:0; z-index:2; background:#000a; display:grid; place-items:safe center; padding:16px; overflow-y:auto; }   /* v73: en pantallas muy bajas el cartel se desplaza y VOLVER siempre se alcanza */
+    #barraNoDisp[hidden] { display:none; }
+    .nd-caja { background:rgba(var(--fdt-carbon-rgb),.95); border:2px solid var(--fdt-dorado); border-radius:18px; padding:22px 26px; text-align:center; max-width:min(420px,92vw); color:var(--fdt-hueso); font-family:Verdana,sans-serif; }
+    .nd-caja img { width:min(150px,36vw,30vh); height:min(150px,36vw,30vh); object-fit:contain; display:block; margin:0 auto 10px; }
+    #barraNoDispTxt { color:var(--fdt-dorado); font-weight:bold; font-size:clamp(16px,2.4vw,22px); margin:6px 0; letter-spacing:.04em; }
+    .nd-sub { font-size:13px; opacity:.85; margin:0 0 16px; }
+    #barraVolver { font:bold 15px Verdana,sans-serif; padding:10px 26px; border-radius:10px; border:2px solid var(--fdt-dorado-claro); background:var(--fdt-dorado); color:var(--fdt-carbon); cursor:pointer; box-shadow:3px 3px var(--fdt-dorado-oscuro); }
+    #barraVolver:hover { background:var(--fdt-dorado-claro); }
+    #barraVolver:focus-visible { outline:3px solid var(--fdt-dorado-claro); outline-offset:3px; }
+    /* v60: la intro BARRA 14 de River se quitó del recorrido (River va directo a sus referentes, como los demás clubes) */
+    /* v40 — tabla de puntajes (pantalla 11) abierta desde el selector */
+    .hint { font:10px monospace; text-transform:none; color:var(--fdt-hueso-suave); opacity:.85; margin-left:6px; }
+    #ranking { position:fixed; inset:0; z-index:900; background:var(--fdt-carbon); display:grid; place-items:center; }
+    #ranking[hidden] { display:none; }
+    #rankingCanvas { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; }
+    #rankingVolver { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:auto; min-width:160px; padding:0 26px; margin:0; z-index:1; }
+    #rankingVolver:active { transform:translate(calc(-50% + 2px),calc(-50% + 2px)); }
+      /* v57 — club sin referentes: no hay placa ni ficha, y el botón queda deshabilitado */
+    .select:disabled, .arrow:disabled{opacity:.4;cursor:not-allowed}
+    body.sin-referentes #character, body.sin-referentes #profile, body.sin-referentes #stats{display:none}
+</style>
+</head>
+<body>
+  <!-- v49 — SELECTOR DE BARRAS (antes de la intro). Solo símbolos: los nombres están en aria-label, no en pantalla. -->
+  <div id="barras" aria-label="Elegí tu barra">
+    <img id="barrasTitulo" src="assets/logos/furia_de_tribuna.webp" alt="Furia de Tribuna" draggable="false">   <!-- v52: título del juego -->
+    <div class="barras-leyenda-fila" aria-hidden="true"><span class="ley-linea"></span><p class="barras-leyenda" id="barrasLeyenda" aria-hidden="true">ELEGÍ TU CATEGORÍA</p><span class="ley-linea"></span></div>   <!-- v124 -->
+    <!-- v123: una sola fila, en el orden pedido por Darío --><div class="barras-fila barras-zona barras-linea" role="group" aria-label="Barras"><button type="button" class="barra cat" data-cat="primera" aria-label="Primera: River, Boca, Racing, Independiente, San Lorenzo, Belgrano, Talleres, Rosario Central y Newell's">PRIMERA</button><button type="button" class="barra cat" data-cat="ascenso" aria-label="Ascenso: Morón, Chicago, Chacarita y Laferrere">ASCENSO</button><button type="button" class="barra volver-cat" data-volver="1" aria-label="Volver a las categorías" hidden><span>←</span><small>CATEGORÍAS</small></button><button type="button" class="barra" data-id="talleres" hidden aria-label="Talleres de Córdoba (La Fiel)" aria-pressed="false" style="--k:1.12"><img src="assets/logos/talleres_puno_fiel_azul_blanco_v1.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="belgrano" hidden aria-label="Belgrano de Córdoba (Pirata cordobés)" aria-pressed="false" style="--k:0.99"><img src="assets/logos/pirata_calavera_celeste_blanco_v3.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="chicago" hidden aria-label="Nueva Chicago (La Banda de Chicago)" aria-pressed="false" style="--k:1.145"><img src="assets/logos/toro_verde_negro.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="laferrere" hidden aria-label="Laferrere (Los Villeros)" aria-pressed="false" style="--k:1.15"><img src="assets/logos/numero_79.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="san-lorenzo" hidden aria-label="San Lorenzo" aria-pressed="false" style="--k:1.076"><img src="assets/logos/cuervo_azul_rojo.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="racing" hidden aria-label="Racing" aria-pressed="false" style="--k:0.973"><img src="assets/logos/guardia_imperial.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="independiente" hidden aria-label="Independiente" aria-pressed="false" style="--k:0.97"><img src="assets/logos/diablo_rojo.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="river" hidden aria-label="River" aria-pressed="false" style="--k:1.01"><img src="assets/logos/damajuana_14_rojo_blanco.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="boca" hidden aria-label="Boca" aria-pressed="false" style="--k:1.15"><img src="assets/logos/numero_12.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="newells" hidden aria-label="Newell's Old Boys (La Más Popular)" aria-pressed="false" style="--k:0.96"><img src="assets/logos/newells_bombo_la_mas_popular_v1.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="central" hidden aria-label="Rosario Central (Los Guerreros)" aria-pressed="false" style="--k:1.0"><img src="assets/logos/central_casco_guerreros_azul_amarillo_v1.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="moron" hidden aria-label="Deportivo Morón (Los Borrachos de Morón)" aria-pressed="false" style="--k:1.0"><img src="assets/logos/gallo_rojo_blanco.webp" alt="" draggable="false"></button><button type="button" class="barra" data-id="chacarita" hidden aria-label="Chacarita (Funebreros)" aria-pressed="false" style="--k:0.976"><img src="assets/logos/muerte_rojo_blanco_negro.webp" alt="" draggable="false"></button></div>
+    <!-- v53 — paneles informativos (texto HTML). Las teclas salen de js/juego.js (addEventListener('keydown')) y js/defensa.js. -->
+    <div id="info" data-modo="lados">
+      <div class="info-botones" role="group" aria-label="Ayuda">
+        <button type="button" class="info-boton" id="btnControles" aria-expanded="false" aria-controls="panelControles">Controles</button>
+        <button type="button" class="info-boton" id="btnComo" aria-expanded="false" aria-controls="panelComo">Cómo jugar</button>
+      </div>
+      <section class="info-panel" id="panelControles" aria-labelledby="tituloControles" tabindex="0">
+        <h2 id="tituloControles">Controles</h2>
+        <h3>Pelea</h3>
+        <div class="fila-tecla"><span class="wasd" role="img" aria-label="W, A, S, D"><span class="wasd-arriba"><kbd>W</kbd></span><span class="wasd-abajo"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span></span><span>Moverse<small>(también con las flechas)</small></span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd>J</kbd></span><span>Piña</span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd>K</kbd></span><span>Patada</span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd>L</kbd></span><span>Poder especial<small>(con la barra de poder completa)</small></span></div>
+        <h3>Partida y audio</h3>
+        <div class="fila-tecla"><span class="teclas"><kbd>P</kbd></span><span>Pausa / seguir</span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd>M</kbd></span><span>Música sí / no</span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd aria-label="menos">−</kbd><kbd aria-label="más">+</kbd></span><span>Bajar / subir el volumen de la música</span></div>
+        <div class="fila-tecla"><span class="teclas"><kbd>Esc</kbd></span><span>Ir al menú de niveles<small>(desde el menú: volver a elegir referente)</small></span></div>
+        <details class="mas">
+          <summary>Más controles</summary>
+          <h3>Combinaciones</h3>
+          <div class="fila-tecla"><span class="teclas"><kbd>J</kbd><i>+</i><b class="atras">atrás</b></span><span>Defensa: mantené piña y la dirección contraria a la que mirás</span></div>
+          <div class="fila-tecla"><span class="teclas"><b class="atras">pegado</b></span><span>Agarre: caminá contra un rival de frente, bien pegado, y lo agarrás solo</span></div>
+          <div class="fila-tecla"><span class="teclas"><kbd>J</kbd><i>→</i><kbd>J</kbd></span><span>En el agarre: piña y, enseguida, cabezazo que lo tira</span></div>
+          <div class="fila-tecla"><span class="teclas"><kbd>J</kbd><kbd>J</kbd><kbd>J</kbd></span><span>Combo: el 3.º golpe seguido sale con la derecha y pega un 10 % más (también con <kbd>K</kbd>)</span></div>
+          <div class="fila-tecla"><span class="teclas"><kbd>J</kbd></span><span>Junto a la damajuana (River) o la hamburguesa (Racing), el fernet con coca (Independiente), el choripán (Boca) o el vino de cartón (San Lorenzo): la levantás y recuperás la vida</span></div>
+          <h3>Menús</h3>
+          <div class="fila-tecla"><span class="teclas"><kbd aria-label="izquierda">←</kbd><kbd aria-label="derecha">→</kbd></span><span>Barras: elegir · <kbd>Enter</kbd> confirmar</span></div>
+          <div class="fila-tecla"><span class="teclas"><kbd>A</kbd><kbd>D</kbd></span><span>Referente: cambiar · <kbd>J</kbd> o <kbd>Enter</kbd> elegir</span></div>
+          <div class="fila-tecla"><span class="teclas"><kbd>1</kbd><i>…</i><kbd>0</kbd></span><span>Menú de niveles: entrar directo a un nivel · <kbd>Enter</kbd> campaña completa</span></div>
+        </details>
+      </section>
+      <div id="bcCaja"><div class="bc-grupo"><button type="button" id="btnMusicaSel" aria-pressed="false">SILENCIAR MÚSICA</button><button type="button" id="btnComoSel" aria-controls="panelComo">CÓMO JUGAR</button><button type="button" id="btnDevSel" aria-controls="devPanel">DESARROLLADOR</button><div class="bc-recuadro"><p class="bc-titulo" id="bcSubtitulo">Barras VS Hooligans&nbsp;- México&nbsp;86</p><button type="button" id="btnBatalla" aria-haspopup="dialog" aria-controls="batalla" aria-describedby="bcSubtitulo">BATALLA CAMPAL</button></div></div></div>   <!-- v75 · v77: título arriba, agrupado -->
+      <section class="info-panel" id="panelComo" aria-labelledby="tituloComo" tabindex="0">
+        <h2 id="tituloComo">Cómo jugar</h2>
+        <p>Elegí tu barra, seleccioná tu referente, elegí el escenario y empezá a pelear contra la barra rival. Con San Lorenzo elegís si enfrentás a Boca o a River; su referente es El Chivo.</p>
+        <h3>Poder especial</h3>
+        <p>La barra de poder se llena derrotando rivales. Cuando esté completa, presioná <kbd>L</kbd> para activarlo.</p>
+        <h3>Recuperación</h3>
+        <p>Cuando te queda el 25 % de vida o menos aparece una damajuana (River) o una hamburguesa de cancha (Racing), un fernet con coca en botella cortada (Independiente), un choripán (Boca) o un vino de cartón (San Lorenzo y Newell's); Morón usa la damajuana y Chicago el choripán. Tenés 10 segundos para llegar antes de que desaparezca: acercate y presioná <kbd>J</kbd> para recogerla y recuperar toda la vida. La pausa frena el tiempo.</p>
+        <h3>Combate</h3>
+        <p>Las piñas hacen más daño que las patadas. Combiná tus ataques y cuidá tu defensa.</p>
+      </section>
+    </div>
+    <div id="ayuda" hidden role="dialog" aria-modal="true" aria-label="Cómo jugar"><img class="ayuda-logo" src="assets/logos/furia_de_tribuna.webp" alt="Furia de Tribuna" draggable="false"><div class="ayuda-cols"></div><button type="button" id="ayudaVolver">VOLVER AL INICIO</button></div>   <!-- v119 -->
+    <div id="barraNoDisp" hidden role="dialog" aria-modal="true" aria-labelledby="barraNoDispTxt"><div class="nd-caja"><img id="barraNoDispImg" alt=""><p id="barraNoDispTxt">TODAVÍA NO DISPONIBLE</p><p class="nd-sub">Esta barra todavía está en desarrollo. Próximamente.</p><button type="button" id="barraVolver">VOLVER</button></div></div>
+  </div>
+  <!-- v75 — BATALLA CAMPAL · etapa 1: selector único de referente (sin combate todavía). Las tarjetas las arma el script del selector de barras. -->
+  <div id="batalla" hidden role="dialog" aria-modal="true" aria-labelledby="bcTitulo">
+    <div class="bc-fondo"></div><div class="bc-velo"></div>
+    <div class="bc-contenido">
+      <img class="bc-logo" src="assets/logos/furia_de_tribuna.webp" alt="Furia de Tribuna" draggable="false">
+      <h1 id="bcTitulo">BATALLA CAMPAL</h1>
+      <p class="bc-indicacion">Elegí tu referente</p>
+      <div class="bc-visor" id="bcVisor" role="group" aria-roledescription="carrusel" aria-label="Referentes de Batalla Campal">
+        <button type="button" class="bc-flecha" id="bcAnterior" aria-label="Referente anterior">&#8249;</button>
+        <div class="bc-panel" id="bcPanel"><img id="bcImg" alt="" draggable="false"></div>
+        <button type="button" class="bc-flecha" id="bcSiguiente" aria-label="Referente siguiente">&#8250;</button>
+      </div>
+      <div class="bc-ficha" id="bcFicha"><span id="bcNombre"></span><span id="bcClub"></span><span id="bcPos"></span></div>
+      <p id="bcEstado" role="status" aria-live="polite"></p>
+      <div class="bc-acciones"><button type="button" id="bcVolver">VOLVER</button><button type="button" id="bcComenzar" aria-describedby="bcEstado">COMENZAR BATALLA</button></div>
+      <p class="bc-nota">100 contra 100 · 10 contra 10 en cancha. Argentina: 9 referentes + 91 de Racing (los referentes entran a medida que caen los Racing). Inglaterra: 100 provisionales.</p>
+    </div>
+  </div>
+  <div class="screen">
+    <header><div class="hdr-titulo"><div class="eyebrow">SELECCIÓN / 1990</div><h1>ELEGÍ TU REFERENTE</h1></div><div class="hdr-nombre"><label class="player-name" for="playerName">Tu nombre <span class="hint" id="nameHint">Máximo 12 caracteres</span></label><input class="name-input" id="playerName" type="text" autocomplete="nickname" placeholder="Escribí tu nombre" aria-describedby="nameHint confirmation"></div><div class="header-actions"><button class="music" id="clubesButton" type="button" title="Volver a elegir club (Esc)">◀ CLUBES</button><button class="music" id="rankingButton" type="button">TABLA DE PUNTAJES</button><button class="music" id="musicButton" type="button" aria-pressed="false">♫ SILENCIAR</button><div class="scoreboard" id="scoreboard" hidden></div></div></header>
+    <main>
+      <button class="arrow" id="previous" aria-label="Referente anterior">‹</button>
+      <div class="stage" id="stage"><div class="stage-label" id="stageLabel"></div><img class="character" id="character" alt=""><div class="aviso-pendiente" id="avisoPendiente" role="alert" hidden></div></div>
+      <button class="arrow" id="next" aria-label="Referente siguiente">›</button>
+      <section class="panel" aria-live="polite">
+        <div class="counter" id="counter"></div>
+        <h2 id="title"></h2>
+        <p class="origin" id="origin" hidden></p>
+        <p class="description" id="description" hidden></p>
+        <div id="stats"></div>
+        <div class="profile" id="profile" hidden><p class="specialty" id="specialty"></p><p class="bio" id="bio"></p><div class="damage" id="damage"></div></div>   <!-- v135: sin barrio, biografía ni ficha (se conserva vacío para no romper referencias) -->
+        <button class="select" id="select">Elegir referente</button>
+        <p class="selected" id="confirmation" role="status"></p>
+      </section>
+    </main>
+    <footer id="slots" aria-label="Tres referentes"></footer>
+  </div>
+  <div id="ranking" hidden aria-label="Tabla de Posiciones"><canvas id="rankingCanvas" width="1672" height="941" role="img" aria-label="Tabla de Posiciones"></canvas><button class="select" id="rankingVolver" type="button">VOLVER</button></div>
+  <audio id="music" src="assets/audio/hinchada_ambiente_0_120.mp4" preload="none" loop></audio>   <!-- v49: preload none: al inicio solo bajan los logos de las barras -->   <!-- v27: sin autoplay: la arranca la intro (o el selector al volver del juego) -->
+  <script src="js/identidad.js?v=168"></script>
+  <script src="js/reglas_combate.js?v=168"></script>
+  <script src="js/ranking.js?v=180"></script>
+  <script>
+    // v28: el tablero chico dice DEMO, centrado. Es UNA matriz de 29 × 7 luces con el mismo paso
+    // (luz de 3 px + 1 px) que las 5 letras de antes: mide exactamente lo mismo (115 × 27 px).
+    // Los controles se muestran solo en el cartel grande del fondo.
+    (()=>{
+      const letras={
+        D:['11110','10001','10001','10001','10001','10001','11110'],
+        E:['11111','10000','10000','11110','10000','10000','11111'],
+        M:['10001','11011','10101','10101','10001','10001','10001'],
+        O:['01110','10001','10001','10001','10001','10001','01110']
+      };
+      const COLS=29, palabra='DEMO', ancho=palabra.length*5+(palabra.length-1), x0=(COLS-ancho)/2;   // 23 columnas, 3 libres a cada lado
+      const matriz=document.createElement('div'); matriz.className='letter matriz';
+      for(let f=0;f<7;f++) for(let c=0;c<COLS;c++){
+        const i=c-x0, l=Math.floor(i/6), col=i%6;
+        const on=i>=0 && l<palabra.length && col<5 && letras[palabra[l]][f][col]==='1';
+        const dot=document.createElement('span'); dot.className=on?'led on':'led'; matriz.append(dot);
+      }
+      document.getElementById('scoreboard').append(matriz);
+    })();
+    // Cada opción usa UNA imagen completa. Nombre del jugador y personaje son datos separados.
+    // Referentes, especialidades, daño y Fuerza viven en js/reglas_combate.js (fuente única).
+    const Reglas = window.ReglasCombate;
+    // v57 — REFERENTES POR CLUB (fuente única: Reglas.REFERENTES_POR_CLUB en js/reglas_combate.js). La lista se arma con el club
+    // DEL JUGADOR al abrir el selector: cada referente solo aparece con su club; un club sin referentes muestra ese estado y no deja jugar.
+    const clubActual = () => { try { return localStorage.getItem('barra14.barra') || 'river'; } catch { return 'river'; } };
+    let characters = [];
+
+    const $ = id => document.getElementById(id);
+    const music=$('music'), musicButton=$('musicButton'); music.volume=.5;
+    function updateMusicButton(){
+      musicButton.textContent=music.paused || music.muted ? '♫ ACTIVAR' : '♫ SILENCIAR';
+      musicButton.setAttribute('aria-pressed',String(!music.paused && !music.muted));
+    }
+    /* v146 — TEMA PROPIO DEL SELECTOR DE REFERENTES por barra (MUSICA/SELECTOR_REFERENTES, archivos aportados, sin recortes):
+       Boca / La 12 → «Quiero ver a La 12» (mp3) · Racing / La Guardia Imperial → «Racing mi buen amigo» (m4a) · v147: Independiente / Diablos Rojos → «Yo soy del Rojo» (m4a) · v148: San Lorenzo → «Señores soy de Boedo» (m4a). Las demás barras siguen con la hinchada.
+       Usa el MISMO <audio id="music"> de esta pantalla (una sola pista: nunca dos a la vez), en loop, desde el principio al entrar
+       (cada entrada es una carga nueva de la página: elegir barra, volver del juego o volver a la barra). Cambiar de referente no lo toca.
+       Respeta la preferencia guardada del juego (barrasBravas.musica: volumen y silencio, la misma de M / + / −); con la música silenciada
+       no arranca. gan = nivelación a ≈ −17 LUFS como los demás temas (medido: La 12 −14.2, Racing −11.3). Si falla la carga, solo se avisa en consola. */
+    const PREF_MUS='barrasBravas.musica';
+    const TEMAS_REFERENTES={ boca:{ src:'assets/audio/menus/selector_boca_la12_quiero_ver.mp3', gan:0.72 }, racing:{ src:'assets/audio/menus/selector_racing_mi_buen_amigo.mp4', gan:0.52 },
+      san_lorenzo:{ src:'assets/audio/menus/selector_san_lorenzo_senores_soy_de_boedo.mp4', gan:0.74 },   /* v148: «Señores soy de Boedo» (m4a aportado, sin recodificar, 5 min, −14.4 LUFS) */
+      talleres:{ src:'assets/audio/menus/selector_talleres_vos_sos_mi_pasion.mp4', gan:0.67 },
+      belgrano:{ src:'assets/audio/menus/selector_belgrano_la_mejor_cancion.mp4', gan:0.49 },
+      chicago:{ src:'assets/audio/menus/selector_chicago_yo_de_bebe.mp4', gan:0.22 },
+      laferrere:{ src:'assets/audio/menus/selector_laferrere_loop.mp4', gan:0.54 },   /* v186: corte para loop (WAV aportado → AAC 192k, −11.6 LUFS) · antes v185: «Faso, vino y pala es la banda de Laferrere» (m4a aportado, −11.4 LUFS) */   /* v184: «Yo de bebé» Los Pibes de Chicago (m4a aportado, −3.7 LUFS) */   /* v183: «La mejor canción de hinchadas del mundo la tiene Belgrano» (m4a aportado, −10.8 LUFS) */   /* v182: «Talleres vos sos mi pasión» (m4a aportado, sin recodificar, −13.5 LUFS) */
+      newells:{ src:'assets/audio/menus/selector_newells_en_todos_lados.mp4', gan:0.68 },   /* v187: «En todos lados la vas a ver» (m4a aportado, −13.7 LUFS) */
+      central:{ src:'assets/audio/menus/selector_central_canalla_te_prometo.mp4', gan:0.48 },   /* v188: «Canalla te prometo» (corte WAV de Darío → AAC 128k, −10.6 LUFS) */
+      independiente:{ src:'assets/audio/menus/selector_independiente_yo_soy_del_rojo.mp4', gan:0.51 }   /* v147: «Yo soy del Rojo» (m4a aportado, sin recodificar, −11.2 LUFS) */   /* mismo archivo .m4a aportado, sin recodificar: la publicación no sirve la extensión .m4a */ };
+    const leerPrefsMus=()=>{ const p={volumen:.8,silencio:false}; try{ Object.assign(p, JSON.parse(localStorage.getItem(PREF_MUS))||{}); }catch{} p.volumen=Math.min(1,Math.max(0,+p.volumen||0)); p.silencio=!!p.silencio; return p; };
+    let temaRef=null, temaPreparado=false;
+    function volumenTema(){ if(!temaRef) return; const p=leerPrefsMus(); music.volume=Math.min(1,p.volumen*temaRef.gan); music.muted=p.silencio; }
+    function prepararMusicaReferentes(){
+      if(temaPreparado) return; temaPreparado=true;
+      const t=TEMAS_REFERENTES[String(clubActual()).replace(/-/g,'_')]; if(!t) return;   // el resto de las barras: hinchada de siempre
+      temaRef=t; music.pause(); music.src=t.src; music.loop=true; music.preload='auto'; try{ music.currentTime=0; }catch{} volumenTema();
+      window.__musicaReferentes={ get src(){ return music.currentSrc||music.getAttribute('src'); }, get paused(){ return music.paused; }, get tiempo(){ return music.currentTime; },
+        get duracion(){ return music.duration; }, get loop(){ return music.loop; }, get volumen(){ return music.volume; }, get muted(){ return music.muted; }, _audio: music };
+    }
+    async function startMusic(){
+      if(introVolviendo || !document.getElementById('barras')) prepararMusicaReferentes();   // v146: ya en el selector de referentes (o volviendo del juego)
+      if(temaRef && leerPrefsMus().silencio){ music.muted=true; updateMusicButton(); return; }   // v146: silenciada → no arranca
+      try { await music.play(); } catch { /* El navegador puede pedir un gesto del usuario. */ }
+      updateMusicButton();
+    }
+    function guardarSilencio(sil){ try{ const p=leerPrefsMus(); p.silencio=!!sil; localStorage.setItem(PREF_MUS, JSON.stringify(p)); }catch{} }
+    musicButton.addEventListener('click',()=>{
+      if(music.paused){ music.muted=false; if(temaRef) guardarSilencio(false); startMusic(); }
+      else { music.muted=!music.muted; if(temaRef) guardarSilencio(music.muted); updateMusicButton(); }
+    });
+    // v146: M / + / − en el selector de referentes de Boca y Racing (misma preferencia que en el juego y en el selector de barras)
+    function teclaMusicaReferentes(k){
+      if(!temaRef) return false; const p=leerPrefsMus();
+      if(k==='m') p.silencio=!p.silencio;
+      else if(k==='+'||k==='=') { p.volumen=Math.round(Math.min(1,p.volumen+.1)*10)/10; p.silencio=false; }
+      else if(k==='-'||k==='_') p.volumen=Math.round(Math.max(0,p.volumen-.1)*10)/10;
+      else return false;
+      try{ localStorage.setItem(PREF_MUS, JSON.stringify(p)); }catch{}
+      volumenTema(); if(!p.silencio && music.paused) startMusic(); updateMusicButton(); return true;
+    }
+    // Si el autoplay fue bloqueado, el primer toque o tecla del juego inicia el audio.
+    function startOnInteraction(event){
+      if(event.target.closest?.('#musicButton')) return;
+      if(document.getElementById('barras')) return;   // v49: en el selector de barras no suena ni se descarga la música
+      if(music.paused && !music.muted) startMusic();
+    }
+    document.addEventListener('pointerdown',startOnInteraction);
+    document.addEventListener('keydown',startOnInteraction);
+    music.addEventListener('play',updateMusicButton);
+    music.addEventListener('pause',updateMusicButton);
+    music.addEventListener('volumechange',updateMusicButton);
+    music.addEventListener('error',()=>console.warn('[Música] no se pudo cargar la música del selector:', music.currentSrc || music.getAttribute('src')));   // v146: no bloquea la selección
+    // v27: si en el juego se silenció la música (tecla M), se respeta acá también
+    try { if (JSON.parse(localStorage.getItem('barrasBravas.musica'))?.silencio) music.muted = true; } catch {}
+    let introVolviendo = false;
+    try { introVolviendo = sessionStorage.getItem('bb.volverAlSelector') === '1'; sessionStorage.removeItem('bb.volverAlSelector'); } catch {}
+    if (introVolviendo) startMusic();   // volviendo del juego: sin intro, como siempre
+    let current = 0, slots = [];
+    function armarLista(){   // v57: referentes del club elegido (se rearma al abrir el selector; cambiar de club recarga la página)
+      characters = Reglas.referentesDelClub(clubActual());
+      $('slots').replaceChildren(); $('slots').setAttribute('aria-label', `${characters.length} referente${characters.length === 1 ? '' : 's'}`);
+      slots = characters.map((_,i) => {
+        const button=document.createElement('button');
+        button.className='slot'; button.type='button'; button.textContent=String(i+1).padStart(2,'0');
+        button.setAttribute('aria-label',`Ver referente ${i+1}`);
+        button.addEventListener('click',()=>show(i)); $('slots').append(button); return button;
+      });
+      const hay = characters.length > 0;
+      $('select').disabled = !hay; $('previous').disabled = characters.length < 2; $('next').disabled = characters.length < 2;
+      document.body.classList.toggle('sin-referentes', !hay);
+    }
+    function mostrarSinReferentes(){   // v57: el club todavía no tiene referentes: se avisa y no se puede jugar (sin personaje de respaldo)
+      const nombre = document.querySelector('.eyebrow').textContent.replace(/^TU BARRA:\s*/, '') || 'este club';
+      $('character').removeAttribute('src'); $('character').alt=''; $('stageLabel').textContent='SIN REFERENTES';
+      $('counter').textContent='00 / 00'; $('title').textContent='TODAVÍA NO HAY REFERENTES';
+      $('origin').textContent=`BARRA: ${nombre}`;
+      $('description').textContent='Este club todavía no tiene referentes para elegir. Volvé con ◀ CLUBES (o Esc) y elegí River para jugar.';
+      $('specialty').textContent=''; $('bio').textContent=''; $('damage').replaceChildren(); $('stats').replaceChildren();
+      $('confirmation').textContent='';
+    }
+    function show(index) {
+      if(!characters.length){ mostrarSinReferentes(); return; }
+      current=(index+characters.length)%characters.length;
+      const c=characters[current];
+      $('character').src=c.image; $('character').alt=`Referente ${current+1}: ${c.title}`;
+      $('character').classList.toggle('espejo', c.retratoMira==='izq');   // v63: retratos que miran a la izquierda se espejan SOLO acá (el combate no cambia)
+      $('stageLabel').textContent=`REFERENTE ${String(current+1).padStart(2,'0')}`;
+      $('counter').textContent=`${String(current+1).padStart(2,'0')} / ${String(characters.length).padStart(2,'0')}`;
+      $('title').textContent=c.title;   // v135: sin barrio, descripción, biografía ni ficha técnica
+      const grupo=(titulo, filas)=>{ const g=document.createElement('div'); g.className='stats-grupo';
+        const t=document.createElement('div'); t.className='stats-grupo-titulo'; t.textContent=titulo; g.append(t);
+        for(const [label,value] of filas){ const row=document.createElement('div'); row.className='stat';
+          const cap=document.createElement('div'); cap.className='stat-title'; cap.textContent=label;
+          const bar=document.createElement('div'); bar.className='bar cinco'; bar.setAttribute('role','img'); bar.setAttribute('aria-label',`${label}: ${value} de 5`);
+          for(let i=0;i<5;i++){ const sg=document.createElement('span'); if(i<value) sg.className='on'; bar.append(sg); }
+          row.append(cap,bar); g.append(row); }
+        return g; };
+      const E=Reglas.especialidadesDe(c), L=Reglas.ETIQUETAS;
+      $('stats').replaceChildren(grupo('ATRIBUTOS',[['Fuerza',c.stats.Fuerza],['Aguante',c.stats.Aguante],['Velocidad',c.stats.Velocidad]]),
+        grupo('ESPECIALIDADES DE COMBATE',['Trompadas','Rodillazos','Cabezazos','Patadas','Codazos','Agarres'].map(a=>[L[a],E[a]])));
+      slots.forEach((button,i)=>{button.classList.toggle('active',i===current); button.setAttribute('aria-pressed',String(i===current));});
+      $('confirmation').textContent=''; $('avisoPendiente').hidden=true;
+    }
+    function choose(){
+      const c=characters[current];
+      // v57: solo se puede elegir un referente del club del jugador
+      if(!c || !Reglas.referentePermitido(clubActual(), c.id)){ $('confirmation').textContent='Este club todavía no tiene referentes. Volvé y elegí River.'; return; }
+      const v=Ranking.validarNombre($('playerName').value);   // v40: sin espacios a los costados y máximo 10 caracteres visibles
+      if(!v.ok){ $('confirmation').textContent='Ingresá tu nombre para continuar'; $('playerName').focus(); return; }   // v38: J, Enter y el botón pasan todos por acá
+      const playerName=v.nombre; $('playerName').value=playerName;
+      const selection=Reglas.armarSeleccion(c, playerName);
+      /* v102 — referente SIN animaciones (Chacarita): la elección se recuerda (clave propia del club, así no pisa la partida de otro club)
+         pero no se entra al juego. Cuando tenga sus poses, se le quita jugable:false en js/reglas_combate.js y entra como los demás. */
+      if(Reglas.referenteJugable && !Reglas.referenteJugable(c.id)){
+        try { localStorage.setItem('barra14.referentePendiente.'+clubActual(), JSON.stringify(selection)); } catch {}
+        $('confirmation').textContent=`${playerName}: elegiste a ${c.title}. Todavía no se puede jugar: faltan ${c.faltaParaJugar||'sus animaciones'}.`;
+        $('avisoPendiente').textContent=`${c.title.toUpperCase()} QUEDÓ ELEGIDO · Todavía no se puede jugar: faltan sus animaciones.`; $('avisoPendiente').hidden=false;
+        window.dispatchEvent(new CustomEvent('referente-seleccionado',{detail:{...selection, pendiente:true}}));
+        return;
+      }
+      Reglas.guardarSeleccion(selection);
+      try { if(clubActual()==='river') localStorage.setItem('barra14.campanaRiver.elegido', c.id); } catch {}   // v64: el galpón usa este referente (misma campaña si no cambió)
+      $('confirmation').textContent=`${playerName}: elegiste a ${c.title}.`;
+      location.href='juego.html';   // entra directo a la Pantalla 1
+      window.dispatchEvent(new CustomEvent('referente-seleccionado',{detail:selection}));
+    }
+    // v55 — volver al selector de clubes (botón ◀ CLUBES o Esc): se recarga la página sin el aviso de «volviendo del juego»
+    function volverAClubes(){ try { sessionStorage.removeItem('bb.volverAlSelector'); } catch {} location.reload(); }
+    $('clubesButton').addEventListener('click',volverAClubes);
+    // v55 — el club elegido se ve arriba del título
+    { const NOMBRES={river:'River Plate',boca:'Boca Juniors',racing:'Racing Club',independiente:'Independiente','san-lorenzo':'San Lorenzo',belgrano:'Belgrano de Córdoba',talleres:'Talleres · La Fiel',central:'Rosario Central · Guerreros',newells:"Newell's · Leprosos",moron:'Morón · Los Borrachos de Morón',chicago:'Nueva Chicago · La Banda de Chicago',chacarita:'Chacarita · Funebreros',laferrere:'Laferrere · Los Villeros'};
+      /* v62 — FONDO DE HINCHADA POR CLUB (club DEL JUGADOR, no el rival ni el estadio). Única tabla; los alias (san_lorenzo / san-lorenzo)
+         se normalizan. River conserva su tribuna de siempre. Se aplica al elegir club, al volver del juego y al restaurar lo guardado. */
+      const FONDOS_CLUB={ river:'assets/tribuna_monumental.webp?v=36', boca:'assets/fondos/selector/boca_la12_bombonera_v1.webp',
+        'san-lorenzo':'assets/fondos/selector/san_lorenzo_tribuna_selector_v1.webp', independiente:'assets/fondos/selector/independiente_tribuna_selector_v1.webp',
+        racing:'assets/fondos/selector/racing_guardia_imperial_selector_v1.webp',
+        belgrano:'assets/fondos/selector/belgrano_selector_referentes_estadio_v1.webp',
+        talleres:'assets/fondos/selector/fondo_selector_referentes_talleres_v1.webp',   // v95: tribuna de la Fiel (escenarios/TALLERES/SELECTOR_REFERENTES)
+        central:'assets/fondos/selector/central_guerreros_selector_horizontal_v1.webp',
+        newells:'assets/fondos/selector/newells_selector_horizontal_v2_con_banderas.webp',   // v97
+        moron:'assets/fondos/selector/fondo_selector_referentes_moron_v1.webp',     // v101: escenarios/MORON/SELECTOR_REFERENTES
+        chicago:'assets/fondos/selector/fondo_selector_referentes_chicago_v1.webp',
+        chacarita:'assets/fondos/selector/fondo_selector_referentes_chacarita_v1.webp',
+        laferrere:'assets/fondos/selector/fondo_selector_referentes_laferrere_v1.webp' };   // v104: escenarios/LAFERRERE/SELECTOR_REFERENTES   // v102: escenarios/CHACARITA/SELECTOR_REFERENTES (horizontal, con sus banderas)   // v101: escenarios/CHICAGO/SELECTOR_REFERENTES   // v97: con las banderas aprobadas (personajes/NEWELLS/FONDO_SELECTOR)   // v95: Gigante de Arroyito (personajes/CENTRAL/FONDO_SELECTOR)   // v92: cancha con hinchada celeste y papelitos (cubre sin deformar + capa oscura suave de la regla de arriba)
+      const normal=c=>String(c||'river').replace(/_/g,'-');
+      const pon=()=>{ let id='river'; try { id=normal(localStorage.getItem('barra14.barra')||'river'); } catch {} document.querySelector('.eyebrow').textContent=`TU BARRA: ${(NOMBRES[id]||'River Plate').toUpperCase()}`;
+        const f=FONDOS_CLUB[id]||FONDOS_CLUB.river; document.body.dataset.club=FONDOS_CLUB[id]?id:'river'; document.body.style.setProperty('--fondo-club',`url('${f}')`); window.__fondoClub=f; };
+      pon(); document.addEventListener('barra-seleccionada',pon); }
+    $('previous').addEventListener('click',()=>show(current-1));
+    $('next').addEventListener('click',()=>show(current+1));
+    $('select').addEventListener('click',choose);
+    // v40: nombre de hasta 10 caracteres visibles, al escribir y al pegar (no parte letras acentuadas ni emojis)
+    $('playerName').addEventListener('input',()=>{
+      const el=$('playerName'), corto=Ranking.limitarAlEscribir(el.value);
+      if(corto!==el.value){ el.value=corto; el.setSelectionRange(corto.length,corto.length); }
+    });
+    // v40: TABLA DE PUNTAJES (la misma pantalla 11 del juego). Solo consulta: no modifica ni registra nada.
+    let fondo11=null, logo11=null;
+    function abrirRanking(){
+      const L=Ranking.leer(), cv=$('rankingCanvas'), g=cv.getContext('2d');
+      const aviso = L.problema==='sin-acceso' ? 'No se puede leer el ranking en este navegador.' : (L.problema && L.problema.startsWith('danado') ? 'El ranking guardado tenía datos dañados: se muestra lo que se pudo leer.' : null);
+      const ubicarBoton=(caja)=>{   // VOLVER va DENTRO del panel, debajo de la tabla (el canvas se ve con object-fit: contain)
+        const r=cv.getBoundingClientRect(), k=Math.min(r.width/cv.width, r.height/cv.height);
+        const ox=r.left+(r.width-cv.width*k)/2, oy=r.top+(r.height-cv.height*k)/2, b=$('rankingVolver');
+        b.style.left=(ox+caja.boton.cx*k)+'px'; b.style.top=(oy+caja.boton.cy*k)+'px';
+      };
+      const pintar=()=>{   // v42: el botón no se achica con la tabla → se reserva su alto REAL pasado a píxeles del canvas
+        const r=cv.getBoundingClientRect(), k=Math.min(r.width/cv.width, r.height/cv.height)||1;
+        const espacio=Math.max(56, Math.ceil(($('rankingVolver').offsetHeight+10)/k));
+        ubicarBoton(Ranking.dibujarPantalla11(g, cv.width, cv.height, { fondo: fondo11, logo: logo11, lista: L.lista, victoria: false, aviso, espacioBoton: espacio }));
+      };
+      window.onresize=()=>{ if(!$('ranking').hidden) pintar(); };
+      $('ranking').hidden=false; pintar();
+      if(!fondo11){ const im=new Image(); im.onload=()=>{ fondo11=im; if(!$('ranking').hidden) pintar(); }; im.src=Ranking.FONDO; }
+      if(!logo11){ const im=new Image(); im.onload=()=>{ logo11=im; if(!$('ranking').hidden) pintar(); }; im.src=Ranking.LOGO; }   // v69: logo arriba
+      $('rankingVolver').focus();
+    }
+    function cerrarRanking(){ $('ranking').hidden=true; $('rankingButton').focus(); }   // nombre y referente quedan como estaban
+    $('rankingButton').addEventListener('click',abrirRanking);
+    $('rankingVolver').addEventListener('click',cerrarRanking);
+    document.addEventListener('keydown',event=>{
+      if(!$('ranking').hidden){                 // con la tabla abierta, las teclas del selector no actúan
+        if(event.key==='Escape'){ event.preventDefault(); cerrarRanking(); }
+        else if(event.key!=='Enter' && event.key!==' ' && event.key!=='Tab') event.preventDefault();
+        return;
+      }
+      if(event.target=== $('playerName')) { if(event.key==='Enter'){event.preventDefault();choose();} return; }
+      if(event.key==='Escape'){ event.preventDefault(); volverAClubes(); return; }   // v55: Esc = volver al selector de clubes
+      if(!event.repeat && !event.ctrlKey && !event.altKey && !event.metaKey && teclaMusicaReferentes((event.key||'').toLowerCase())){ event.preventDefault(); return; }   // v146
+      if(event.key==='ArrowLeft'){event.preventDefault();show(current-1);}
+      if(event.key==='ArrowRight'){event.preventDefault();show(current+1);}
+      if(event.key==='Enter' && event.target.tagName!=='BUTTON') choose();
+      // v38: atajos A / D / J (mayúscula o minúscula), con las MISMAS funciones que las flechas y Enter.
+      // Si se está escribiendo el nombre no llegan acá (la línea de arriba corta antes). Con Ctrl/Alt/Cmd no hacen nada.
+      if(event.ctrlKey||event.altKey||event.metaKey) return;
+      const k=(event.key||'').toLowerCase();
+      if(k==='a'){event.preventDefault();show(current-1);}
+      if(k==='d'){event.preventDefault();show(current+1);}
+      if(k==='j' && !event.repeat){event.preventDefault();choose();}
+    });
+    let touchX=null;
+    $('stage').addEventListener('touchstart',event=>{touchX=event.changedTouches[0].clientX;},{passive:true});
+    $('stage').addEventListener('touchend',event=>{
+      if(touchX===null)return;
+      const delta=event.changedTouches[0].clientX-touchX; touchX=null;
+      if(Math.abs(delta)>35)show(current+(delta<0?1:-1));
+    },{passive:true});
+    // v82: se recuerda solo el NOMBRE del jugador; el referente NO (ver abajo)
+    try { const saved=JSON.parse(localStorage.getItem('referenteSeleccionado') || localStorage.getItem('personajeSeleccionado')); if(saved?.playerName) $('playerName').value=Ranking.limitarNombre(saved.playerName); } catch {}
+    /* v49: la placa del referente recién se pide al entrar (al inicio solo bajan los logos). v57: con los referentes de SU club.
+       v82 — SELECCIÓN INICIAL: cada vez que se ENTRA a este selector (elegir barra, volver del juego, volver a la barra) aparece el
+       PRIMER referente del club (River: William). No se usa la selección guardada ni la de otra barra. La lista se rearma desde cero
+       (cantidad, botones 01…NN, contador) y show(0) actualiza juntos imagen, nombre, ficha, estadísticas, resaltado y foco del carrusel.
+       El reinicio es SOLO acá (al entrar): adentro, flechas / A / D / botones / deslizar eligen libremente. */
+    window.mostrarSelectorReferentes = () => { if (!window.mostrarSelectorReferentes.hecho) { window.mostrarSelectorReferentes.hecho = true;
+      armarLista(); current = 0; const sl=$('slots'); if(sl) sl.scrollLeft = 0;
+      document.body.classList.add('referentes'); show(0); window.__entradasReferentes = (window.__entradasReferentes||0) + 1; } };
+    if (introVolviendo) window.mostrarSelectorReferentes();
+  </script>
+  <script>
+    /* =====================================================================
+       v49 — SELECTOR DE BARRAS (base: panel_selector.html). Primera pantalla del juego.
+       Mouse / toque: tocar un símbolo lo elige y confirma. Teclado: flechas para moverse, Enter para confirmar.
+       Emite 'barra-seleccionada' (como la maqueta) y el flujo real lo escucha:
+       Club → selector de referentes → juego (v60: sin la intro BARRA 14 de River). Las demás: "todavía no disponible" + VOLVER.
+       La elección se guarda (barra14.barra). Al volver del juego no se muestra (se sigue con River).
+       ===================================================================== */
+    (function(){
+      const pantalla=document.getElementById('barras'), todos=[...pantalla.querySelectorAll('.barra')];
+      /* v197 — MODO HISTORIA EN DOS CATEGORÍAS. Primero PRIMERA / ASCENSO; después solo las barras de esa categoría (+ «← CATEGORÍAS»).
+         La campaña de cada barra enfrenta solo a los de su categoría (js/campana.js). */
+      const CATEGORIAS={ primera:['river','boca','racing','independiente','san-lorenzo','belgrano','talleres','central','newells'], ascenso:['moron','chicago','chacarita','laferrere'] };
+      const catDe=id=>Object.keys(CATEGORIAS).find(c=>CATEGORIAS[c].includes(id))||null;
+      const leyenda=document.getElementById('barrasLeyenda'), btnVolverCat=pantalla.querySelector('.volver-cat');
+      let categoria=null, botones=[];
+      function verCategoria(c, foco){
+        categoria=c;
+        todos.forEach(b=>{ b.hidden = c ? (b.classList.contains('cat') || (b.dataset.id && !CATEGORIAS[c].includes(b.dataset.id))) : !b.classList.contains('cat'); });
+        botones=todos.filter(b=>!b.hidden);
+        if(leyenda) leyenda.textContent = c ? `${c==='primera'?'PRIMERA':'ASCENSO'} · SELECCIONÁ TU BARRA` : 'ELEGÍ TU CATEGORÍA';
+        dbg.categoria=c;
+        i=Math.max(0, foco!=null ? botones.findIndex(b=>foco(b)) : 0); if(i<0) i=0;
+        try { ajustarFilas(); ubicarInfo(); } catch(err) {}   // al cargar todavía no están listos: se ubican al final
+      }
+      const nd=document.getElementById('barraNoDisp'), ndImg=document.getElementById('barraNoDispImg'), volver=document.getElementById('barraVolver');
+      const CLAVE='barra14.barra', DISPONIBLES=['river','boca','racing','independiente','san-lorenzo','belgrano','talleres','central','newells','moron','chicago','chacarita','laferrere'];   // v104: + Laferrere (Los Villeros)   // v102: + Chacarita (Funebreros)   // v97: + Newell's · v101: + Morón y Nueva Chicago   // v95: + Talleres y Rosario Central   // v55: los cinco clubes de primera · v92: + Belgrano (primera barra del interior)
+      const dbg=window.BB_BARRAS={ estado:'selector', elegida:null, eventos:[] };
+      if(introVolviendo){ pantalla.remove(); document.getElementById('batalla')?.remove(); dbg.estado='omitido'; return; }
+      /* v68 — MÚSICA DEL SELECTOR DE BARRAS: selector_barras_ken.m4a (archivo aportado), en bucle SOLO mientras esta pantalla está.
+         Un único <audio> creado una vez (no por render ni por icono). Cambiar de icono no la toca. Al elegir club se corta antes de
+         que arranque la hinchada del selector de referentes. Respeta volumen/silencio guardados (misma preferencia que M / + / − del juego).
+         Si el navegador frena el autoplay, arranca con la PRIMERA tecla o toque válido y solo si esta pantalla sigue activa. */
+      const PREF='barrasBravas.musica', GAN_KEN=0.63;   // -13.0 LUFS → ≈ -17 LUFS como los temas de los niveles
+      const leerPrefs=()=>{ const p={volumen:.8,silencio:false}; try{ Object.assign(p, JSON.parse(localStorage.getItem(PREF))||{}); }catch{} p.volumen=Math.min(1,Math.max(0,+p.volumen||0)); p.silencio=!!p.silencio; return p; };
+      let prefs=leerPrefs();
+      const ken=new Audio(); ken.loop=true; ken.preload='auto';
+      const mp4=ken.canPlayType('audio/mp4; codecs="mp4a.40.2"');
+      /* v89: lista de fuentes con respaldo. Si una no carga (archivo faltante, formato o ruta de la versión publicada),
+         se registra el error concreto y se prueba la siguiente; nunca queda en silencio sin avisar. */
+      const KEN_FUENTES = ['assets/audio/menus/selector_barras_ken.mp4'];   // v104: solo la copia MP3 (el .mp4 duplicado se quitó por espacio en la versión web)
+      let kenFuente=0; ken.src = KEN_FUENTES[0];
+      let kenGen=0, kenEsperaGesto=false, kenActiva=true;
+      const kenVol=()=>{ ken.volume=Math.min(1,prefs.volumen*GAN_KEN); ken.muted=prefs.silencio; };
+      function kenPlay(){
+        if(!kenActiva || !pantalla.isConnected || prefs.silencio || document.hidden) return;
+        const g=kenGen; kenVol();
+        const pr=ken.play(); if(pr && pr.catch) pr.catch(err=>{ if(g!==kenGen || !kenActiva) return;
+          if(err && err.name==='NotAllowedError'){ kenEsperaGesto=true; dbg.musicaBloqueos=(dbg.musicaBloqueos||0)+1; }
+          else if(err && err.name!=='AbortError') console.warn('[Música] selector de barras:', err.message||err); });
+      }
+      function kenParar(){ kenActiva=false; kenGen++; kenEsperaGesto=false; ken.pause(); ken.removeAttribute('src'); ken.load();
+        removeEventListener('keydown',kenGesto,true); removeEventListener('pointerdown',kenGesto,true); document.removeEventListener('visibilitychange',kenVisible); }
+      function kenGesto(){ if(kenEsperaGesto){ kenEsperaGesto=false; kenPlay(); } }
+      function kenVisible(){ if(document.hidden) ken.pause(); else kenPlay(); }
+      function kenTeclaMusica(k){   // M / + / − también en esta pantalla, con la misma preferencia guardada
+        if(k==='m') prefs.silencio=!prefs.silencio;
+        else if(k==='+'||k==='=') { prefs.volumen=Math.round(Math.min(1,prefs.volumen+.1)*10)/10; prefs.silencio=false; }
+        else if(k==='-'||k==='_') prefs.volumen=Math.round(Math.max(0,prefs.volumen-.1)*10)/10;
+        else return false;
+        try{ localStorage.setItem(PREF, JSON.stringify(prefs)); }catch{}
+        kenVol(); if(!prefs.silencio && ken.paused) kenPlay();
+        music.muted=prefs.silencio; kenBoton(); return true;
+      }
+      // v114 — botón SILENCIAR / ACTIVAR MÚSICA: el MISMO estado que la tecla M (prefs.silencio guardado). Solo la música:
+      // los efectos no se tocan. No duplica ni reinicia el tema: silenciar = muted; activar = sigue (o arranca si estaba frenado).
+      const btnMus=document.getElementById('btnMusicaSel');
+      function kenBoton(){ if(!btnMus) return; btnMus.textContent=prefs.silencio ? 'ACTIVAR MÚSICA' : 'SILENCIAR MÚSICA'; btnMus.setAttribute('aria-pressed', String(prefs.silencio)); }
+      if(btnMus){ btnMus.addEventListener('click',e=>{ e.preventDefault(); kenTeclaMusica('m'); }); kenBoton(); }
+      ken.addEventListener('error',()=>{
+        if(!kenActiva || !ken.getAttribute('src')) return;
+        const e=ken.error, motivo = e ? ({1:'cancelada',2:'error de red',3:'no se pudo decodificar',4:'formato o ruta no soportados'}[e.code]||('código '+e.code)) : 'desconocido';
+        console.error('[Música] selector de barras: falló', ken.currentSrc || KEN_FUENTES[kenFuente], '→', motivo);
+        dbg.musicaErrores=(dbg.musicaErrores||[]); dbg.musicaErrores.push({src:KEN_FUENTES[kenFuente], motivo});
+        if(kenFuente < KEN_FUENTES.length-1){ kenFuente++; ken.src=KEN_FUENTES[kenFuente]; console.info('[Música] selector de barras: se prueba', KEN_FUENTES[kenFuente]); kenPlay(); }
+        else console.error('[Música] selector de barras: ninguna fuente pudo cargarse');
+      });
+      ken.addEventListener('playing',()=>{ dbg.musicaSonando=(dbg.musicaSonando||0)+1; });
+      addEventListener('keydown',kenGesto,true); addEventListener('pointerdown',kenGesto,true);
+      document.addEventListener('visibilitychange',kenVisible);
+      dbg.musica={ get src(){ return ken.currentSrc; }, get paused(){ return ken.paused; }, get tiempo(){ return ken.currentTime; }, get volumen(){ return ken.volume; },
+                   get muted(){ return ken.muted; }, get loop(){ return ken.loop; }, get activa(){ return kenActiva; }, get esperaGesto(){ return kenEsperaGesto; }, _audio:ken };
+      kenPlay();   // si el navegador lo permite arranca ya; si no, con la primera interacción
+      let i=0;
+      { let g=null; try { g=localStorage.getItem(CLAVE); } catch {} const cg=catDe(g); verCategoria(null, b=>b.dataset.cat===(cg||'primera')); }
+      const marcar=k=>{ i=(k+botones.length)%botones.length; botones.forEach((b,n)=>b.setAttribute('aria-pressed',String(n===i))); botones[i].focus({preventScroll:true}); botones[i].scrollIntoView({block:'nearest',inline:'nearest'}); };
+      /* v73 — navegación por GEOMETRÍA (sin índices fijos): las filas se arman con la posición real de cada tarjeta,
+         así ↑/↓ van a la tarjeta más cercana en horizontal de la fila de arriba/abajo, sea cual sea la cantidad de tarjetas por fila. */
+      function filasReales(){
+        const r=botones.map((b,n)=>{ const q=b.getBoundingClientRect(); return {n, y:b.offsetTop+(b.offsetParent===pantalla?0:b.parentElement.offsetTop), x:q.left+q.width/2}; });
+        const fs=[]; r.slice().sort((a,b)=>a.y-b.y||a.n-b.n).forEach(t=>{ const f=fs[fs.length-1]; if(f && Math.abs(f[0].y-t.y)<4) f.push(t); else fs.push([t]); });
+        return fs;
+      }
+      function vertical(d){
+        const fs=filasReales(), fi=fs.findIndex(f=>f.some(t=>t.n===i)); const dest=fs[fi+d]; if(!dest) return;
+        if(colX===null) colX=fs[fi].find(t=>t.n===i).x;   // columna «pegada»: ir y volver en vertical regresa a la misma tarjeta
+        const x=colX; let mejor=dest[0];
+        dest.forEach(t=>{ if(Math.abs(t.x-x)<Math.abs(mejor.x-x)-0.5) mejor=t; }); marcar(mejor.n); colX=x;
+      }
+      let colX=null;
+      function ajustarFilas(){ if(pantalla.isConnected) pantalla.style.setProperty('--filas', String(filasReales().length)); }
+      function confirmar(k){
+        marcar(k); const b=botones[i], id=b.dataset.id;
+        if(b.dataset.cat){ verCategoria(b.dataset.cat, x=>x.dataset.id===(()=>{ try { return localStorage.getItem(CLAVE); } catch { return null; } })()); colX=null; marcar(i); return; }   // v197
+        if(b.dataset.volver){ const c=categoria; verCategoria(null, x=>x.dataset.cat===c); colX=null; marcar(i); return; }
+        try { localStorage.setItem(CLAVE,id); } catch {}
+        dbg.elegida=id;
+        document.dispatchEvent(new CustomEvent('barra-seleccionada',{detail:{id, nombre:b.getAttribute('aria-label')}}));
+      }
+      document.addEventListener('barra-seleccionada',e=>{
+        const {id}=e.detail; dbg.eventos.push(id);
+        if(DISPONIBLES.includes(id)){
+          kenParar();   // v68: primero se corta el tema del selector de barras; recién después arranca la hinchada
+          music.muted=leerPrefs().silencio;
+          pantalla.remove(); document.getElementById('batalla')?.remove(); document.removeEventListener('keydown',teclas,true);
+          dbg.estado='club'; window.mostrarSelectorReferentes(); startMusic();   // v60: todos los clubes (River incluido) van directo a su selector de referentes, sin intro
+        } else {
+          dbg.estado='noDisponible'; ndImg.src=botones[i].querySelector('img').src; nd.hidden=false; info.inert=true; volver.focus();
+        }
+      });
+      function cerrarNoDisp(){ nd.hidden=true; info.inert=false; dbg.estado='selector'; marcar(i); }
+      volver.addEventListener('click',cerrarNoDisp);
+      /* v191 — DESARROLLADOR: barra + rival (+ pantalla) → selector de referentes de esa barra → pelea directa (js/campana.js, DEV).
+         sessionStorage 'barra14.dev' = { club, rival, nivel } (ids con guion bajo, como la campaña). Elegir una barra a mano lo borra. */
+      const devPanel=document.getElementById('devPanel'), devClub=document.getElementById('devClub'), devRival=document.getElementById('devRival'), devNivel=document.getElementById('devNivel'), btnDev=document.getElementById('btnDevSel');
+      const DEV_NOM={river:'River Plate',boca:'Boca Juniors',racing:'Racing Club',independiente:'Independiente','san-lorenzo':'San Lorenzo',belgrano:'Belgrano',talleres:'Talleres',central:'Rosario Central',newells:"Newell's",moron:'Morón',chicago:'Nueva Chicago',chacarita:'Chacarita',laferrere:'Laferrere'};
+      let devUltimo=null; try{ devUltimo=JSON.parse(sessionStorage.getItem('barra14.devUltimo')); }catch{}
+      DISPONIBLES.forEach(id=>devClub.add(new Option(DEV_NOM[id]||id,id)));
+      for(let n=1;n<=10;n++) devNivel.add(new Option(n===1?'1 (desde el principio)':String(n),String(n)));
+      const devRivales=()=>{ const prev=devRival.value; devRival.innerHTML=''; DISPONIBLES.filter(id=>id!==devClub.value && catDe(id)===catDe(devClub.value)).forEach(id=>devRival.add(new Option(DEV_NOM[id]||id,id))); if([...devRival.options].some(o=>o.value===prev)) devRival.value=prev; };
+      devClub.addEventListener('change',devRivales);
+      function abrirDev(){ devClub.value=(devUltimo&&devUltimo.club)||botones[i]?.dataset.id||'river'; devRivales(); if(devUltimo&&devUltimo.rival&&devUltimo.rival!==devClub.value) devRival.value=devUltimo.rival; devNivel.value=String((devUltimo&&devUltimo.nivel)||1); devPanel.hidden=false; info.inert=true; dbg.estado='desarrollador'; devClub.focus(); }
+      function cerrarDev(){ devPanel.hidden=true; info.inert=false; dbg.estado='selector'; btnDev?.focus({preventScroll:true}); }
+      btnDev?.addEventListener('click',abrirDev); document.getElementById('devCancelar').addEventListener('click',cerrarDev);
+      devPanel.addEventListener('click',e=>{ if(e.target===devPanel) cerrarDev(); });
+      document.getElementById('devContinuar').addEventListener('click',()=>{
+        verCategoria(catDe(devClub.value));   // v197: la categoría de esa barra
+        const club=devClub.value, rival=devRival.value, nivel=+devNivel.value||1, u=x=>x.replace(/-/g,'_'), n=botones.findIndex(b=>b.dataset.id===club);
+        if(n<0 || !rival) return;
+        const d={club:u(club),rival:u(rival),nivel}; try{ sessionStorage.setItem('barra14.dev',JSON.stringify(d)); sessionStorage.setItem('barra14.devUltimo',JSON.stringify({club,rival,nivel})); }catch{}
+        devPanel.hidden=true; info.inert=false; devElegido=true; confirmar(n);
+      });
+      let devElegido=false;
+      document.addEventListener('barra-seleccionada',()=>{ if(!devElegido){ try{ sessionStorage.removeItem('barra14.dev'); }catch{} } devElegido=false; },true);
+      todos.forEach(b=>{ b.addEventListener('click',()=>{ colX=null; const n=botones.indexOf(b); if(n>=0) confirmar(n); }); b.addEventListener('focus',()=>{ const n=botones.indexOf(b); if(nd.hidden && n>=0){ if(n!==i) colX=null; i=n; botones.forEach((x,m)=>x.setAttribute('aria-pressed',String(m===n))); } }); });
+      function teclas(e){
+        if(!pantalla.isConnected) return;
+        e.stopImmediatePropagation();                       // el selector de referentes (debajo) no recibe nada
+        if(devPanel && !devPanel.hidden){ if(e.key==='Escape'){ e.preventDefault(); cerrarDev(); } return; }   // v191: el panel DESARROLLADOR usa sus propias teclas
+        if(ayuda && !ayuda.hidden){   // v119: sección «Cómo jugar» abierta: Esc / Enter en VOLVER cierran; flechas desplazan; M = música
+          const kk=e.key;
+          if(kk==='Escape'){ e.preventDefault(); cerrarAyuda(); }
+          else if((kk==='Enter'||kk===' ') && document.activeElement===ayudaVolver){ e.preventDefault(); cerrarAyuda(); }
+          else if(kk==='Tab'){ const f=[...ayuda.querySelectorAll('.info-panel, summary, #ayudaVolver')], i=f.indexOf(document.activeElement); e.preventDefault(); f[(i+(e.shiftKey?f.length-1:1)+f.length)%f.length].focus(); }
+          else if(!e.repeat && ['m','+','=','-','_'].includes(kk.toLowerCase())){ e.preventDefault(); kenTeclaMusica(kk.toLowerCase()); }
+          return;
+        }
+        // v53: con el foco en los paneles de ayuda, las teclas son de ellos (flechas = scroll, Enter = abrir «Más controles»)
+        if(nd.hidden && e.target && e.target.id==='btnMusicaSel' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); if(!e.repeat) kenTeclaMusica('m'); return; }   // v114
+        if(nd.hidden && !e.repeat && ['m','+','=','-','_'].includes(e.key.toLowerCase()) && kenTeclaMusica(e.key.toLowerCase())){ e.preventDefault(); return; }   // v114: M también con el foco en los botones de arriba
+        if(nd.hidden && e.target && e.target.closest && e.target.closest('#info')){ if(e.key==='Escape' && infoAbierto){ e.preventDefault(); const b=infoAbierto.boton; cerrarInfo(); b.focus(); } return; }
+        if(!nd.hidden){ if(e.key==='Escape'||e.key==='Enter'||e.key===' '){ e.preventDefault(); cerrarNoDisp(); } else { e.preventDefault(); if(e.key==='Tab') volver.focus(); } return; }   // v53: el foco no sale del cartel
+        const k=e.key;
+        if((k==='Enter'||k===' ') && e.target && e.target.id==='btnMusicaSel'){ e.preventDefault(); if(!e.repeat) kenTeclaMusica('m'); return; }   // v114
+        if(!e.repeat && kenTeclaMusica(k.toLowerCase())){ e.preventDefault(); return; }
+        if(k!=='ArrowDown' && k!=='ArrowUp') colX=null;
+        if(k==='ArrowRight'){ e.preventDefault(); marcar(i+1); }
+        else if(k==='ArrowLeft'){ e.preventDefault(); marcar(i-1); }
+        else if(k==='ArrowDown'){ e.preventDefault(); vertical(1); }
+        else if(k==='ArrowUp'){ e.preventDefault(); vertical(-1); }
+        else if(k==='Home'){ e.preventDefault(); marcar(0); }
+        else if(k==='End'){ e.preventDefault(); marcar(botones.length-1); }
+        else if(k==='Enter'||k===' '){ e.preventDefault(); if(!e.repeat) confirmar(i); }
+        else if((k==='Escape'||k==='Backspace') && categoria){ e.preventDefault(); const c=categoria; verCategoria(null, x=>x.dataset.cat===c); colX=null; marcar(i); }   // v197: volver a las categorías
+      }
+      /* v53 — paneles CONTROLES / CÓMO JUGAR. Se ubican midiendo el título y las tarjetas (nunca encima de ellos):
+         «lados»: dos columnas a los costados, debajo de la altura del título (si entran 200 px o más por lado).
+         «fila»: dos botones desplegables entre el título y las tarjetas (celular vertical).
+         «esquinas»: los botones a los costados del título, cuando entre título y tarjetas no queda lugar (celular acostado chico). */
+      const info=document.getElementById('info'), titulo=document.getElementById('barrasTitulo');
+      const PANELES=[{boton:document.getElementById('btnControles'),panel:document.getElementById('panelControles')},
+                     {boton:document.getElementById('btnComo'),panel:document.getElementById('panelComo')}];
+      let infoAbierto=null;
+      function cerrarInfo(){ PANELES.forEach(x=>{ x.panel.classList.remove('abierto'); x.boton.setAttribute('aria-expanded','false'); }); infoAbierto=null; }
+      function abrirInfo(x){ cerrarInfo(); x.panel.classList.add('abierto'); x.boton.setAttribute('aria-expanded','true'); infoAbierto=x; ubicarInfo(); x.panel.scrollTop=0; }
+      PANELES.forEach(x=>x.boton.addEventListener('click',()=>{ infoAbierto===x ? cerrarInfo() : abrirInfo(x); }));
+      // v119: CONTROLES y CÓMO JUGAR pasan a la sección «Cómo jugar» (#ayuda): izquierda y derecha. El selector queda limpio.
+      const ayuda=document.getElementById('ayuda'), ayudaVolver=document.getElementById('ayudaVolver'), btnComoSel=document.getElementById('btnComoSel');
+      if(ayuda){ const cols=ayuda.querySelector('.ayuda-cols'); PANELES.forEach(x=>cols.appendChild(x.panel)); const mas=PANELES[0].panel.querySelector('details.mas'); if(mas) mas.open=true; }
+      function abrirAyuda(){ if(!ayuda) return; ayuda.hidden=false; ayuda.scrollTop=0; PANELES.forEach(x=>x.panel.scrollTop=0); dbg.estado='ayuda'; ayudaVolver.focus({preventScroll:true}); }
+      function cerrarAyuda(){ if(!ayuda || ayuda.hidden) return; ayuda.hidden=true; dbg.estado='selector'; (botones[i]||btnComoSel)?.focus({preventScroll:true}); }
+      btnComoSel?.addEventListener('click',abrirAyuda); ayudaVolver?.addEventListener('click',cerrarAyuda);
+      function ubicarInfo(){
+        if(!pantalla.isConnected) return;
+        pantalla.style.paddingTop='';   // v73: medir siempre sin el ajuste de «esquinas»
+        { const bm=document.getElementById('btnMusicaSel'), gr=document.querySelector('#bcCaja .bc-grupo'); if(bm && gr && bm.parentNode!==gr){ gr.prepend(bm); bm.style.cssText=''; } const bj=document.getElementById('btnComoSel'); if(bj){ bj.style.cssText=''; if(bm && bm.nextSibling!==bj) bm.after(bj); } const bd=document.getElementById('btnDevSel'); if(bd && bj){ bd.style.cssText=''; if(bj.nextSibling!==bd) bj.after(bd); } }   // v191: + DESARROLLADOR debajo de CÓMO JUGAR   // v116: se mide dentro del grupo
+        const W=innerWidth, H=innerHeight, m=W<600?8:14, t=titulo.getBoundingClientRect();
+        const filas=[...pantalla.querySelectorAll('.barras-fila')].map(f=>f.getBoundingClientRect());
+        const selTop=Math.min(...filas.map(f=>f.top))-8, selIzq=Math.min(...filas.map(f=>f.left))-8;   // 8 px de aire (la tarjeta elegida crece un 6 %)
+        const tAbajo=t.height?t.bottom:0;
+        const lado=Math.min(300,Math.floor(Math.max(selIzq,(W-t.width)/2)-2*m)),   /* v123: con una sola fila, la columna se mide al costado del título */ arriba=Math.round(tAbajo+12), alto=Math.floor(H-arriba-m);
+        const bcBtn=document.getElementById('btnBatalla'), bcCaja=document.getElementById('bcCaja'), bcGrupo=bcCaja.querySelector('.bc-grupo'), bcW=bcBtn.offsetWidth||170;   // v75
+        // v77: alto/ancho del GRUPO (título + botón) para un ancho de columna dado (el título puede pasar a dos líneas)
+        const medirGrupo=w=>{ bcCaja.style.cssText=`left:0;top:0;width:${Math.max(0,Math.floor(w))}px;visibility:hidden`; const r=bcGrupo.getBoundingClientRect(); return {h:Math.ceil(r.height)||90, w:Math.min(Math.floor(w), Math.ceil(r.width)+2)||bcW}; };   // +2: que el ancho redondeado no fuerce otra línea
+        const gL=medirGrupo(lado), wChico=Math.min(W-2*m,300), gF=medirGrupo(wChico), bcH=gF.h;
+        let modo;
+        // v76 — zona del botón en «lados»: desde el borde útil superior de la columna derecha (m) hasta el borde superior de CÓMO JUGAR.
+        // CÓMO JUGAR vuelve a su lugar (a la altura de CONTROLES); solo si la zona no alcanza para el botón con aire, el panel baja.
+        const zonaMin=gL.h+16, jTopLados=Math.max(arriba, m+zonaMin);
+        if(lado>=200 && H-jTopLados-m>=200) modo='lados';
+        else { const btnH=40, region=selTop-(tAbajo+8+bcH+6+btnH+8); modo=(region<150 && (W-t.width)/2-2*m>=Math.max(118,bcW)) ? 'esquinas' : 'fila'; }
+        info.dataset.modo=modo;
+        info.style.setProperty('--info-fs', (modo==='lados' ? lado : W)>=260 ? '13.5px' : '12px');
+        const [C,J]=PANELES, B=info.querySelector('.info-botones');
+        PANELES.forEach(x=>{ x.panel.style.cssText=''; });
+        if(modo==='lados'){
+          if(infoAbierto) cerrarInfo();
+          C.panel.style.cssText=`left:${m}px;top:${arriba}px;width:${lado}px;max-height:${alto}px`;
+          // v75: BATALLA CAMPAL justo arriba de CÓMO JUGAR, centrado sobre el ancho de ESE panel (fuera de su contenido desplazable)
+          const jTop=jTopLados;
+          // v116: SILENCIAR MÚSICA bien arriba, al borde superior del juego, centrado sobre la misma columna; título + BATALLA CAMPAL debajo
+          // v118: SILENCIAR/ACTIVAR MÚSICA arriba a la IZQUIERDA (borde superior) y CÓMO JUGAR debajo, centrados sobre la columna de CONTROLES
+          const bm=document.getElementById('btnMusicaSel'), bj=document.getElementById('btnComoSel');
+          if(bm){ info.appendChild(bm); const bh=bm.offsetHeight||38, lx=Math.round(m+(lado-bm.offsetWidth)/2);
+            bm.style.cssText=`position:absolute;top:${m}px;left:${lx}px;z-index:2`;
+            if(bj){ info.appendChild(bj); bj.style.cssText=`display:block;position:absolute;top:${m+bh+10}px;left:${lx}px;z-index:2`; } const bd=document.getElementById('btnDevSel'); if(bd){ info.appendChild(bd); bd.style.cssText=`display:block;position:absolute;top:${m+2*(bh+10)}px;left:${lx}px;z-index:2`; } }
+          bcCaja.style.cssText=`right:${m}px;top:${m}px;width:${lado}px;height:${jTop-m}px;align-items:flex-start`;   // v121: arriba, a la altura de los botones de la izquierda   // contenedor = zona libre; flex lo centra arriba/abajo e izquierda/derecha
+          J.panel.style.cssText=`right:${m}px;top:${jTop}px;width:${lado}px;max-height:${H-jTop-m}px`;
+          B.style.cssText='';
+        } else if(modo==='fila'){
+          B.style.cssText=`left:50%;transform:translateX(-50%);top:${Math.round(tAbajo+8+bcH+6)}px;flex-direction:row`;
+          const g=medirGrupo(wChico); ponerBC(bcCaja, J.boton, g.w, Math.round(tAbajo+8), W, m);   // v75: encima del botón «Cómo jugar» (v77: con su título)
+          const b=B.getBoundingClientRect(), top=Math.round(b.bottom+8);
+          const css=`left:${m}px;right:${m}px;width:auto;top:${top}px;max-height:${Math.max(90,Math.floor(selTop-top))}px`;
+          PANELES.forEach(x=>{ x.panel.style.cssText=css; });
+        } else {
+          const ancho=Math.floor((W-t.width)/2-2*m), g=medirGrupo(ancho);
+          B.style.cssText=`left:${m}px;right:${m}px;top:${m+g.h+6}px;justify-content:space-between;flex-direction:row`;
+          ponerBC(bcCaja, J.boton, g.w, m, W, m);   // v75: encima del botón «Cómo jugar» (v77: con su título)
+          const b=B.getBoundingClientRect(), top=Math.round(b.bottom+6);
+          pantalla.style.paddingTop=`${top}px`;   // v73: las tarjetas nunca suben hasta la altura de los botones (si no entran, se desplaza)
+          C.panel.style.cssText=`left:${m}px;top:${top}px;width:${ancho}px;max-height:${Math.max(80,Math.floor(selTop-top))}px`;
+          J.panel.style.cssText=`right:${m}px;top:${top}px;width:${ancho}px;max-height:${Math.max(80,Math.floor(selTop-top))}px`;
+        }
+      }
+      function ponerBC(caja, ref, w, top, W, m){ const r=ref.getBoundingClientRect(); const x=Math.round(Math.min(W-m-w, Math.max(m, r.left+r.width/2-w/2))); caja.style.cssText=`left:${x}px;top:${top}px;width:${w}px`; }
+
+      /* =====================================================================
+         v75 — BATALLA CAMPAL · ETAPA 1: acceso + selección de referente. TODAVÍA SIN COMBATE.
+         · Seis referentes juntos (sin pasar por club ni filtrar por la barra elegida). Orden fijo de la grilla.
+         · Estado PROPIO del modo: solo 'batallaCampal.selectedReferentId'. No toca la barra activa (barra14.barra), ni la
+           selección de las campañas (ReglasCombate), ni trapos, puntajes o partidas. No hay botón JUGAR: elegir solo confirma.
+         · Imágenes: las versiones ya integradas en el juego; Pistola Gamez (Vélez en este modo) usa la tarjeta aprobada.
+         · Música: sigue el tema del selector de barras (mismo <audio>, sin pistas nuevas). Teclas propias mientras está abierta
+           (listener en window/captura, se agrega al abrir y se quita al cerrar), así el menú de abajo no recibe nada.
+         ===================================================================== */
+      /* v81 — SELECTOR INDIVIDUAL: un referente a la vez, grande y centrado, con flechas ‹ › (y ← / →). Orden fijo de 9, circular.
+         Cada vez que se ENTRA arranca en Pistola Gamez (1 / 9): no recuerda la elección anterior. Lo que se ve es lo que se elige:
+         imagen, nombre, club, contador y el id que usa COMENZAR BATALLA se actualizan juntos (bcMostrar). Una pulsación = un paso
+         (sin repetición de tecla; el teclado se escucha una sola vez mientras la pantalla está abierta; las flechas solo por 'click'). */
+      const BC_CLAVE='batallaCampal.selectedReferentId';
+      const BC_REFERENTES=[
+        { id:'pistola_gamez', nombre:'Pistola Gamez',     club:'Vélez',         img:'assets/referentes/pistola_gamez/pistola_gamez_tarjeta.webp' },
+        { id:'abuelo',        nombre:'El Abuelo',         club:'Boca',          img:'assets/enemigos/especiales/el_abuelo/abuelo_guardia_combate.webp', espejo:true },   // su guardia mira a la izquierda
+        { id:'el_gallego',    nombre:'El Gallego',        club:'Independiente', img:'assets/referentes/el_gallego/el_gallego_guardia_derecha.webp' },
+        { id:'cacho',         nombre:'Cacho',             club:'Racing',        img:'assets/referentes/cacho/cacho_guardia_derecha.webp' },
+        { id:'matute',        nombre:'Matute',            club:'River',         img:'assets/05_matute.webp' },
+        { id:'cdp',           nombre:'Cabeza de Poronga', club:'Boca',          img:'assets/enemigos/especiales/cabeza_de_poronga/cdp_guardia_original.webp', espejo:true },
+        { id:'muchinga_chacarita', nombre:'Muchinga',      club:'Chacarita',     img:'assets/referentes/muchinga_chacarita/muchinga_base_v1.webp' },   // v137
+        { id:'manzanita',     nombre:'Manzanita',         club:'Boca',          img:'assets/referentes/manzanita/manzanita_01_guardia_derecha.webp' }   // v137
+      ];
+      const bc=document.getElementById('batalla'), bcEstado=document.getElementById('bcEstado'), bcImg=document.getElementById('bcImg'),
+            bcNombre=document.getElementById('bcNombre'), bcClub=document.getElementById('bcClub'), bcPos=document.getElementById('bcPos'),
+            bcAnterior=document.getElementById('bcAnterior'), bcSiguiente=document.getElementById('bcSiguiente'), bcPanel=document.getElementById('bcPanel'),
+            bcVolver=document.getElementById('bcVolver'), btnBatalla=document.getElementById('btnBatalla'), bcComenzar=document.getElementById('bcComenzar');
+      let bcAbierto=false, bcIndice=0, bcElegido=BC_REFERENTES[0].id, bcPrecarga=null;
+      function bcMostrar(i){
+        bcIndice=((i%BC_REFERENTES.length)+BC_REFERENTES.length)%BC_REFERENTES.length;
+        const r=BC_REFERENTES[bcIndice]; bcElegido=r.id;
+        bcImg.src=r.img; bcImg.classList.toggle('bc-espejo',!!r.espejo); bcImg.dataset.id=r.id;
+        bcNombre.textContent=r.nombre; bcClub.textContent=r.club; bcPos.textContent=`${bcIndice+1} / ${BC_REFERENTES.length}`;
+        bcPanel.setAttribute('aria-label',`${r.nombre} — ${r.club} · ${bcIndice+1} de ${BC_REFERENTES.length}`);
+        bcEstado.textContent=`Referente: ${r.nombre} — ${r.club}, ${bcIndice+1} de ${BC_REFERENTES.length}.`;
+      }
+      function bcPaso(d){ if(!bcAbierto) return; bcMostrar(bcIndice+d); dbg.batalla.pasos++; }
+      bcAnterior.addEventListener('click',()=>bcPaso(-1));
+      bcSiguiente.addEventListener('click',()=>bcPaso(1));
+      // deslizar sobre el personaje (pantallas táctiles): un gesto = un paso
+      { let x0=null; bcPanel.addEventListener('pointerdown',e=>{ x0=e.clientX; });
+        bcPanel.addEventListener('pointerup',e=>{ if(x0===null) return; const dx=e.clientX-x0; x0=null; if(Math.abs(dx)>=45) bcPaso(dx<0?1:-1); });
+        bcPanel.addEventListener('pointercancel',()=>{ x0=null; }); }
+      function bcTeclas(e){
+        if(!bcAbierto) return;
+        e.stopImmediatePropagation();   // nada de lo de abajo (selector de barras / referentes / juego) recibe teclas
+        const k=e.key;
+        if(k==='Escape'){ e.preventDefault(); bcCerrar(); return; }
+        if(k==='ArrowLeft'||k==='ArrowRight'){ e.preventDefault(); if(!e.repeat) bcPaso(k==='ArrowLeft'?-1:1); return; }
+        if(k==='Tab'){   // el foco no sale de esta pantalla
+          const f=[bcAnterior, bcSiguiente, bcVolver, bcComenzar], i=f.indexOf(document.activeElement);
+          if(i<0 || (e.shiftKey && i===0) || (!e.shiftKey && i===f.length-1)){ e.preventDefault(); (e.shiftKey ? f[f.length-1] : f[0]).focus(); }
+          return;
+        }
+        if(!e.repeat) kenTeclaMusica(k.toLowerCase());   // M / + / − : misma preferencia y mismo tema del menú
+      }
+      function bcAbrir(){
+        if(bcAbierto || !pantalla.isConnected) return;
+        cerrarInfo();
+        bcMostrar(0);   // siempre arranca en Pistola Gamez (1 / 9)
+        if(!bcPrecarga) bcPrecarga=BC_REFERENTES.map(r=>{ const im=new Image(); im.src=r.img; return im; });   // sin parpadeo al pasar
+        bc.hidden=false; pantalla.inert=true; bcAbierto=true; dbg.estado='batallaCampal'; dbg.batalla.aperturas++;
+        addEventListener('keydown',bcTeclas,true);
+        bc.scrollTop=0; delete bcComenzar.dataset.yendo;
+        bcComenzar.focus({preventScroll:true});
+      }
+      function bcCerrar(){
+        if(!bcAbierto) return;
+        removeEventListener('keydown',bcTeclas,true);
+        bc.hidden=true; pantalla.inert=false; bcAbierto=false; dbg.estado='selector';
+        btnBatalla.focus({preventScroll:true});
+      }
+      btnBatalla.addEventListener('click',bcAbrir);
+      bcVolver.addEventListener('click',bcCerrar);
+      /* v78 — COMENZAR BATALLA: partida NUEVA del modo (batalla.html), con el referente guardado en batallaCampal.selectedReferentId.
+         Elegir otra tarjeta no arranca nada; recién este botón. No toca la barra activa ni la campaña (no hay pantalla de referentes). */
+      bcComenzar.addEventListener('click',()=>{
+        if(!bcAbierto || bcComenzar.dataset.yendo) return; bcComenzar.dataset.yendo='1';
+        bcElegido=BC_REFERENTES[bcIndice].id;   // el que se está mostrando
+        try { localStorage.setItem(BC_CLAVE,bcElegido); } catch {}
+        dbg.batalla.comenzar=(dbg.batalla.comenzar||0)+1; kenParar();
+        location.assign('batalla.html');
+      });
+      dbg.batalla={ get abierto(){ return bcAbierto; }, get elegido(){ return bcElegido; }, get indice(){ return bcIndice; }, aperturas:0, pasos:0, abrir:bcAbrir, cerrar:bcCerrar,
+                    referentes:BC_REFERENTES.map(r=>({...r})) };
+
+      addEventListener('resize',()=>{ ajustarFilas(); ubicarInfo(); });
+      ajustarFilas();
+      // v78: volviendo de una partida de Batalla Campal → se abre de nuevo su selector (v81: arranca otra vez en Pistola Gamez)
+      { let volverBC=false; try { volverBC=sessionStorage.getItem('bb.volverABatalla')==='1'; sessionStorage.removeItem('bb.volverABatalla'); } catch {}
+        if(volverBC) setTimeout(bcAbrir,0); }
+      // v74: si la fila inferior no entra, arranca centrada (se ven Chicago · Chacarita · Laferrere · Morón) y se desplaza hacia los costados
+      pantalla.querySelectorAll('.barras-zona').forEach(z=>{ z.scrollLeft=Math.max(0,(z.scrollWidth-z.clientWidth)/2); });   // v120: las dos filas
+      if(titulo.complete) ubicarInfo(); else titulo.addEventListener('load',ubicarInfo);
+      ubicarInfo();
+      dbg.filas=()=>filasReales().map(f=>f.map(t=>botones[t.n].dataset.id));
+      window.BB_INFO={ubicar:ubicarInfo, get modo(){ return info.dataset.modo; }, cerrar:cerrarInfo};
+      document.addEventListener('keydown',teclas,true);
+      marcar(i);
+    })();
+  </script>
+</body>
+</html>
+
+</body></html>
