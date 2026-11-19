@@ -236,10 +236,16 @@
      (mismo encuadre) se pasa a aparición progresiva: orden de los sectores listo en SECTORES (izquierda a derecha).
      Referente: SOLO sentado en la silla vacía de la sala principal (MATE[referente], imagen sentada propia). Hoy no existe la imagen
      sentada de ninguno de sus referentes → la silla queda vacía; nunca se lo muestra de pie. En la sala trasera no aparece. */
-  const SALAS_INTERIOR = club => [
-    { id: 'principal', nombre: 'Sala principal', fondo: `assets/galpon/${club}/sala1_completa.webp`, referente: { pie: { x: 130, y: 760 }, alto: 360, mira: 1 } },
-    { id: 'derecha', nombre: 'Sala trasera', fondo: `assets/galpon/${club}/sala2_completa.webp`, referente: { pie: { x: 680, y: 820 }, alto: 300 } }
-  ];
+  /* v200 — fondos INICIALES sin trofeos (TROFEOS_DE_GUERRA/CUATRO_GALPONES_INTERIOR_SIN_TROFEOS_CON_CAJAS_v2): la sala arranca vacía
+     (adelante, con cajas en la parte baja de cada sector; atrás, el depósito propio siempre lleno). Al vencer a un rival, SOLO su sector
+     toma la composición de la imagen completa v4 (sin tocarla): recorte de ese sector con máscara = donde las dos versiones difieren,
+     así los hinchas que están delante quedan del fondo vacío, sin rectángulos ni personas duplicadas. Con los cuatro sectores de una
+     sala ganados se muestra la imagen completa v4 tal cual. Las vacías miden 1670–1672 px: se dibujan en el mismo rectángulo (1672×941). */
+  const PARCHES_INTERIOR = {"central": [{"newells": [222, 261], "talleres": [539, 261], "belgrano": [825, 261], "boca": [1116, 261]}, {"river": [671, 239], "racing": [895, 239], "independiente": [1132, 239], "san_lorenzo": [1363, 239]}], "newells": [{"central": [228, 261], "talleres": [547, 261], "belgrano": [878, 261], "river": [1227, 261]}, {"boca": [671, 239], "racing": [896, 239], "independiente": [1131, 239], "san_lorenzo": [1365, 239]}], "talleres": [{"belgrano": [228, 261], "newells": [541, 261], "central": [877, 261], "river": [1229, 261]}, {"boca": [671, 239], "racing": [902, 239], "independiente": [1134, 239], "san_lorenzo": [1373, 239]}], "belgrano": [{"talleres": [228, 261], "central": [543, 261], "newells": [878, 261], "boca": [1228, 261]}, {"river": [671, 239], "racing": [920, 239], "independiente": [1127, 239], "san_lorenzo": [1362, 239]}]};
+  const SALAS_INTERIOR = club => [0, 1].map(k => ({ id: k ? 'derecha' : 'principal', nombre: k ? 'Sala trasera' : 'Sala principal',
+    fondo: `assets/galpon/${club}/sala${k + 1}_vacia.webp`, completo: `assets/galpon/${club}/sala${k + 1}_completa.webp`,
+    sectores: Object.fromEntries(Object.entries(PARCHES_INTERIOR[club][k]).map(([r, [x, y]]) => [r, { src: `assets/galpon/${club}/trofeo${k + 1}_${r}.webp`, x, y }])),
+    referente: k ? { pie: { x: 680, y: 820 }, alto: 300 } : { pie: { x: 130, y: 760 }, alto: 360, mira: 1 } }));
   const SECTORES = {
     central:  { principal: ['newells', 'talleres', 'belgrano', 'boca'],  trasera: ['river', 'racing', 'independiente', 'san_lorenzo'] },
     newells:  { principal: ['central', 'talleres', 'belgrano', 'river'], trasera: ['boca', 'racing', 'independiente', 'san_lorenzo'] },
@@ -247,7 +253,7 @@
     belgrano: { principal: ['talleres', 'central', 'newells', 'boca'],  trasera: ['river', 'racing', 'independiente', 'san_lorenzo'] }
   };
   for (const club of Object.keys(SECTORES))
-    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: {}, reposo: {}, botones: BOTONES, soloCompleta: true, sinDePie: true, sectores: SECTORES[club] };
+    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
      del mismo encuadre, solo la zona que cambia). Al ganar ese rival, los cajones se retiran y se exhiben sus instrumentos. */

@@ -1438,6 +1438,11 @@
     CAMP.SALAS.forEach((S, i) => {
       fijar(S.fondo, im => { galpon.fondos[i] = im; if (!i) galpon.fondo = im; });
       if (S.ocluye) fijar(S.ocluye.src, im => { galpon.ocluyes[i] = im; if (i) galpon.ocluye = im; });   // v157: una capa por sala
+      if (S.sectores) {   // v200: galpones del interior: sector por sector (solo se piden los ganados) y la imagen completa si ya están los cuatro
+        galpon.sectores = galpon.sectores || {}; const gan = CAMP.trofeos(), L = Object.keys(S.sectores);
+        for (const r of L) if (gan.includes(r)) fijar(S.sectores[r].src, im => { galpon.sectores[S.sectores[r].src] = im; });
+        if (S.completo && L.every(r => gan.includes(r))) fijar(S.completo, im => { (galpon.completos = galpon.completos || [])[i] = im; });
+      }
       if (S.radio && S.radio.src) fijar(S.radio.src, im => { galpon.radio = im; });
     });
     galpon.cajas = {};   // v199: cajones de la sala principal (sectores sin trofeo)
@@ -1508,6 +1513,14 @@
   function dibujarSalaGalpon(i, ox) {
     const S = CAMP.SALAS[i], f = galpon.fondos[i]; if (!S) return;
     g.save(); g.translate(ox, 0);
+    if (S.sectores) {   // v200: fondo vacío + sectores ganados; los cuatro ganados → imagen completa tal cual
+      const gan = CAMP.trofeos(), L = Object.keys(S.sectores), todo = L.every(r => gan.includes(r)), C = galpon.completos && galpon.completos[i];
+      if (todo && C) g.drawImage(C, 0, 0, MUNDO.w, MUNDO.h);
+      else {
+        if (f) g.drawImage(f, 0, 0, MUNDO.w, MUNDO.h); else { g.fillStyle = ID.carbon; g.fillRect(0, 0, MUNDO.w, MUNDO.h); }
+        for (const r of L) { const P = S.sectores[r], im = gan.includes(r) && galpon.sectores && galpon.sectores[P.src]; if (im) g.drawImage(im, P.x, P.y, anW(im), anH(im)); }
+      }
+    } else
     if (f) g.drawImage(f, 0, 0, MUNDO.w, MUNDO.h); else { g.fillStyle = ID.carbon; g.fillRect(0, 0, MUNDO.w, MUNDO.h); }
     if (i === 0 && CAMP.CAJAS) for (const [r, C] of Object.entries(CAMP.CAJAS)) {   // v199: cajones mientras el sector no exhibe instrumentos
       const im = galpon.cajas && galpon.cajas[r]; if (!im) continue;
