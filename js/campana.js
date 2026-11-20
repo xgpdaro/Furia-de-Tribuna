@@ -279,12 +279,14 @@
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
     GALPONES.belgrano.mate = {};   // el referente ya está dibujado en la escena
   }
-  { const S0 = GALPONES.newells.salas[0];   // v205 — NEWELL'S, sala delantera v6 (NEWELLS_SALA_DELANTERA_v6): escena propia por referente
+  { const S0 = GALPONES.newells.salas[0];   // v206 — NEWELL'S v7 (NEWELLS_GALPON_v7): delantera por referente (cartón de Toro abierto) y trasera con un solo mate
     S0.radio = { src: null, parlante: { x: 318, y: 662, r: 26 } };   // radio grande de la mesa chica, junto al referente
-    S0.porRef = Object.fromEntries(Object.entries({"pimpi_newells": {"central": [228, 261], "talleres": [551, 261], "belgrano": [870, 261], "river": [1231, 261]}, "el_panadero_newells": {"central": [228, 261], "talleres": [552, 261], "belgrano": [860, 261], "river": [1251, 261]}}).map(([rid, L]) => [rid, {
-      fondo: `assets/galpon/newells/sala1_${rid}_vacia.webp`, completo: `assets/galpon/newells/sala1_${rid}_completa.webp`,
-      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
+    S0.porRef = Object.fromEntries(Object.entries({"pimpi_newells": {"central": [228, 261], "talleres": [550, 261], "belgrano": [859, 261], "river": [1230, 261]}, "el_panadero_newells": {"central": [228, 261], "talleres": [552, 261], "belgrano": [859, 261], "river": [1251, 261]}}).map(([rid, L]) => [rid, {
+      fondo: `assets/galpon/newells/sala1_${rid}_vacia_v7.webp`, completo: `assets/galpon/newells/sala1_${rid}_completa_v7.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo1_${rid}_${r}_v7.webp`, x, y }])) }]));
     GALPONES.newells.mate = {};   // el referente ya está dibujado en la escena
+    Object.assign(GALPONES.newells.salas[1], { fondo: 'assets/galpon/newells/sala2_vacia_v7.webp', completo: 'assets/galpon/newells/sala2_completa_v7.webp',
+      sectores: Object.fromEntries(Object.entries({"boca": [663, 241], "racing": [893, 241], "independiente": [1129, 241], "san_lorenzo": [1363, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo2_${r}_v7.webp`, x, y }])) });
   }
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
