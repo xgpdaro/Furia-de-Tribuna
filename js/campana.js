@@ -267,6 +267,10 @@
       fondo: `assets/galpon/talleres/sala1_${rid}_vacia.webp`, completo: `assets/galpon/talleres/sala1_${rid}_completa.webp`,
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
     GALPONES.talleres.mate = {};   // el referente ya está dibujado en la escena
+    // v203 — sala trasera con FERNET (TALLERES_TRASERA_FERNET_v5): completa = 02_sala_trasera_completa_fernet_v5 tal cual; la vacía se compone
+    // con la sin trofeos v2 + la mesa de adelante de la versión fernet (fernet a la izquierda, sin mate del medio). Falta la vacía propia.
+    Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_fernet_vacia.webp', completo: 'assets/galpon/talleres/sala2_fernet_completa.webp',
+      sectores: Object.fromEntries(Object.entries({"boca": [671, 239], "racing": [902, 239], "independiente": [1133, 239], "san_lorenzo": [1365, 239]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_fernet_${r}.webp`, x, y }])) });
   }
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
