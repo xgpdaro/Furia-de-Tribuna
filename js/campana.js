@@ -272,6 +272,13 @@
     Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_fernet_vacia.webp', completo: 'assets/galpon/talleres/sala2_fernet_completa.webp',
       sectores: Object.fromEntries(Object.entries({"boca": [671, 239], "racing": [902, 239], "independiente": [1133, 239], "san_lorenzo": [1365, 239]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_fernet_${r}.webp`, x, y }])) });
   }
+  { const S0 = GALPONES.belgrano.salas[0];   // v204 — BELGRANO, sala delantera v3/v1 (BELGRANO_SALA_DELANTERA_v3): escena propia por referente
+    S0.radio = { src: null, parlante: { x: 118, y: 757, r: 26 } };   // radio de la mesa chica, junto al referente
+    S0.porRef = Object.fromEntries(Object.entries({"el_loco_tito": {"talleres": [228, 261], "central": [562, 261], "newells": [878, 261], "boca": [1227, 261]}, "gitano": {"talleres": [228, 261], "central": [561, 261], "newells": [877, 261], "boca": [1229, 261]}, "lucas": {"talleres": [228, 261], "central": [545, 261], "newells": [881, 261], "boca": [1204, 261]}}).map(([rid, L]) => [rid, {
+      fondo: `assets/galpon/belgrano/sala1_${rid}_vacia.webp`, completo: `assets/galpon/belgrano/sala1_${rid}_completa.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
+    GALPONES.belgrano.mate = {};   // el referente ya está dibujado en la escena
+  }
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
      del mismo encuadre, solo la zona que cambia). Al ganar ese rival, los cajones se retiran y se exhiben sus instrumentos. */

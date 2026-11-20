@@ -1513,11 +1513,11 @@
     console.info(`[Galpón] ${CAMP.SALAS[galpon.sala].nombre} → ${CAMP.SALAS[i].nombre} (${sel.id})`);
   }
   function dibujarSalaGalpon(i, ox) {
-    const S = salaRef(i), f = galpon.fondos[i]; if (!S) return;
+    const S = salaRef(i), f = galpon.fondos[i]; let fRadio = f;   // v204: el parlante late sobre la imagen que se ve (vacía o completa) if (!S) return;
     g.save(); g.translate(ox, 0);
     if (S.sectores) {   // v200: fondo vacío + sectores ganados; los cuatro ganados → imagen completa tal cual
       const gan = CAMP.trofeos(), L = Object.keys(S.sectores), todo = L.every(r => gan.includes(r)), C = galpon.completos && galpon.completos[i];
-      if (todo && C) g.drawImage(C, 0, 0, MUNDO.w, MUNDO.h);
+      if (todo && C) { g.drawImage(C, 0, 0, MUNDO.w, MUNDO.h); fRadio = C; }
       else {
         if (f) g.drawImage(f, 0, 0, MUNDO.w, MUNDO.h); else { g.fillStyle = ID.carbon; g.fillRect(0, 0, MUNDO.w, MUNDO.h); }
         for (const r of L) { const P = S.sectores[r], im = gan.includes(r) && galpon.sectores && galpon.sectores[P.src]; if (im) g.drawImage(im, P.x, P.y, anW(im), anH(im)); }
@@ -1532,7 +1532,7 @@
     for (const club of CAMP.trofeos()) { const T = CAMP.TROFEOS[club]; if (T && T.sala === i) dibujarTrofeo(club, T); }
     { const O = galpon.ocluyes && galpon.ocluyes[i]; if (S.ocluye && O) g.drawImage(O, S.ocluye.x, S.ocluye.y, anW(O), anH(O)); }   // v157: personas SIEMPRE delante de los trofeos
     if (S.radio && S.radio.src && galpon.radio) { g.drawImage(galpon.radio, S.radio.x, S.radio.y, anW(galpon.radio), anH(galpon.radio)); dibujarParlante(S.radio, galpon.radio); }
-    else if (S.radio && !S.radio.src && f) dibujarParlante(S.radio, f);   // v144: radio dibujada en el fondo
+    else if (S.radio && !S.radio.src && fRadio) dibujarParlante(S.radio, fRadio);   // v144: radio dibujada en el fondo
     g.restore();
   }
   /* v121 — el tango del galpón «sale» de la radio: solo la membrana del parlante late apenas y salen ondas tenues que se desvanecen.
