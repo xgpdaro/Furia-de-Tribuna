@@ -1430,12 +1430,14 @@
      Cambiar de sala no toca la campaña: ni avanza, ni premia, ni reinicia. */
   const BOTON_NUEVA = CAMP ? CAMP.BOTONES.nueva : { x: 30, y: 880, w: 250, h: 42 };
   const GAL = { fundido: 0.35, giro: 0.18, camino: 2.0 };   // segundos: levantarse (fundido entre sus sprites) · darse vuelta · caminar
+  // v202: salas con escena propia por referente (Talleres v5): fondo, completo y sectores del referente elegido
+  const salaRef = i => { const S = CAMP.SALAS[i]; const R = S && S.porRef && S.porRef[sel.id]; return R ? { ...S, ...R } : S; };
   function cargarGalpon() {
     if (!CAMP || !CAMP.galpon) return;
     const fijar = (src, f) => { const im = imgDe(src); if (im) f(im); else pedir(src, 'alta').then(x => { if (x) f(x); }); };
     galpon.sala = 0; galpon.mov = null; galpon.faltas = [];
-    galpon.fondoSrc = CAMP.SALAS[0].fondo; galpon.radio = null; galpon.ocluye = null; galpon.ocluyes = [];
-    CAMP.SALAS.forEach((S, i) => {
+    galpon.fondoSrc = salaRef(0).fondo; galpon.radio = null; galpon.ocluye = null; galpon.ocluyes = [];
+    CAMP.SALAS.forEach((S0, i) => { const S = salaRef(i);
       fijar(S.fondo, im => { galpon.fondos[i] = im; if (!i) galpon.fondo = im; });
       if (S.ocluye) fijar(S.ocluye.src, im => { galpon.ocluyes[i] = im; if (i) galpon.ocluye = im; });   // v157: una capa por sala
       if (S.sectores) {   // v200: galpones del interior: sector por sector (solo se piden los ganados) y la imagen completa si ya están los cuatro
@@ -1511,7 +1513,7 @@
     console.info(`[Galpón] ${CAMP.SALAS[galpon.sala].nombre} → ${CAMP.SALAS[i].nombre} (${sel.id})`);
   }
   function dibujarSalaGalpon(i, ox) {
-    const S = CAMP.SALAS[i], f = galpon.fondos[i]; if (!S) return;
+    const S = salaRef(i), f = galpon.fondos[i]; if (!S) return;
     g.save(); g.translate(ox, 0);
     if (S.sectores) {   // v200: fondo vacío + sectores ganados; los cuatro ganados → imagen completa tal cual
       const gan = CAMP.trofeos(), L = Object.keys(S.sectores), todo = L.every(r => gan.includes(r)), C = galpon.completos && galpon.completos[i];

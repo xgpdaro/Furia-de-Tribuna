@@ -255,8 +255,19 @@
   // v201 — referentes SENTADOS con mate (REFERENTES_INTERIOR_11_SENTADOS_MATE_v1): capa recortada de cada escena (persona + su silla,
   // máscara = segmentación de la persona ∪ zona baja que cambió respecto del fondo vacío, para tapar la silla original corrida).
   const MATES_INTERIOR = {"central": {"pillin_central": {"src": "assets/galpon/central/mate_pillin_central.webp", "x": 85, "y": 538}, "el_rana_central": {"src": "assets/galpon/central/mate_el_rana_central.webp", "x": 87, "y": 523}, "chapero_central": {"src": "assets/galpon/central/mate_chapero_central.webp", "x": 85, "y": 515}}, "newells": {"pimpi_newells": {"src": "assets/galpon/newells/mate_pimpi_newells.webp", "x": 13, "y": 571}, "el_panadero_newells": {"src": "assets/galpon/newells/mate_el_panadero_newells.webp", "x": 25, "y": 551}}, "talleres": {"el_capo_talleres": {"src": "assets/galpon/talleres/mate_el_capo_talleres.webp", "x": 74, "y": 560}, "el_toro_talleres": {"src": "assets/galpon/talleres/mate_el_toro_talleres.webp", "x": 72, "y": 545}, "el_viejo_talleres": {"src": "assets/galpon/talleres/mate_el_viejo_talleres.webp", "x": 74, "y": 556}}, "belgrano": {"el_loco_tito": {"src": "assets/galpon/belgrano/mate_el_loco_tito.webp", "x": 179, "y": 569}, "gitano": {"src": "assets/galpon/belgrano/mate_gitano.webp", "x": 89, "y": 576}, "lucas": {"src": "assets/galpon/belgrano/mate_lucas.webp", "x": 178, "y": 574}}};
+  /* v202 — TALLERES, sala delantera v5 (TALLERES_REFERENTES_MATE_COMPARTIDO_v5): una escena por referente con él ya sentado en una silla
+     de adulto. Sin trofeos = <ref>_sentado_mate_v5 (la base exacta de la versión con trofeos); con trofeos = CON_TROFEOS/<ref>_con_trofeos_v5
+     tal cual. Por sector: recorte con máscara de la versión con trofeos (las personas quedan del fondo). Sin capa de mate aparte. */
+  const TALLERES_V5 = {"el_capo_talleres": {"belgrano": [228, 261], "newells": [540, 261], "central": [879, 261], "river": [1227, 261]}, "el_toro_talleres": {"belgrano": [228, 261], "newells": [539, 261], "central": [878, 261], "river": [1224, 261]}, "el_viejo_talleres": {"belgrano": [228, 261], "newells": [537, 261], "central": [878, 261], "river": [1227, 261]}};
   for (const club of Object.keys(SECTORES))
     GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: MATES_INTERIOR[club] || {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
+  { const S0 = GALPONES.talleres.salas[0];   // v202
+    S0.radio = { src: null, parlante: { x: 118, y: 712, r: 20 } };   // radio de la mesa lateral, junto al referente
+    S0.porRef = Object.fromEntries(Object.entries(TALLERES_V5).map(([rid, L]) => [rid, {
+      fondo: `assets/galpon/talleres/sala1_${rid}_vacia.webp`, completo: `assets/galpon/talleres/sala1_${rid}_completa.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
+    GALPONES.talleres.mate = {};   // el referente ya está dibujado en la escena
+  }
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
      del mismo encuadre, solo la zona que cambia). Al ganar ese rival, los cajones se retiran y se exhiben sus instrumentos. */
