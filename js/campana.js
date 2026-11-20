@@ -252,8 +252,11 @@
     talleres: { principal: ['belgrano', 'newells', 'central', 'river'], trasera: ['boca', 'racing', 'independiente', 'san_lorenzo'] },
     belgrano: { principal: ['talleres', 'central', 'newells', 'boca'],  trasera: ['river', 'racing', 'independiente', 'san_lorenzo'] }
   };
+  // v201 — referentes SENTADOS con mate (REFERENTES_INTERIOR_11_SENTADOS_MATE_v1): capa recortada de cada escena (persona + su silla,
+  // máscara = segmentación de la persona ∪ zona baja que cambió respecto del fondo vacío, para tapar la silla original corrida).
+  const MATES_INTERIOR = {"central": {"pillin_central": {"src": "assets/galpon/central/mate_pillin_central.webp", "x": 85, "y": 538}, "el_rana_central": {"src": "assets/galpon/central/mate_el_rana_central.webp", "x": 87, "y": 523}, "chapero_central": {"src": "assets/galpon/central/mate_chapero_central.webp", "x": 85, "y": 515}}, "newells": {"pimpi_newells": {"src": "assets/galpon/newells/mate_pimpi_newells.webp", "x": 13, "y": 571}, "el_panadero_newells": {"src": "assets/galpon/newells/mate_el_panadero_newells.webp", "x": 25, "y": 551}}, "talleres": {"el_capo_talleres": {"src": "assets/galpon/talleres/mate_el_capo_talleres.webp", "x": 74, "y": 560}, "el_toro_talleres": {"src": "assets/galpon/talleres/mate_el_toro_talleres.webp", "x": 72, "y": 545}, "el_viejo_talleres": {"src": "assets/galpon/talleres/mate_el_viejo_talleres.webp", "x": 74, "y": 556}}, "belgrano": {"el_loco_tito": {"src": "assets/galpon/belgrano/mate_el_loco_tito.webp", "x": 179, "y": 569}, "gitano": {"src": "assets/galpon/belgrano/mate_gitano.webp", "x": 89, "y": 576}, "lucas": {"src": "assets/galpon/belgrano/mate_lucas.webp", "x": 178, "y": 574}}};
   for (const club of Object.keys(SECTORES))
-    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
+    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: MATES_INTERIOR[club] || {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
      del mismo encuadre, solo la zona que cambia). Al ganar ese rival, los cajones se retiran y se exhiben sus instrumentos. */
