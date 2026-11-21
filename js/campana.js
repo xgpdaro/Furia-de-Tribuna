@@ -267,7 +267,10 @@
       fondo: `assets/galpon/talleres/sala1_${rid}_vacia.webp`, completo: `assets/galpon/talleres/sala1_${rid}_completa.webp`,
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
     GALPONES.talleres.mate = {};   // el referente ya está dibujado en la escena
-    S0.porRef.el_toro_talleres.fondo = 'assets/galpon/talleres/sala1_el_toro_talleres_vacia_fernet_v6b.webp';   // v207: El Toro sin trofeos, versión nítida con fernet en la mesa del medio
+    // v209 — sin trofeos nítidos con fernet en la mesa central (TALLERES_DELANTERA_SIN_TROFEOS_v8), uno por referente
+    S0.porRef.el_capo_talleres.fondo = 'assets/galpon/talleres/sala1_el_capo_talleres_vacia_v8.webp';
+    S0.porRef.el_toro_talleres.fondo = 'assets/galpon/talleres/sala1_el_toro_talleres_vacia_v7.webp';
+    S0.porRef.el_viejo_talleres.fondo = 'assets/galpon/talleres/sala1_el_viejo_talleres_vacia_v7.webp';
     // v203 — sala trasera con FERNET (TALLERES_TRASERA_FERNET_v5): completa = 02_sala_trasera_completa_fernet_v5 tal cual; la vacía se compone
     // con la sin trofeos v2 + la mesa de adelante de la versión fernet (fernet a la izquierda, sin mate del medio). Falta la vacía propia.
     Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_fernet_vacia.webp', completo: 'assets/galpon/talleres/sala2_fernet_completa.webp',
