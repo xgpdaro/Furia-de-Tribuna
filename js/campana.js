@@ -287,6 +287,13 @@
     Object.assign(GALPONES.belgrano.salas[1], { fondo: 'assets/galpon/belgrano/sala2_vacia_bombos_v8.webp', completo: 'assets/galpon/belgrano/sala2_completa_bombos_v8.webp',
       sectores: Object.fromEntries(Object.entries({"river": [663, 241], "racing": [905, 241], "independiente": [1126, 241], "san_lorenzo": [1373, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo2_${r}_bombos_v8.webp`, x, y }])) });
   }
+  { const S0 = GALPONES.central.salas[0];   // v212 — ROSARIO CENTRAL, sala delantera v5 (CENTRAL_SALA_DELANTERA_v5): escena propia por referente
+    S0.radio = { src: null, parlante: { x: 450, y: 658, r: 30 } };   // radio de la mesa junto al referente
+    S0.porRef = Object.fromEntries(Object.entries({"pillin_central": {"newells": [225, 265], "talleres": [545, 265], "belgrano": [823, 265], "boca": [1111, 265]}, "el_rana_central": {"newells": [223, 265], "talleres": [544, 265], "belgrano": [823, 265], "boca": [1113, 265]}, "chapero_central": {"newells": [223, 265], "talleres": [545, 265], "belgrano": [822, 265], "boca": [1109, 265]}}).map(([rid, L]) => [rid, {
+      fondo: `assets/galpon/central/sala1_${rid}_vacia_v5.webp`, completo: `assets/galpon/central/sala1_${rid}_completa_v5.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/central/trofeo1_${rid}_${r}_v5.webp`, x, y }])) }]));
+    GALPONES.central.mate = {};   // el referente ya está dibujado en la escena
+  }
   { const S0 = GALPONES.newells.salas[0];   // v206 — NEWELL'S v7 (NEWELLS_GALPON_v7): delantera por referente (cartón de Toro abierto) y trasera con un solo mate
     S0.radio = { src: null, parlante: { x: 318, y: 662, r: 26 } };   // radio grande de la mesa chica, junto al referente
     S0.porRef = Object.fromEntries(Object.entries({"pimpi_newells": {"central": [228, 261], "talleres": [550, 261], "belgrano": [859, 261], "river": [1230, 261]}, "el_panadero_newells": {"central": [228, 261], "talleres": [552, 261], "belgrano": [859, 261], "river": [1251, 261]}}).map(([rid, L]) => [rid, {
