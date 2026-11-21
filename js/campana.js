@@ -273,8 +273,9 @@
     S0.porRef.el_viejo_talleres.fondo = 'assets/galpon/talleres/sala1_el_viejo_talleres_vacia_v7.webp';
     // v203 — sala trasera con FERNET (TALLERES_TRASERA_FERNET_v5): completa = 02_sala_trasera_completa_fernet_v5 tal cual; la vacía se compone
     // con la sin trofeos v2 + la mesa de adelante de la versión fernet (fernet a la izquierda, sin mate del medio). Falta la vacía propia.
-    Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_fernet_vacia.webp', completo: 'assets/galpon/talleres/sala2_fernet_completa.webp',
-      sectores: Object.fromEntries(Object.entries({"boca": [671, 239], "racing": [902, 239], "independiente": [1133, 239], "san_lorenzo": [1365, 239]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_fernet_${r}.webp`, x, y }])) });
+    // v210 — trasera con BOMBOS propios (LA / Malvinas arriba, F-I-E-L abajo): sin trofeos y completa bombos_v7, tal cual; revelado en los 4 compartimentos de arriba
+    Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_vacia_bombos_v7.webp', completo: 'assets/galpon/talleres/sala2_completa_bombos_v7.webp',
+      sectores: Object.fromEntries(Object.entries({"boca": [663, 241], "racing": [898, 241], "independiente": [1135, 241], "san_lorenzo": [1365, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_${r}_bombos_v7.webp`, x, y }])) });
   }
   { const S0 = GALPONES.belgrano.salas[0];   // v204 — BELGRANO, sala delantera v3/v1 (BELGRANO_SALA_DELANTERA_v3): escena propia por referente
     S0.radio = { src: null, parlante: { x: 118, y: 757, r: 26 } };   // radio de la mesa chica, junto al referente
