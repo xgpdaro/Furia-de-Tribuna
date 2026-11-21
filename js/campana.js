@@ -283,6 +283,9 @@
       fondo: `assets/galpon/belgrano/sala1_${rid}_vacia.webp`, completo: `assets/galpon/belgrano/sala1_${rid}_completa.webp`,
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
     GALPONES.belgrano.mate = {};   // el referente ya está dibujado en la escena
+    // v211 — trasera con BOMBOS propios (BELGRANO_SALA_TRASERA_v8): sin trofeos y con trofeos bombos_v8, tal cual; revelado en los 4 compartimentos de arriba
+    Object.assign(GALPONES.belgrano.salas[1], { fondo: 'assets/galpon/belgrano/sala2_vacia_bombos_v8.webp', completo: 'assets/galpon/belgrano/sala2_completa_bombos_v8.webp',
+      sectores: Object.fromEntries(Object.entries({"river": [663, 241], "racing": [905, 241], "independiente": [1126, 241], "san_lorenzo": [1373, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo2_${r}_bombos_v8.webp`, x, y }])) });
   }
   { const S0 = GALPONES.newells.salas[0];   // v206 — NEWELL'S v7 (NEWELLS_GALPON_v7): delantera por referente (cartón de Toro abierto) y trasera con un solo mate
     S0.radio = { src: null, parlante: { x: 318, y: 662, r: 26 } };   // radio grande de la mesa chica, junto al referente
