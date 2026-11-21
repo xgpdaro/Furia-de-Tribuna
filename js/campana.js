@@ -289,9 +289,9 @@
   }
   { const S0 = GALPONES.central.salas[0];   // v212 — ROSARIO CENTRAL, sala delantera v5 (CENTRAL_SALA_DELANTERA_v5): escena propia por referente
     S0.radio = { src: null, parlante: { x: 450, y: 658, r: 30 } };   // radio de la mesa junto al referente
-    S0.porRef = Object.fromEntries(Object.entries({"pillin_central": {"newells": [225, 265], "talleres": [545, 265], "belgrano": [823, 265], "boca": [1111, 265]}, "el_rana_central": {"newells": [223, 265], "talleres": [544, 265], "belgrano": [823, 265], "boca": [1113, 265]}, "chapero_central": {"newells": [223, 265], "talleres": [545, 265], "belgrano": [822, 265], "boca": [1109, 265]}}).map(([rid, L]) => [rid, {
-      fondo: `assets/galpon/central/sala1_${rid}_vacia_v5.webp`, completo: `assets/galpon/central/sala1_${rid}_completa_v5.webp`,
-      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/central/trofeo1_${rid}_${r}_v5.webp`, x, y }])) }]));
+    S0.porRef = Object.fromEntries(Object.entries({"pillin_central": {"newells": [223, 265], "talleres": [534, 265], "belgrano": [831, 265], "boca": [1115, 265]}, "el_rana_central": {"newells": [223, 265], "talleres": [521, 265], "belgrano": [828, 265], "boca": [1113, 265]}, "chapero_central": {"newells": [223, 265], "talleres": [533, 265], "belgrano": [824, 265], "boca": [1106, 265]}}).map(([rid, L]) => [rid, {   // v213: fondos y recortes v6 (CENTRAL_SALA_DELANTERA_v6), sin compresión
+      fondo: `assets/galpon/central/sala1_${rid}_vacia_v6.webp`, completo: `assets/galpon/central/sala1_${rid}_completa_v6.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/central/trofeo1_${rid}_${r}_v6.webp`, x, y }])) }]));
     GALPONES.central.mate = {};   // el referente ya está dibujado en la escena
   }
   { const S0 = GALPONES.newells.salas[0];   // v206 — NEWELL'S v7 (NEWELLS_GALPON_v7): delantera por referente (cartón de Toro abierto) y trasera con un solo mate
