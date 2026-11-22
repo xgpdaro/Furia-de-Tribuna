@@ -143,7 +143,7 @@
      ya sentado en la silla izquierda (conRef: sin capa de mate, sin pose de pie ni de reposo, sin capas viejas de trofeos en esta sala).
      Alineadas al encuadre del juego por los botones dibujados (2 por ciento más grandes); la «completa» se arma con los 4 recortes (sin el aviso TRUCO ACTIVADO
      que traía el PNG con trofeos). William: river-sala-principal-{sin,con}-trofeos-acero. */
-  SALAS[0].porRef = Object.fromEntries(Object.entries({"alan": {"boca": [228, 258], "racing": [530, 258], "independiente": [877, 258], "san_lorenzo": [1227, 258]}, "matute": {"boca": [228, 258], "racing": [532, 258], "independiente": [878, 258], "san_lorenzo": [1227, 258]}, "william": {"boca": [228, 258], "racing": [540, 258], "independiente": [878, 258], "san_lorenzo": [1225, 258]}}).map(([rid, L]) => [rid, { conRef: true,
+  SALAS[0].porRef = Object.fromEntries(Object.entries({"alan": {"boca": [228, 258], "racing": [530, 258], "independiente": [877, 258], "san_lorenzo": [1227, 258]}, "matute": {"boca": [228, 258], "racing": [532, 258], "independiente": [878, 258], "san_lorenzo": [1227, 258]}, "william": {"boca": [228, 258], "racing": [540, 258], "independiente": [878, 258], "san_lorenzo": [1225, 258]}}).map(([rid, L]) => [rid, { conRef: true, completo: null,
     fondo: `assets/galpon/river_sala1_${rid}_vacia_acero.webp`, radio: { src: null, parlante: { x: 66, y: 686, r: 16 } },
     sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/river_trofeo1_${rid}_${r}_acero.webp`, x, y }])) }]));
   GALPONES.boca = { salas: SALAS_DE('boca', [75, 703]), trofeos: TROFEOS_DE('boca'), mate: MATES_CLUBES.boca, reposo: {}, botones: BOTONES, descanso: true };   // v144
@@ -270,19 +270,15 @@
     GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: MATES_INTERIOR[club] || {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
   { const S0 = GALPONES.talleres.salas[0];   // v202
     S0.radio = { src: null, parlante: { x: 118, y: 712, r: 20 } };   // radio de la mesa lateral, junto al referente
-    S0.porRef = Object.fromEntries(Object.entries(TALLERES_V5).map(([rid, L]) => [rid, {
-      fondo: `assets/galpon/talleres/sala1_${rid}_vacia.webp`, completo: `assets/galpon/talleres/sala1_${rid}_completa.webp`,
-      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
+    S0.porRef = Object.fromEntries(Object.entries({"el_capo_talleres": {"belgrano": [228, 258], "newells": [538, 258], "central": [874, 258], "river": [1231, 258]}, "el_toro_talleres": {"belgrano": [228, 258], "newells": [538, 258], "central": [872, 258], "river": [1224, 258]}, "el_viejo_talleres": {"belgrano": [228, 258], "newells": [540, 258], "central": [868, 258], "river": [1230, 258]}}).map(([rid, L]) => [rid, { conRef: true, completo: null,   // v223: ACERO (talleres-galpon-adelante-[ref-]{sin,con}-trofeos-acero), alineadas al encuadre del juego; completa = base + 4 recortes
+      fondo: `assets/galpon/talleres/sala1_${rid}_vacia_acero.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo1_${rid}_${r}_acero.webp`, x, y }])) }]));
     GALPONES.talleres.mate = {};   // el referente ya está dibujado en la escena
-    // v209 — sin trofeos nítidos con fernet en la mesa central (TALLERES_DELANTERA_SIN_TROFEOS_v8), uno por referente
-    S0.porRef.el_capo_talleres.fondo = 'assets/galpon/talleres/sala1_el_capo_talleres_vacia_v8.webp';
-    S0.porRef.el_toro_talleres.fondo = 'assets/galpon/talleres/sala1_el_toro_talleres_vacia_v7.webp';
-    S0.porRef.el_viejo_talleres.fondo = 'assets/galpon/talleres/sala1_el_viejo_talleres_vacia_v7.webp';
     // v203 — sala trasera con FERNET (TALLERES_TRASERA_FERNET_v5): completa = 02_sala_trasera_completa_fernet_v5 tal cual; la vacía se compone
     // con la sin trofeos v2 + la mesa de adelante de la versión fernet (fernet a la izquierda, sin mate del medio). Falta la vacía propia.
-    // v210 — trasera con BOMBOS propios (LA / Malvinas arriba, F-I-E-L abajo): sin trofeos y completa bombos_v7, tal cual; revelado en los 4 compartimentos de arriba
-    Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_vacia_bombos_v7.webp', completo: 'assets/galpon/talleres/sala2_completa_bombos_v7.webp',
-      sectores: Object.fromEntries(Object.entries({"boca": [663, 241], "racing": [898, 241], "independiente": [1135, 241], "san_lorenzo": [1365, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_${r}_bombos_v7.webp`, x, y }])) });
+    // v223 — trasera ACERO (talleres-galpon-atras-{sin,con}-trofeos-acero), alineada al encuadre del juego; con los 4 ganados = base + 4 recortes (sin el aviso TRUCO ACTIVADO del PNG)
+    Object.assign(GALPONES.talleres.salas[1], { fondo: 'assets/galpon/talleres/sala2_vacia_acero.webp', completo: null,
+      sectores: Object.fromEntries(Object.entries({"boca": [665, 241], "racing": [898, 241], "independiente": [1133, 241], "san_lorenzo": [1366, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/talleres/trofeo2_${r}_acero.webp`, x, y }])) });
   }
   { const S0 = GALPONES.belgrano.salas[0];   // v204 — BELGRANO, sala delantera v3/v1 (BELGRANO_SALA_DELANTERA_v3): escena propia por referente
     S0.radio = { src: null, parlante: { x: 118, y: 757, r: 26 } };   // radio de la mesa chica, junto al referente
