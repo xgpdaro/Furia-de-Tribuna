@@ -299,9 +299,9 @@
   }
   { const S0 = GALPONES.newells.salas[0];   // v206 — NEWELL'S v7 (NEWELLS_GALPON_v7): delantera por referente (cartón de Toro abierto) y trasera con un solo mate
     S0.radio = { src: null, parlante: { x: 318, y: 662, r: 26 } };   // radio grande de la mesa chica, junto al referente
-    S0.porRef = Object.fromEntries(Object.entries({"pimpi_newells": {"central": [228, 261], "talleres": [550, 261], "belgrano": [859, 261], "river": [1230, 261]}, "el_panadero_newells": {"central": [228, 261], "talleres": [552, 261], "belgrano": [859, 261], "river": [1251, 261]}}).map(([rid, L]) => [rid, {
-      fondo: `assets/galpon/newells/sala1_${rid}_vacia_v7.webp`, completo: `assets/galpon/newells/sala1_${rid}_completa_v7.webp`,
-      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo1_${rid}_${r}_v7.webp`, x, y }])) }]));
+    S0.porRef = Object.fromEntries(Object.entries({"pimpi_newells": {"central": [235, 258], "talleres": [556, 258], "belgrano": [857, 258], "river": [1210, 258]}, "el_panadero_newells": {"central": [235, 258], "talleres": [556, 258], "belgrano": [859, 258], "river": [1219, 258]}}).map(([rid, L]) => [rid, {   // v218: frente ACERO (newells-frente-<ref>-{sin,con}-trofeos-acero), sin compresión; recortes con máscara de personas
+      fondo: `assets/galpon/newells/sala1_${rid}_vacia_acero.webp`, completo: `assets/galpon/newells/sala1_${rid}_completa_acero.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo1_${rid}_${r}_acero.webp`, x, y }])) }]));
     GALPONES.newells.mate = {};   // el referente ya está dibujado en la escena
     // v216 — trasera ACERO (newells-galpon-atras-{sin,con}-trofeos-acero): alineadas al encuadre del juego (escala ≈0,99; botones dibujados = botones del juego), sin compresión
     Object.assign(GALPONES.newells.salas[1], { fondo: 'assets/galpon/newells/sala2_vacia_acero.webp', completo: 'assets/galpon/newells/sala2_completa_acero.webp',
