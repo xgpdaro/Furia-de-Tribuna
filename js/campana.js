@@ -303,9 +303,9 @@
       fondo: `assets/galpon/newells/sala1_${rid}_vacia_v7.webp`, completo: `assets/galpon/newells/sala1_${rid}_completa_v7.webp`,
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo1_${rid}_${r}_v7.webp`, x, y }])) }]));
     GALPONES.newells.mate = {};   // el referente ya está dibujado en la escena
-    // v208 — trasera APROBADA (NEWELLS_SALA_TRASERA_APROBADA): sin trofeos v10 y con trofeos aprobada, tal cual; revelado solo en los 4 compartimentos de arriba
-    Object.assign(GALPONES.newells.salas[1], { fondo: 'assets/galpon/newells/sala2_vacia_v10.webp', completo: 'assets/galpon/newells/sala2_completa_v10.webp',
-      sectores: Object.fromEntries(Object.entries({"boca": [663, 241], "racing": [892, 241], "independiente": [1127, 241], "san_lorenzo": [1360, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo2_${r}_v10.webp`, x, y }])) });
+    // v216 — trasera ACERO (newells-galpon-atras-{sin,con}-trofeos-acero): alineadas al encuadre del juego (escala ≈0,99; botones dibujados = botones del juego), sin compresión
+    Object.assign(GALPONES.newells.salas[1], { fondo: 'assets/galpon/newells/sala2_vacia_acero.webp', completo: 'assets/galpon/newells/sala2_completa_acero.webp',
+      sectores: Object.fromEntries(Object.entries({"boca": [666, 241], "racing": [901, 241], "independiente": [1135, 241], "san_lorenzo": [1368, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/newells/trofeo2_${r}_acero.webp`, x, y }])) });
   }
   /* v199 — CAJONES de la sala principal (Boca, Racing, Independiente, San Lorenzo), como en el galpón de River: mientras un sector
      no tiene trofeo, abajo se ven los cajones de madera y el estante del fondo ORIGINAL de cada galpón (ENTREGA de cada club, recortados
