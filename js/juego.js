@@ -1449,8 +1449,9 @@
     });
     galpon.cajas = {};   // v199: cajones de la sala principal (sectores sin trofeo)
     for (const [r, C] of Object.entries(CAMP.CAJAS || {})) fijar(C.src, im => { galpon.cajas[r] = im; });
-    const M = CAMP.MATE[sel.id]; galpon.mate = null;
-    if (M) fijar(M.src, im => { galpon.mate = im; }); else galpon.faltas.push(`sentado con mate de ${sel.id}`);
+    const conRef = !!salaRef(0).conRef;   // v221: referente dibujado en la escena (River: Alan y Matute)
+    const M = conRef ? null : CAMP.MATE[sel.id]; galpon.mate = null;
+    if (M) fijar(M.src, im => { galpon.mate = im; }); else if (!conRef) galpon.faltas.push(`sentado con mate de ${sel.id}`);
     for (const club of Object.keys(CAMP.TROFEOS)) if (CAMP.TROFEOS[club].capa) fijar(CAMP.TROFEOS[club].capa, im => { galpon.capas[club] = im; });
     // v151: trofeos por piezas (trapos + instrumentos) de los rivales VENCIDOS: solo esos se piden y se dibujan
     for (const club of CAMP.trofeos()) { const D = CAMP.disponer && CAMP.disponer(club, CAMP.TROFEOS[club]); if (D) for (const o of [...D.trapos, ...D.inst]) fijar(o.src, im => { galpon.piezas[o.src] = im; }); }
@@ -1469,9 +1470,9 @@
     // v144 — galpones nuevos: sin imagen «sentado con mate», el referente queda PARADO junto a la silla con su propio cuadro de descanso
     // (sostener su recuperación: choripán, vino, fernet, hamburguesa…), nunca en guardia. Si no tiene ese cuadro, no se dibuja nada.
     if (CAMP.DESCANSO && !CAMP.MATE[sel.id]) { const d = (D.anim.damajuana || [])[1]; if (d) ids.add(typeof d === 'object' ? d.id : d); else galpon.faltas.push(`pose de descanso (sostener su recuperación) de ${sel.id}`); }
-    const R = CAMP.REPOSO && CAMP.REPOSO[sel.id]; galpon.reposo = null;   // v111: brazos cruzados de perfil (imagen propia) o nada
+    const R = !conRef && CAMP.REPOSO && CAMP.REPOSO[sel.id]; galpon.reposo = null;   // v111: brazos cruzados de perfil (imagen propia) o nada
     if (R && R.src) fijar(R.src, im => { galpon.reposo = im; });
-    else galpon.faltas.push(`parado con brazos cruzados de perfil a la derecha de ${sel.id}${R && R.falta ? ` (${R.falta})` : ''}`);
+    else if (!conRef) galpon.faltas.push(`parado con brazos cruzados de perfil a la derecha de ${sel.id}${R && R.falta ? ` (${R.falta})` : ''}`);
     const A = { def: D, imgs: {}, imgsEspejo: {} }; galpon.ref = A;
     for (const id of ids) { const f = D.frames[id]; if (!f) continue; fijar(f.src, im => { A.imgs[id] = im; }); if (f.espejo) fijar(f.espejo, im => { A.imgsEspejo[id] = im; }); }
     if (galpon.faltas.length) console.warn('[Galpón] recursos faltantes:', galpon.faltas.join(' · '));
@@ -1496,7 +1497,7 @@
     return true;
   }
   // v144: pose parada de la sala principal sin mate: River conserva su guardia (todos sus referentes tienen mate); los galpones nuevos, el descanso
-  const poseSala0 = () => { const D = galpon.ref && galpon.ref.def; if (!D || CAMP.SIN_DE_PIE) return null;   // v198: galpones del interior: solo sentado (si falta la imagen, la silla queda vacía)
+  const poseSala0 = () => { const D = galpon.ref && galpon.ref.def; if (!D || CAMP.SIN_DE_PIE || salaRef(0).conRef) return null;   // v198: galpones del interior: solo sentado (si falta la imagen, la silla queda vacía)
     if (!CAMP.DESCANSO) return D.anim.quieto[0]; return (D.anim.damajuana || [])[1] || null; };
   const pasoGalpon = (nom, t) => { const L = galpon.ref && galpon.ref.def.anim[nom]; if (!L || !L.length) return null; const ms = msPaso(galpon.ref.def, nom) || 130; return L[Math.floor(t * 1000 / ms) % L.length]; };
   // v111: pose de descanso (brazos cruzados, perfil derecho) = imagen propia del referente; sin ella no se sustituye por nada
@@ -1529,7 +1530,7 @@
       if (CAMP.trofeos().includes(r)) { const D = CAMP.disponer && CAMP.disponer(r, CAMP.TROFEOS[r]); if (D && D.inst && D.inst.length) continue; }
       g.drawImage(im, C.x, C.y, anW(im), anH(im));
     }
-    for (const club of CAMP.trofeos()) { const T = CAMP.TROFEOS[club]; if (T && T.sala === i) dibujarTrofeo(club, T); }
+    if (!S.conRef) for (const club of CAMP.trofeos()) { const T = CAMP.TROFEOS[club]; if (T && T.sala === i) dibujarTrofeo(club, T); }   // v221: con escena propia, los trofeos de esta sala son sus recortes
     { const O = galpon.ocluyes && galpon.ocluyes[i]; if (S.ocluye && O) g.drawImage(O, S.ocluye.x, S.ocluye.y, anW(O), anH(O)); }   // v157: personas SIEMPRE delante de los trofeos
     if (S.radio && S.radio.src && galpon.radio) { g.drawImage(galpon.radio, S.radio.x, S.radio.y, anW(galpon.radio), anH(galpon.radio)); dibujarParlante(S.radio, galpon.radio); }
     else if (S.radio && !S.radio.src && fRadio) dibujarParlante(S.radio, fRadio);   // v144: radio dibujada en el fondo
