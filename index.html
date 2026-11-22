@@ -937,6 +937,18 @@
           C.panel.style.cssText=`left:${m}px;top:${top}px;width:${ancho}px;max-height:${Math.max(80,Math.floor(selTop-top))}px`;
           J.panel.style.cssText=`right:${m}px;top:${top}px;width:${ancho}px;max-height:${Math.max(80,Math.floor(selTop-top))}px`;
         }
+        // v217 — en el paso ELEGÍ TU CATEGORÍA, el recuadro «Barras VS Hooligans – BATALLA CAMPAL» va a la derecha de ASCENSO, con su borde derecho
+        // donde termina la línea dorada y centrado en la altura de PRIMERA/ASCENSO. Con las barras a la vista (o si no entra) vuelve arriba a la derecha.
+        { const rec=document.querySelector('#bcCaja .bc-recuadro'), cats=[...document.querySelectorAll('#barras .barra.cat')].filter(b=>!b.hidden), lin=document.querySelectorAll('#barras .ley-linea');
+          if(rec){ rec.style.position=''; rec.style.left=''; rec.style.top=''; rec.style.zIndex=''; rec.style.pointerEvents='';
+            if(cats.length && lin.length && !document.getElementById('barras').hidden){
+              const ultimo=cats[cats.length-1].getBoundingClientRect(), primero=cats[0].getBoundingClientRect(), linea=lin[lin.length-1].getBoundingClientRect(), rw=rec.offsetWidth, rh=rec.offsetHeight;
+              const x=Math.round(linea.right-rw), y=Math.round((primero.top+primero.bottom)/2-rh/2);
+              if(x>=ultimo.right+16 && y>=linea.bottom+4 && y+rh<=innerHeight-4){ rec.style.position='fixed'; rec.style.left=x+'px'; rec.style.top=y+'px'; rec.style.zIndex='6'; rec.dataset.lugar='categoria'; }
+              else rec.dataset.lugar='arriba';
+            } else rec.dataset.lugar='arriba';
+          }
+        }
       }
       function ponerBC(caja, ref, w, top, W, m){ const r=ref.getBoundingClientRect(); const x=Math.round(Math.min(W-m-w, Math.max(m, r.left+r.width/2-w/2))); caja.style.cssText=`left:${x}px;top:${top}px;width:${w}px`; }
 
