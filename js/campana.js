@@ -65,9 +65,9 @@
      · El referente elegido se dibuja aparte: sentado tomando mate en la silla vacía (capa propia) o parado observando en la otra sala.
      Coordenadas en el mundo 1672 × 941. */
   const SALAS = [
-    { id: 'principal', nombre: 'Sala principal', fondo: 'assets/galpon/river_sala1_vacia.webp',
+    { id: 'principal', nombre: 'Sala principal', fondo: 'assets/galpon/river_sala1_william_vacia_acero.webp',   // v224: fondo de respaldo = escena acero (los tres referentes tienen la suya)
       // v121: radio vieja sobre la mesa, al lado del termo (recortada de galpon_river_sala_principal_con_radio_v1, misma cámara). Decoración fija.
-      radio: { src: 'assets/galpon/river_radio.webp', x: 3, y: 635, parlante: { x: 75.5, y: 694.5, r: 14.7 } },
+      radio: { src: null, parlante: { x: 66, y: 686, r: 16 } },   // v224: radio dibujada en las escenas acero
       referente: { pie: { x: 300, y: 905 }, alto: 460, mira: 1 } },               // de pie junto a la silla vacía (arranca y vuelve acá)
     // v197: sala derecha con DEPÓSITO PROPIO abajo (TROFEOS_DE_GUERRA/PRIMERA_DEPOSITOS_PROPIOS_v1/RIVER). Original: river_sala2.webp (respaldo).
     { id: 'derecha', nombre: 'Sala derecha', fondo: 'assets/galpon/river_sala2_deposito.webp',
@@ -81,10 +81,10 @@
                     volver: { x: 20, y: 863, w: 210, h: 53, k: 0.7, lineas: ['← VOLVER A LA', 'SALA PRINCIPAL'] },
                     nueva: { x: 1384, y: 14, w: 262, h: 42 } };
   const TROFEOS = {
-    boca:          { sala: 0, capa: 'assets/galpon/river_sala1_boca.webp',          x: 238,  y: 262, banderas: ['b_copello', 'fiorito_centrado_sin_escudo', 'catan', 'villa_lugano'] },
-    racing:        { sala: 0, capa: 'assets/galpon/river_sala1_racing.webp',        x: 560,  y: 262, banderas: ['villa_corina', 'dock_sud', 'berazategui', 'villa_lugano'] },
-    independiente: { sala: 0, capa: 'assets/galpon/river_sala1_independiente.webp', x: 895,  y: 262, banderas: ['avellaneda', 'dock_sud', 'quilmes', 'moreno', 'merlo', 'pineyro'] },
-    san_lorenzo:   { sala: 0, capa: 'assets/galpon/river_sala1_san_lorenzo.webp',   x: 1243, y: 262, banderas: ['boedo', 'almagro', 'bajo_flores', 'villa_lugano', 'barrio_rivadavia'] },
+    boca:          { sala: 0, capa: null,          x: 238,  y: 262, banderas: ['b_copello', 'fiorito_centrado_sin_escudo', 'catan', 'villa_lugano'] },
+    racing:        { sala: 0, capa: null,        x: 560,  y: 262, banderas: ['villa_corina', 'dock_sud', 'berazategui', 'villa_lugano'] },
+    independiente: { sala: 0, capa: null, x: 895,  y: 262, banderas: ['avellaneda', 'dock_sud', 'quilmes', 'moreno', 'merlo', 'pineyro'] },
+    san_lorenzo:   { sala: 0, capa: null,   x: 1243, y: 262, banderas: ['boedo', 'almagro', 'bajo_flores', 'villa_lugano', 'barrio_rivadavia'] },
     belgrano:      { sala: 1, capa: 'assets/galpon/river_sala2_belgrano.webp',      x: 743,  y: 277, banderas: ['barrio_alberdi', 'villa_paez', 'barrio_san_martin', 'barrio_yofre', 'barrio_guinazu', 'villa_el_libertador', 'lejos_la_mas_popular'] },
     talleres:      { sala: 1, capa: 'assets/galpon/river_sala2_talleres.webp',      x: 948,  y: 277, banderas: ['barrio_jardin', 'las_violetas', 'barrio_jose_ignacio_diaz', 'villa_el_libertador', 'barrio_guemes', 'villa_boedo', 'villa_revol'] },
     // v133 — River como rival de las DEMÁS barras (BANDERAS/RIVER/v1: 13 barrios). River no tiene vitrina en su propio galpón (nunca es su rival).
@@ -101,11 +101,7 @@
   const DESBLOQUEO_POR_PANTALLA = null;
   // Referente sentado tomando mate en la silla vacía de la sala principal (capas transparentes de sus imágenes del galpón;
   // la silla del fondo nuevo coincide con la del galpón anterior). William: recortado de su galpón anterior (v108).
-  const MATE = {
-    matute:  { src: 'assets/galpon/mate_matute.webp',  x: 129, y: 499 },
-    alan:    { src: 'assets/galpon/mate_alan.webp',    x: 139, y: 511 },
-    william: { src: 'assets/galpon/mate_william.webp', x: 168, y: 552 }   // v173: bajado 18 px, apoyado en el asiento (antes flotaba)
-  };
+  const MATE = {};   // v224: River — William, Alan y Matute ya vienen sentados en sus escenas acero (capas de mate borradas)
   /* v111 — POSE DE DESCANSO de la sala derecha: PARADO, quieto, BRAZOS CRUZADOS sobre el pecho, DE PERFIL mirando a la DERECHA
      (hacia los exhibidores), cara de costado, pies naturales, sin postura de combate. Una imagen propia de cada referente (su cara,
      cuerpo y ropa). NO se sustituye por caminar, guardia, brazos caídos ni vista de espaldas: sin esa imagen el referente se queda
@@ -261,13 +257,12 @@
   };
   // v201 — referentes SENTADOS con mate (REFERENTES_INTERIOR_11_SENTADOS_MATE_v1): capa recortada de cada escena (persona + su silla,
   // máscara = segmentación de la persona ∪ zona baja que cambió respecto del fondo vacío, para tapar la silla original corrida).
-  const MATES_INTERIOR = {"central": {"pillin_central": {"src": "assets/galpon/central/mate_pillin_central.webp", "x": 85, "y": 538}, "el_rana_central": {"src": "assets/galpon/central/mate_el_rana_central.webp", "x": 87, "y": 523}, "chapero_central": {"src": "assets/galpon/central/mate_chapero_central.webp", "x": 85, "y": 515}}, "newells": {"pimpi_newells": {"src": "assets/galpon/newells/mate_pimpi_newells.webp", "x": 13, "y": 571}, "el_panadero_newells": {"src": "assets/galpon/newells/mate_el_panadero_newells.webp", "x": 25, "y": 551}}, "talleres": {"el_capo_talleres": {"src": "assets/galpon/talleres/mate_el_capo_talleres.webp", "x": 74, "y": 560}, "el_toro_talleres": {"src": "assets/galpon/talleres/mate_el_toro_talleres.webp", "x": 72, "y": 545}, "el_viejo_talleres": {"src": "assets/galpon/talleres/mate_el_viejo_talleres.webp", "x": 74, "y": 556}}, "belgrano": {"el_loco_tito": {"src": "assets/galpon/belgrano/mate_el_loco_tito.webp", "x": 179, "y": 569}, "gitano": {"src": "assets/galpon/belgrano/mate_gitano.webp", "x": 89, "y": 576}, "lucas": {"src": "assets/galpon/belgrano/mate_lucas.webp", "x": 178, "y": 574}}};
   /* v202 — TALLERES, sala delantera v5 (TALLERES_REFERENTES_MATE_COMPARTIDO_v5): una escena por referente con él ya sentado en una silla
      de adulto. Sin trofeos = <ref>_sentado_mate_v5 (la base exacta de la versión con trofeos); con trofeos = CON_TROFEOS/<ref>_con_trofeos_v5
      tal cual. Por sector: recorte con máscara de la versión con trofeos (las personas quedan del fondo). Sin capa de mate aparte. */
   const TALLERES_V5 = {"el_capo_talleres": {"belgrano": [228, 261], "newells": [540, 261], "central": [879, 261], "river": [1227, 261]}, "el_toro_talleres": {"belgrano": [228, 261], "newells": [539, 261], "central": [878, 261], "river": [1224, 261]}, "el_viejo_talleres": {"belgrano": [228, 261], "newells": [537, 261], "central": [878, 261], "river": [1227, 261]}};
   for (const club of Object.keys(SECTORES))
-    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: MATES_INTERIOR[club] || {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
+    GALPONES[club] = { salas: SALAS_INTERIOR(club), trofeos: {}, mate: {}, reposo: {}, botones: BOTONES, sinDePie: true, sectores: SECTORES[club] };   // v200: galpón desde el inicio (fondos vacíos)
   { const S0 = GALPONES.talleres.salas[0];   // v202
     S0.radio = { src: null, parlante: { x: 118, y: 712, r: 20 } };   // radio de la mesa lateral, junto al referente
     S0.porRef = Object.fromEntries(Object.entries({"el_capo_talleres": {"belgrano": [228, 258], "newells": [538, 258], "central": [874, 258], "river": [1231, 258]}, "el_toro_talleres": {"belgrano": [228, 258], "newells": [538, 258], "central": [872, 258], "river": [1224, 258]}, "el_viejo_talleres": {"belgrano": [228, 258], "newells": [540, 258], "central": [868, 258], "river": [1230, 258]}}).map(([rid, L]) => [rid, { conRef: true, completo: null,   // v223: ACERO (talleres-galpon-adelante-[ref-]{sin,con}-trofeos-acero), alineadas al encuadre del juego; completa = base + 4 recortes
