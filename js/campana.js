@@ -283,9 +283,9 @@
       fondo: `assets/galpon/belgrano/sala1_${rid}_vacia.webp`, completo: `assets/galpon/belgrano/sala1_${rid}_completa.webp`,
       sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
     GALPONES.belgrano.mate = {};   // el referente ya está dibujado en la escena
-    // v211 — trasera con BOMBOS propios (BELGRANO_SALA_TRASERA_v8): sin trofeos y con trofeos bombos_v8, tal cual; revelado en los 4 compartimentos de arriba
-    Object.assign(GALPONES.belgrano.salas[1], { fondo: 'assets/galpon/belgrano/sala2_vacia_bombos_v8.webp', completo: 'assets/galpon/belgrano/sala2_completa_bombos_v8.webp',
-      sectores: Object.fromEntries(Object.entries({"river": [663, 241], "racing": [905, 241], "independiente": [1126, 241], "san_lorenzo": [1373, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo2_${r}_bombos_v8.webp`, x, y }])) });
+    // v215 — trasera ACERO v2 (belgrano-galpon-atras-{sin,con}-trofeos-v2): alineadas al encuadre del juego (escala ≈1,02, desplazamiento de pocos px; los botones dibujados coinciden con los del juego), sin compresión
+    Object.assign(GALPONES.belgrano.salas[1], { fondo: 'assets/galpon/belgrano/sala2_vacia_acero_v2.webp', completo: 'assets/galpon/belgrano/sala2_completa_acero_v2.webp',
+      sectores: Object.fromEntries(Object.entries({"river": [663, 241], "racing": [892, 241], "independiente": [1127, 241], "san_lorenzo": [1362, 241]}).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo2_${r}_acero_v2.webp`, x, y }])) });
   }
   { const S0 = GALPONES.central.salas[0];   // v212 — ROSARIO CENTRAL, sala delantera v5 (CENTRAL_SALA_DELANTERA_v5): escena propia por referente
     S0.radio = { src: null, parlante: { x: 450, y: 658, r: 30 } };   // radio de la mesa junto al referente
