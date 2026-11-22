@@ -279,9 +279,9 @@
   }
   { const S0 = GALPONES.belgrano.salas[0];   // v204 — BELGRANO, sala delantera v3/v1 (BELGRANO_SALA_DELANTERA_v3): escena propia por referente
     S0.radio = { src: null, parlante: { x: 118, y: 757, r: 26 } };   // radio de la mesa chica, junto al referente
-    S0.porRef = Object.fromEntries(Object.entries({"el_loco_tito": {"talleres": [228, 261], "central": [562, 261], "newells": [878, 261], "boca": [1227, 261]}, "gitano": {"talleres": [228, 261], "central": [561, 261], "newells": [877, 261], "boca": [1229, 261]}, "lucas": {"talleres": [228, 261], "central": [545, 261], "newells": [881, 261], "boca": [1204, 261]}}).map(([rid, L]) => [rid, {
-      fondo: `assets/galpon/belgrano/sala1_${rid}_vacia.webp`, completo: `assets/galpon/belgrano/sala1_${rid}_completa.webp`,
-      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}.webp`, x, y }])) }]));
+    S0.porRef = Object.fromEntries(Object.entries({"el_loco_tito": {"talleres": [228, 261], "central": [544, 261], "newells": [885, 261], "boca": [1228, 261]}, "gitano": {"talleres": [228, 261], "central": [553, 261], "newells": [892, 261], "boca": [1238, 261]}, "lucas": {"talleres": [228, 261], "central": [553, 261], "newells": [885, 261], "boca": [1228, 261]}}).map(([rid, L]) => [rid, {   // v220: frente ACERO (belgrano-referente-N-{sin,con}-trofeos, 1=El Loco Tito 2=Gitano 3=Lucas), alineado al encuadre del juego, sin compresión
+      fondo: `assets/galpon/belgrano/sala1_${rid}_vacia_acero.webp`, completo: `assets/galpon/belgrano/sala1_${rid}_completa_acero.webp`,
+      sectores: Object.fromEntries(Object.entries(L).map(([r, [x, y]]) => [r, { src: `assets/galpon/belgrano/trofeo1_${rid}_${r}_acero.webp`, x, y }])) }]));
     GALPONES.belgrano.mate = {};   // el referente ya está dibujado en la escena
     // v215 — trasera ACERO v2 (belgrano-galpon-atras-{sin,con}-trofeos-v2): alineadas al encuadre del juego (escala ≈1,02, desplazamiento de pocos px; los botones dibujados coinciden con los del juego), sin compresión
     Object.assign(GALPONES.belgrano.salas[1], { fondo: 'assets/galpon/belgrano/sala2_vacia_acero_v2.webp', completo: 'assets/galpon/belgrano/sala2_completa_acero_v2.webp',
