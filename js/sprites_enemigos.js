@@ -640,7 +640,7 @@ window.SPRITES_ENEMIGOS.el_tano = {
     recibe_cuerpo: {"src": "assets/enemigos/especiales/barras_river/el_tano/recibe_cuerpo.webp", "mira": "frente", "ref": 695.7, "pie": 792.9, "ancla": 200.8},
     tambalear: {"src": "assets/enemigos/especiales/barras_river/el_tano/tambalear.webp", "mira": "der", "ref": 695.7, "pie": 708.1, "ancla": 192.3},
     caida: {"src": "assets/enemigos/especiales/barras_river/el_tano/caida.webp", "mira": "der", "ref": 695.7, "pie": 633.0, "ancla": 195.6},
-    levantarse: {"src": "assets/enemigos/especiales/barras_river/el_tano/levantarse.webp", "mira": "frente", "ref": 695.7, "pie": 715.8, "ancla": 154.7},
+    levantarse: {"src": "assets/enemigos/especiales/barras_river/el_tano/levantarse.webp", "mira": "frente", "ref": 915.4, "pie": 715.8, "ancla": 154.7},   // v235: escala corregida por el tamaño de la cabeza (×0.76)
     derrota: {"src": "assets/enemigos/especiales/barras_river/el_tano/derrota.webp", "mira": "der", "ref": 794.0, "pie": 287.9, "ancla": 471.6, "acostado": true},
     lateral_anticipacion: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_anticipacion.webp", "mira": "der", "ref": 695.7, "pie": 799.0, "ancla": 74.7},
     lateral_efecto: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_efecto.webp", "mira": "der", "ref": 695.7, "pie": 801.9, "ancla": 55.4},
@@ -653,8 +653,8 @@ window.SPRITES_ENEMIGOS.el_tano = {
     camD_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_04.webp", "mira": "der", "ref": 695.7, "pie": 773.8, "ancla": 176.5, "origen": "el-tano-caminar-derecha-04-izquierda-adelante.png"},
     camD_05: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_05.webp", "mira": "der", "ref": 695.7, "pie": 793.3, "ancla": 194.1, "origen": "el-tano-caminar-derecha-pierna-derecha-despegue-v4.png"},
     camD_06: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_06.webp", "mira": "der", "ref": 695.7, "pie": 788.6, "ancla": 124.2, "origen": "el-tano-caminar-derecha-pierna-derecha-paso-v4.png"},
-    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_a.webp", "mira": "der", "ref": 695.7, "pie": 528.3, "ancla": 158.9, "origen": "el-tano-bloqueo-derecha-v2.png"},
-    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_b.webp", "mira": "der", "ref": 695.7, "pie": 537.6, "ancla": 159.9, "origen": "el-tano-bloqueo-izquierda-v2.png"}
+    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_a.webp", "mira": "der", "ref": 610.3, "pie": 528.3, "ancla": 158.9, "origen": "el-tano-bloqueo-derecha-v2.png"},   // v235: escala corregida por el tamaño de la cabeza (×1.14)
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_b.webp", "mira": "der", "ref": 638.3, "pie": 537.6, "ancla": 159.9, "origen": "el-tano-bloqueo-izquierda-v2.png"},   // v235: escala corregida por el tamaño de la cabeza (×1.09)
   },
   anim: {
     quieto: 'guardia',
