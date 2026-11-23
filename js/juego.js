@@ -34,6 +34,9 @@
   const VEL_ENEMIGO = 150;
   const PROF_GOLPE = 42;
   const SECUENCIA_ATAQUE = [0.22, 0.45];   // v225: s en 'golpear' hasta pasar de efecto → continuación → recuperación
+  // v226: franja de impacto (px a escala 1 delante del enemigo) de una secuencia, según hacia dónde mira. El tamaño del PNG no interviene.
+  const franjaSecu = (e, t) => { const A = e.luch.def.alcanceSecu && e.luch.def.alcanceSecu[t]; const b = A ? (Array.isArray(A) ? A : A[e.face < 0 ? 'izq' : 'der'] || A.der) : null; return b || e.franja[e.soloGolpe]; };
+  const franjasDe = e => { const SQ = ((window.SPRITES_ENEMIGOS || {})[e.luch.def.id] || {}).anim; return SQ && SQ.secuencias ? Object.keys(SQ.secuencias).map(t => franjaSecu(e, t)) : [e.franja[e.soloGolpe]]; };
   const EXTRA_AVISO_N1_4 = 0.6;          // v195: «!» de los barras en los niveles 1 a 4 = 0,40 + 0,60 = 1,00 s (v71: +2,0 · v193: +1,6)
   const PREP_MAX = 2.0;                  // v193: tope de la preparación visible («!» → golpe) de cualquier enemigo, en s de juego activo
   const FACTOR_CAMINATA_BARRAS = 0.85;   // v193: barras comunes caminan al 85 % (150 → 127,5 px/s). Una sola vez, al crear el enemigo
@@ -95,7 +98,7 @@
      (ref, pie, ancla, cajas) siguen en píxeles del ORIGINAL: anW/anH devuelven el tamaño original equivalente. Sin ese
      archivo (versión local) la escala es 1 y nada cambia. */
   const EA = window.ESCALA_ARTE || null;
-  const escalaArte = src => EA && EA.carpetas.some(c => src.startsWith(c)) ? EA.k : 1;
+  const escalaArte = src => EA && EA.carpetas.some(c => src.startsWith(c)) && !(EA.enteras || []).some(c => src.startsWith(c)) ? EA.k : 1;   // v226: + enteras
   const SUFIJO_ARTE = EA && EA.version ? `?v=${EA.version}` : '';   // versión web: las copias livianas no se confunden con imágenes viejas en caché
   const anW = im => im.naturalWidth / (im._k || 1), anH = im => im.naturalHeight / (im._k || 1);
   const CARGA = { concurrencia: 6, concurrenciaBaja: 2, tiempoMax: 25000, reintentos: 1 };
@@ -1077,7 +1080,7 @@
         e.st = 'golpear'; e.t = 0;
         const alc = alcanceEnemigo(e, e.golpe, e.var) * s * (e.jefe ? 1.1 : 1);   // v83: alcance de la variante (A/B) que se dibuja
         // v34: con franja propia (escobazo) conecta solo si el jugador está donde llega la PAJA, delante de él
-        const fr = e.franja && e.franja[e.golpe], dxF = (p.x - e.x) * e.face;
+        const fr = e.secu ? franjaSecu(e, e.secu) : e.franja && e.franja[e.golpe], dxF = (p.x - e.x) * e.face;   // v226: la del golpe que se está dibujando
         const llega = fr ? dxF >= fr[0] * s && dxF <= fr[1] * s : Math.abs(p.x - e.x) < alc && (p.x - e.x) * e.face > 0;
         // v194: registro de cada ataque (aviso → golpe = contacto: el daño se aplica en este mismo cuadro). Pruebas / diagnóstico.
         registroAtaques.push({ id: e.luch.def.id, aviso: e.prepHechas[e.prepHechas.length - 1], llega: !!(llega && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y)), dx: Math.round(Math.abs(p.x - e.x) / s), dy: Math.round(Math.abs(p.y - e.y)), t: +tiempo.toFixed(2), golpe: e.golpe, alc: Math.round(alc / s), frente: (p.x - e.x) * e.face > 0 });
@@ -1200,11 +1203,13 @@
     } else
     if (e.soloGolpe) {
       // v34: GORDO ESCOBA — un solo ataque (escobazo). Lo larga cuando el jugador queda dentro de la franja de la paja.
-      const fr = e.franja[e.soloGolpe], dxF = (p.x - e.x) * e.face;
-      if (e.ficha && !e.sinAtaque && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && dxF >= (fr[0] + 20) * s && dxF <= (fr[1] - 20) * s && e.enfriar <= 0) {
+      const dxF = (p.x - e.x) * e.face, alguna = franjasDe(e).some(fr => dxF >= (fr[0] + 20) * s && dxF <= (fr[1] - 20) * s);
+      if (e.ficha && !e.sinAtaque && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && alguna && e.enfriar <= 0) {
         e.golpe = e.soloGolpe; e.st = 'preparar'; e.t = inicioAviso(e);
         // v225: barras especiales de River — cada ataque es UNA secuencia completa con su objeto (lateral / ascendente), elegida al azar
-        const SQ = ((window.SPRITES_ENEMIGOS || {})[e.luch.def.id] || {}).anim; const tipos = SQ && SQ.secuencias ? Object.keys(SQ.secuencias) : [];
+        const SQ = ((window.SPRITES_ENEMIGOS || {})[e.luch.def.id] || {}).anim;
+        // v226: solo las secuencias cuyo objeto LLEGA a la distancia actual (franja propia por secuencia y lado, js/niveles.js → alcanceSecu)
+        const tipos = SQ && SQ.secuencias ? Object.keys(SQ.secuencias).filter(t => { const b = franjaSecu(e, t); return dxF >= (b[0] + 20) * s && dxF <= (b[1] - 20) * s; }) : [];
         e.secu = tipos.length ? tipos[Math.floor(Math.random() * tipos.length)] : null;
       }
     } else
@@ -1221,6 +1226,7 @@
     andar8(e, e.x - x0, e.y - y0, dt);                         // v192: caminata en 8 direcciones (solo River 1–4)
     vigilarTurno(e, p, s, dt, Math.hypot(e.x - x0, e.y - y0), dd, paso);   // v194: progreso real con el turno tomado
     e.recorrido += Math.hypot(e.x - x0, e.y - y0);            // los pasos avanzan con lo que camina
+    e.avanceLat = (e.avanceLat || 0) + (e.x - x0) * e.face / escalaEn(e.y);   // v226: avance de costado hacia donde mira (px a escala 1; atrás = negativo)
     if (Math.hypot(e.x - x0, e.y - y0) > 0.01) { e.mx = e.x - x0; e.my = e.y - y0;   // hacia dónde camina (para elegir paso de costado / de frente / de espaldas)
       // v92: tramo = distancia desde que ARRANCÓ a caminar (si estuvo más de 0,15 s sin moverse, empieza otro tramo: transición 02 → 03)
       if (e.ultMov == null || tiempo - e.ultMov > 0.15) e.tramo = 0;
@@ -1987,6 +1993,7 @@
     return L[((i + off) % 8 + 8) % 8];
   }
   function poseEnemigo(e, D, A) {
+    e.rmOff = 0;
     const an = { ...D.anim, dolor: D.anim.dolor || D.anim.quieto }, lado = e.face < 0 ? 'izq' : 'der';
     if (an.dolores) an.dolor = an.dolores[(e.nDolor || 0) % an.dolores.length];   // v55: reacción a / b / c según el golpe
     // v55: cayendo = desequilibrio a → b (si existe); si no, la pose de caída de siempre. frac = avance dentro de la caída (0…1)
@@ -2007,7 +2014,7 @@
     if (e.st === 'defensa' && an.bloqueo && protegeEnemigo(e) && bloqueoCargadoEne(A)) return an.bloqueo[lado];   // v24: brazos cruzados mientras protege (al subir/bajar la guardia, la guardia)
     if (e.st === 'dolor' || e.st === 'agarrado') return an.dolor;
     // v225: secuencia de ataque con objeto (anticipación → efecto → continuación → recuperación). El daño entra con el efecto.
-    const sq = an.secuencias && (an.secuencias[e.secu] || Object.values(an.secuencias)[0]);
+    const sq0 = an.secuencias && (an.secuencias[e.secu] || Object.values(an.secuencias)[0]), sq = sq0 && !Array.isArray(sq0) ? sq0[lado] : sq0;   // v226: {der, izq}
     if (sq && e.st === 'preparar') return sq[0];
     if (sq && e.st === 'golpear') return e.t < SECUENCIA_ATAQUE[0] ? sq[1] : e.t < SECUENCIA_ATAQUE[1] ? sq[2] : sq[3];
     if (e.st === 'preparar' && an.preparar && an.preparar[e.golpe]) return an.preparar[e.golpe];   // v32: policía levanta el palo antes del palazo
@@ -2029,6 +2036,14 @@
         if (i < an.caminaEntrada.length) return an.caminaEntrada[i];
         return lista[(i - an.caminaEntrada.length) % lista.length];
       }
+      // v226 — RAÍZ EN EL PIE (El Tano / EL FLACO): cada cuadro dura lo que el pie apoyado retrocede hasta el cuadro siguiente; mientras se ve,
+      // el dibujo queda quieto en el piso (rmOff lo corre hacia atrás lo que ya avanzó la posición lógica) → el pie no patina.
+      const RZ = D.raiz && (lista === an.caminaDer ? D.raiz.der : lista === an.caminaIzq ? D.raiz.izq : null);
+      if (RZ) {
+        const pos = (((e.avanceLat || 0) % RZ.total) + RZ.total) % RZ.total; let i = 0, c = 0;
+        while (i < RZ.d.length - 1 && pos >= c + RZ.d[i]) { c += RZ.d[i]; i++; }
+        e.rmOff = pos - c - RZ.total / (2 * RZ.d.length); e.rmCuadro = i; return lista[i];   // desfase CONSTANTE: entre cuadros el dibujo salta justo d
+      }
       const nom = lista === an.caminaAbajo ? 'caminaAbajo' : lista === an.caminaArriba ? 'caminaArriba' : lista === an.caminaIzq ? 'caminaIzq' : 'caminaDer', ms = msPaso(D, nom);
       if (ms) return lista[Math.floor((e.relojPaso || 0) * 1000 / ms) % lista.length];   // v93: por tiempo (El Gallego de frente)
       return lista[Math.floor(e.recorrido / (z * escalaEn(e.y))) % lista.length];
@@ -2049,6 +2064,7 @@
     const s = escalaEn(e.y), k = ALTO_PERSONAJE * s / m.ref;
     let dx = 0, rot = 0;
     if (e.st === 'preparar') dx = -8 * s * Math.min(1, e.t / 0.15);   // se echa atrás: se ve venir el golpe
+    if (e.rmOff) dx -= e.rmOff * s;                                   // v226: raíz en el pie (caminata de costado)
     if (!A.def.anim.dolor && id === A.def.anim.quieto && (e.st === 'dolor' || e.st === 'agarrado' || (e.st === 'ko' && e.t < KO_ANIM.reaccion)))
       { dx = -8 * s; rot = -0.06; }                                   // v26: golpe recibido provisorio (guardia inclinada, sin redibujar)
     sombra(e, s, alpha, m.acostado ? 150 : 70);
