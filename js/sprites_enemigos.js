@@ -691,7 +691,7 @@ window.SPRITES_ENEMIGOS.el_flaco = {   // v237: EL FLACO ≈36 % más grande que
     recibe_cuerpo: {"src": "assets/enemigos/especiales/barras_river/el_flaco/recibe_cuerpo.webp", "mira": "frente", "ref": 589.6, "pie": 795.7, "ancla": 132.9},
     tambalear: {"src": "assets/enemigos/especiales/barras_river/el_flaco/tambalear.webp", "mira": "der", "ref": 589.6, "pie": 780.8, "ancla": 235.4},
     caida: {"src": "assets/enemigos/especiales/barras_river/el_flaco/caida.webp", "mira": "der", "ref": 589.6, "pie": 541.7, "ancla": 333.6},
-    levantarse: {"src": "assets/enemigos/especiales/barras_river/el_flaco/levantarse.webp", "mira": "der", "ref": 589.6, "pie": 707.7, "ancla": 187.3},
+    levantarse: {"src": "assets/enemigos/especiales/barras_river/el_flaco/levantarse.webp", "mira": "der", "ref": 660.4, "pie": 707.7, "ancla": 187.3},   // v238: arrodillado 12 % más chico
     derrota: {"src": "assets/enemigos/especiales/barras_river/el_flaco/derrota.webp", "mira": "der", "ref": 777.8, "pie": 307.9, "ancla": 549.2, "acostado": true},
     lateral_anticipacion: {"src": "assets/enemigos/especiales/barras_river/el_flaco/lateral_anticipacion.webp", "mira": "der", "ref": 589.6, "pie": 810.1, "ancla": 79.7},
     lateral_efecto: {"src": "assets/enemigos/especiales/barras_river/el_flaco/lateral_efecto.webp", "mira": "der", "ref": 589.6, "pie": 804.3, "ancla": 79.7},
