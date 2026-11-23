@@ -86,6 +86,13 @@
     }
     // v56 — Matute jefe: mismos números que El Abuelo como jefe del nivel 10 (con su +20 % ya incluido y sus 2 barras).
     if (tipo === 'matute') return statsEnemigo('el_abuelo', nivel);
+    // v225 — barras especiales de River (El Tano, EL FLACO, PATOVA, VIKINGO): como el GORDO ESCOBA, sin números propios. Vida, barras y
+    // tiempos del Abuelo EN ESE NIVEL; su único golpe (con el objeto) = la piña del Abuelo. Sin patada ni cabezazo. Se los puede agarrar.
+    if (tipo === 'barra_river_especial') {
+      const a = statsEnemigo('el_abuelo', nivel);
+      return { vida: a.vida, pina: a.pina, patada: null, cabezazo: null,
+               preparacion: a.preparacion, recuperacion: a.recuperacion, agarrable: true, dolor: undefined, barras: a.barras };
+    }
     // v64 — jefes rivales de la campaña de River (El Chivo, Cacho, El Gallego): sin números propios → los del Abuelo como jefe, igual que Matute.
     if (tipo === 'el_chivo' || tipo === 'cacho' || tipo === 'el_gallego' || tipo === 'el_loco_tito' || tipo === 'el_toro' || tipo === 'el_tuerto_jefe' || tipo === 'muchinga_jefe' || tipo === 'el_paraguayo_jefe' || tipo === 'el_gordo_cadena_jefe' || tipo === 'pillin_jefe' || tipo === 'pimpi_jefe') return statsEnemigo('el_abuelo', nivel);   // v138: + El Tuerto   // v107: + El Toro   // v106: + El Loco Tito
     const b = BASE[tipo] || BASE.comun, n = nivelValido(nivel);
@@ -212,6 +219,19 @@
     // v56 — MATUTE como JEFE FINAL (Boca y San Lorenzo VS RIVER, nivel 10). Cuadros en js/sprites_enemigos.js → matute
     // (los mismos dibujos del Matute jugable). Sin números propios: vida, daño, 2 barras y bloqueo de daño cero = los del
     // Abuelo en el mismo papel (statsEnemigo('matute') → los del Abuelo; js/defensa.js → jefesPct). Mira a la derecha.
+    // v225 — BARRAS ESPECIALES DE RIVER (otras barras visitan el Monumental: visita_river). Uno por nivel, al final, solo (especialAlFinal):
+    // nivel 3 El Tano (micrófono con pie) · 6 EL FLACO (caño) · 7 PATOVA (cadena) · 8 VIKINGO (bate de aluminio). NO son jugables.
+    // Pegan SOLO con su objeto (soloGolpe): sin piñas, patadas ni golpes a mano libre. alcance = franja delante de él (px a escala 1)
+    // medida en el cuadro de efecto hasta la punta del objeto. Cuadros en js/sprites_enemigos.js. PATOVA: sinAtaque hasta que llegue
+    // una secuencia de cadena completa (la lateral tiene la «continuación» rota y la ascendente solo 2 de 4 cuadros).
+    el_tano:           { id: 'el_tano', tipo: 'barra_river_especial', nombre: 'El Tano', especial: true, sprite: null, mira: 1,
+                         soloGolpe: 'pina', nombreGolpe: 'Golpe de micrófono', alcance: { pina: [40, 150] }, distancia: 115 },
+    el_flaco:          { id: 'el_flaco', tipo: 'barra_river_especial', nombre: 'EL FLACO', especial: true, sprite: null, mira: 1,
+                         soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125 },
+    patova:            { id: 'patova', tipo: 'barra_river_especial', nombre: 'PATOVA', especial: true, sprite: null, mira: 1,
+                         soloGolpe: 'pina', nombreGolpe: 'Cadenazo', sinAtaque: true, alcance: { pina: [40, 160] }, distancia: 120 },
+    vikingo:           { id: 'vikingo', tipo: 'barra_river_especial', nombre: 'VIKINGO', especial: true, sprite: null, mira: 1,
+                         soloGolpe: 'pina', nombreGolpe: 'Batazo', alcance: { pina: [40, 170] }, distancia: 125 },
     matute:            { id: 'matute', tipo: 'matute', nombre: 'Matute', sprite: null, mira: 1, jefe: true,
                          lema: 'Defiende los trapos del Tablón.' },
     // v64 — jefes rivales de la CAMPAÑA DE RIVER (cuadros en js/sprites_enemigos.js, los mismos del referente jugable). Miran a la derecha.
@@ -461,7 +481,9 @@
      Configuración de los niveles equivalentes de las demás visitas: OLEADAS por nivel, sin especiales de Boca (Cabeza de Poronga,
      Gordo Escoba, El Abuelo espectador), nivel 5 = policías (regla global), jefe Matute con los números del jefe final (El Abuelo). */
   const RIVER_POP = y => ({ piso: { yMin: y, yMax: 925, xMin: 60, xMax: 1612 }, escala: [0.74, 1.04], inicio: { x: 300, y: 840 }, entradas: LADOS(y + 45, Math.round((y + 925) / 2), 885) });
-  const VISITA_RIVER = JEFE_10(PANTALLAS_RIVER.slice(0, 8).map(P => ({ ...sinBoca(P), oleadas: OLEADAS[P.n].slice(), animados: [] })).concat(
+  const ESPECIAL_RIVER = { 3: 'el_tano', 6: 'el_flaco', 7: 'patova', 8: 'vikingo' };   // v225: barras especiales de River, uno por nivel
+  const VISITA_RIVER = JEFE_10(PANTALLAS_RIVER.slice(0, 8).map(P => ({ ...sinBoca(P), oleadas: OLEADAS[P.n].slice(), animados: [],
+    ...(ESPECIAL_RIVER[P.n] ? { especialAlFinal: ESPECIAL_RIVER[P.n] } : {}) })).concat(
     nivelesDe('river', [['09.webp', 'La popular', { yMin: 540, ...RIVER_POP(540) }], ['10.webp', '¡Por los trapos del Tablón!', { yMin: 540, ...RIVER_POP(540) }]], 'river', 'river')
       .map((P, i) => ({ ...P, n: 9 + i, oleadas: OLEADAS[9 + i].slice(), mini: `assets/escenarios/mini/river_${9 + i && String(9 + i).padStart(2, "0")}.webp` }))),
     'matute', '«El Monumental es nuestro. De acá no te llevás ni un trapo.»');

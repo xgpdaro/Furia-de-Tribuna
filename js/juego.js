@@ -33,6 +33,7 @@
   const VEL_JUGADOR = 300;               // px/s. TODO: aplicar Velocidad cuando exista la fórmula (R.modificadorVelocidad)
   const VEL_ENEMIGO = 150;
   const PROF_GOLPE = 42;
+  const SECUENCIA_ATAQUE = [0.22, 0.45];   // v225: s en 'golpear' hasta pasar de efecto → continuación → recuperación
   const EXTRA_AVISO_N1_4 = 0.6;          // v195: «!» de los barras en los niveles 1 a 4 = 0,40 + 0,60 = 1,00 s (v71: +2,0 · v193: +1,6)
   const PREP_MAX = 2.0;                  // v193: tope de la preparación visible («!» → golpe) de cualquier enemigo, en s de juego activo
   const FACTOR_CAMINATA_BARRAS = 0.85;   // v193: barras comunes caminan al 85 % (150 → 127,5 px/s). Una sola vez, al crear el enemigo
@@ -312,7 +313,7 @@
       barraComun: esBarraComun(def),
       barrasExtra: (st.barras || 1) - 1, fase: 1,   // v29: El Abuelo = 1 barra extra (una sola recuperación)
       iaPolicia: def.tipo === 'policia', escudazosSeguidos: 0, golpesSinAccion: 0, carga: 0,   // v32: IA propia del policía · v69: los cuatro + carga del especial
-      soloGolpe: def.soloGolpe || null, franja: def.alcance || null, distancia: def.distancia || 0,   // v34: GORDO ESCOBA (solo escobazo, pega con la paja)
+      soloGolpe: def.soloGolpe || null, franja: def.alcance || null, distancia: def.distancia || 0, sinAtaque: !!def.sinAtaque,   // v225: barras especiales de River (sinAtaque = todavía sin secuencia de ataque completa)   // v34: GORDO ESCOBA (solo escobazo, pega con la paja)
       // defensa (js/defensa.js): se decide en el nivel actual, no se acumula al reintentar
       puedeCubrirse: D.enemigoPuedeCubrirse(def.id, nivel), jefeDefensa: D.esJefeDefensa(def.id),
       defPendiente: null, enfriarDef: 0, vistoAtaque: 0, impactos: [], cadenaEnfriar: 0, salidaCadena: false
@@ -1090,7 +1091,7 @@
         if (p.st !== 'ko' && p.st !== 'poder' && p.st !== 'damajuana' && p.inv <= 0 && !invencibleDebug && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && llega) {
           const cubierto = p.st === 'defensa';
           const r = C.golpeEnemigo(e.luch, p.luch, e.golpe, pctJugador());
-          const nombreGolpe = e.soloGolpe ? 'Escobazo' : { pina: 'Piña', patada: 'Patada', cabezazo: 'Cabezazo', especial: 'Golpe especial' }[e.golpe];
+          const nombreGolpe = e.soloGolpe ? (e.luch.def.nombreGolpe || 'Escobazo') : { pina: 'Piña', patada: 'Patada', cabezazo: 'Cabezazo', especial: 'Golpe especial' }[e.golpe];
           if (cubierto) {                                    // 0 de daño: sin herida, sin empujón, sigue cubierto
             console.info(`[Bloqueo] ${nombreGolpe} de ${e.luch.nombreHUD} (${r.danio}) → ${sel.playerName} se cubrió: recibe ${r.aplicado} (${(p.x - e.x) * p.face < 0 ? 'de frente' : 'por la espalda'})`);
             chispa(p, 'bloqueo');
@@ -1200,8 +1201,11 @@
     if (e.soloGolpe) {
       // v34: GORDO ESCOBA — un solo ataque (escobazo). Lo larga cuando el jugador queda dentro de la franja de la paja.
       const fr = e.franja[e.soloGolpe], dxF = (p.x - e.x) * e.face;
-      if (e.ficha && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && dxF >= (fr[0] + 20) * s && dxF <= (fr[1] - 20) * s && e.enfriar <= 0) {
+      if (e.ficha && !e.sinAtaque && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && dxF >= (fr[0] + 20) * s && dxF <= (fr[1] - 20) * s && e.enfriar <= 0) {
         e.golpe = e.soloGolpe; e.st = 'preparar'; e.t = inicioAviso(e);
+        // v225: barras especiales de River — cada ataque es UNA secuencia completa con su objeto (lateral / ascendente), elegida al azar
+        const SQ = ((window.SPRITES_ENEMIGOS || {})[e.luch.def.id] || {}).anim; const tipos = SQ && SQ.secuencias ? Object.keys(SQ.secuencias) : [];
+        e.secu = tipos.length ? tipos[Math.floor(Math.random() * tipos.length)] : null;
       }
     } else
     // v194: decide con un 5 % de margen dentro del alcance y la tolerancia reales (antes, justo en el borde, el golpe salía y no llegaba)
@@ -2002,6 +2006,10 @@
     }
     if (e.st === 'defensa' && an.bloqueo && protegeEnemigo(e) && bloqueoCargadoEne(A)) return an.bloqueo[lado];   // v24: brazos cruzados mientras protege (al subir/bajar la guardia, la guardia)
     if (e.st === 'dolor' || e.st === 'agarrado') return an.dolor;
+    // v225: secuencia de ataque con objeto (anticipación → efecto → continuación → recuperación). El daño entra con el efecto.
+    const sq = an.secuencias && (an.secuencias[e.secu] || Object.values(an.secuencias)[0]);
+    if (sq && e.st === 'preparar') return sq[0];
+    if (sq && e.st === 'golpear') return e.t < SECUENCIA_ATAQUE[0] ? sq[1] : e.t < SECUENCIA_ATAQUE[1] ? sq[2] : sq[3];
     if (e.st === 'preparar' && an.preparar && an.preparar[e.golpe]) return an.preparar[e.golpe];   // v32: policía levanta el palo antes del palazo
     if (e.st === 'golpear' && e.t < TIEMPO.golpeVisible) { const a = (e.var && an[e.golpe + e.var]) || an[e.golpe]; if (a) return typeof a === 'string' ? a : a[lado]; }   // v83: variante A/B
     if (an.camina8 && D.camina8v2) {                       // v192: estado de caminata calculado en la ACTUALIZACIÓN (andar8), no al dibujar
@@ -2031,7 +2039,9 @@
   function dibujarEnemigoAnimado(e, A, alpha) {
     let id = poseEnemigo(e, A.def, A);
     if (!A.imgs[id]) { avisarFalta(A, id); id = A.def.anim.quieto; }   // nunca desaparece: usa la guardia
-    const m = A.def.frames[id];
+    let m = A.def.frames[id];
+    // v225: si el cuadro tiene su versión dibujada del otro lado (guardia izquierda de las barras especiales de River), se usa esa en vez de espejar
+    if (m.otroLado && A.imgs[m.otroLado] && (m.mira === 'der' ? 1 : m.mira === 'izq' ? -1 : 0) === -e.face) { id = m.otroLado; m = A.def.frames[id]; }
     let img = A.imgs[id]; if (!img) return;
     const dir = m.mira === 'der' ? 1 : m.mira === 'izq' ? -1 : 0;     // frente/espalda: no se espeja
     let espejo = dir !== 0 && dir !== e.face, ancla = m.ancla;
