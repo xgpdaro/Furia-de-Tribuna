@@ -225,9 +225,9 @@
     // medida en el cuadro de efecto hasta la punta del objeto. Cuadros en js/sprites_enemigos.js. PATOVA: sinAtaque hasta que llegue
     // una secuencia de cadena completa (la lateral tiene la «continuación» rota y la ascendente solo 2 de 4 cuadros).
     el_tano:           { id: 'el_tano', tipo: 'barra_river_especial', nombre: 'El Tano', especial: true, sprite: null, mira: 1,
-                         soloGolpe: 'pina', nombreGolpe: 'Golpe de micrófono', alcance: { pina: [40, 150] }, distancia: 115 },   // v229: velocidad normal de los especiales (150 px/s); alcance configurado (alcance.pina)
+                         soloGolpe: 'pina', nombreGolpe: 'Golpe de micrófono', alcance: { pina: [40, 150] }, distancia: 115, velFactor: 0.85 },   // v230: camina un poco más lento (≈128 px/s, como los barras comunes); alcance configurado (alcance.pina)
     el_flaco:          { id: 'el_flaco', tipo: 'barra_river_especial', nombre: 'EL FLACO', especial: true, sprite: null, mira: 1,
-                         soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125 },   // v229: velocidad normal de los especiales (150 px/s); alcance configurado (alcance.pina)
+                         soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 0.85 },   // v230: camina un poco más lento (≈128 px/s, como los barras comunes); alcance configurado (alcance.pina)
     patova:            { id: 'patova', tipo: 'barra_river_especial', nombre: 'PATOVA', especial: true, sprite: null, mira: 1,
                          soloGolpe: 'pina', nombreGolpe: 'Cadenazo', sinAtaque: true, alcance: { pina: [40, 160] }, distancia: 120 },
     vikingo:           { id: 'vikingo', tipo: 'barra_river_especial', nombre: 'VIKINGO', especial: true, sprite: null, mira: 1,

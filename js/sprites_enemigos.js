@@ -673,7 +673,7 @@ window.SPRITES_ENEMIGOS.el_tano = {
   // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
   // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
   raizMedida: {"der": {"d": [14.7, 30.6, 113.4, 26.3, 83.7, 31.5], "total": 300.2}, "izq": {"d": [9.9, 17.7, 121.6, 23.7, 87.1, 38.4], "total": 298.4}},
-  pasoMs: { caminaDer: 130, caminaIzq: 130 },   // v229: el cuerpo avanza continuo y los cuadros cambian cada 130 ms (≈ 8 por segundo)
+  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // v230: cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   pieFijoMedido: { caminaDer: 43.7, caminaIzq: 49.7 },   // v229: NO se usa (con el dibujo quieto en cada cuadro la caminata se veía a los saltos)
   zancada: 34, zancadaLado: 38
 };
@@ -739,7 +739,7 @@ window.SPRITES_ENEMIGOS.el_flaco = {
   // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
   // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
   raizMedida: {"der": {"d": [11.6, 87.1, 50.0, 10.8, 99.6, 44.9], "total": 304.0}},
-  pasoMs: { caminaDer: 130, caminaIzq: 130 },   // v229: el cuerpo avanza continuo y los cuadros cambian cada 130 ms (≈ 8 por segundo)
+  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // v230: cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   pieFijoMedido: { caminaDer: 57.2, caminaIzq: 45.3 },   // v229: NO se usa (con el dibujo quieto en cada cuadro la caminata se veía a los saltos)
   zancada: 34, zancadaLado: 38
 };
