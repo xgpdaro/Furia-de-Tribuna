@@ -229,7 +229,7 @@
     el_flaco:          { id: 'el_flaco', tipo: 'barra_river_especial', nombre: 'EL FLACO', especial: true, sprite: null, mira: 1,
                          soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 0.85 },   // v230: camina un poco más lento (≈128 px/s, como los barras comunes); alcance configurado (alcance.pina)
     patova:            { id: 'patova', tipo: 'barra_river_especial', nombre: 'PATOVA', especial: true, sprite: null, mira: 1,
-                         soloGolpe: 'pina', nombreGolpe: 'Cadenazo', sinAtaque: true, alcance: { pina: [40, 160] }, distancia: 120, velFactor: 0.85 },   // v239: como El Tano / EL FLACO
+                         soloGolpe: 'pina', nombreGolpe: 'Cadenazo', alcance: { pina: [40, 160] }, distancia: 120, velFactor: 0.85 },   // v239: como El Tano / EL FLACO
     vikingo:           { id: 'vikingo', tipo: 'barra_river_especial', nombre: 'VIKINGO', especial: true, sprite: null, mira: 1,
                          soloGolpe: 'pina', nombreGolpe: 'Batazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 0.85 },   // v239: como El Tano / EL FLACO
     matute:            { id: 'matute', tipo: 'matute', nombre: 'Matute', sprite: null, mira: 1, jefe: true,

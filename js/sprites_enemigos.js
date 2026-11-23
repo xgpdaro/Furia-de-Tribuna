@@ -730,8 +730,8 @@ window.SPRITES_ENEMIGOS.el_flaco = {   // v237: EL FLACO ≈36 % más grande que
 // secuencia de cadena completa).
 window.SPRITES_ENEMIGOS.patova = {
   frames: {
-    guardia: {"src": "assets/enemigos/especiales/barras_river/patova/guardia.webp", "mira": "der", "ref": 599.7, "pie": 802.1, "ancla": 59.1, "otroLado": "guardia_izq"},
-    guardia_izq: {"src": "assets/enemigos/especiales/barras_river/patova/guardia_izq.webp", "mira": "izq", "ref": 599.7, "pie": 791.0, "ancla": 126.1},
+    guardia: {"src": "assets/enemigos/especiales/barras_river/patova/guardia.webp", "mira": "der", "ref": 705.5, "pie": 802.1, "ancla": 59.1, "otroLado": "guardia_izq"},
+    guardia_izq: {"src": "assets/enemigos/especiales/barras_river/patova/guardia_izq.webp", "mira": "izq", "ref": 705.5, "pie": 791.0, "ancla": 126.1},
     cam_frente_01: {"src": "assets/enemigos/especiales/barras_river/patova/cam_frente_01.webp", "mira": "frente", "ref": 695.7, "pie": 809.6, "ancla": 141.1},
     cam_frente_02: {"src": "assets/enemigos/especiales/barras_river/patova/cam_frente_02.webp", "mira": "frente", "ref": 695.7, "pie": 801.6, "ancla": 144.8},
     cam_frente_03: {"src": "assets/enemigos/especiales/barras_river/patova/cam_frente_03.webp", "mira": "frente", "ref": 695.7, "pie": 796.8, "ancla": 135.2},
@@ -756,8 +756,11 @@ window.SPRITES_ENEMIGOS.patova = {
     camD_04: {"src": "assets/enemigos/especiales/barras_river/patova/camD_04.webp", "mira": "der", "ref": 764.5, "pie": 775.0, "ancla": 223.0, "origen": "patova-caminar-derecha-04-izquierda-adelante-v2.png"},
     camD_05: {"src": "assets/enemigos/especiales/barras_river/patova/camD_05.webp", "mira": "der", "ref": 695.7, "pie": 748.4, "ancla": 207.6, "origen": "patova-caminar-derecha-pierna-derecha-despegue-v4.png"},
     camD_06: {"src": "assets/enemigos/especiales/barras_river/patova/camD_06.webp", "mira": "der", "ref": 695.7, "pie": 746.2, "ancla": 149.6, "origen": "patova-caminar-derecha-pierna-derecha-paso-v4.png"},
-    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_a.webp", "mira": "der", "ref": 808.9, "pie": 746.2, "ancla": 181.5, "origen": "patova-bloqueo-derecha-v2.png"},
-    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_b.webp", "mira": "der", "ref": 695.7, "pie": 733.5, "ancla": 223.0, "origen": "patova-bloqueo-izquierda-v2.png"}
+    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_a.webp", "mira": "der", "ref": 851.5, "pie": 746.2, "ancla": 181.5, "origen": "patova-bloqueo-derecha-v2.png"},
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_b.webp", "mira": "der", "ref": 818.5, "pie": 733.5, "ancla": 223.0, "origen": "patova-bloqueo-izquierda-v2.png"},
+    lateral_anticipacion: {"src": "assets/enemigos/especiales/barras_river/patova/lateral_anticipacion.webp", "mira": "der", "ref": 695.7, "pie": 752.1, "ancla": 152.5, "origen": "patova-ataque-arco-lateral-derecha-anticipacion.png"},
+    lateral_efecto: {"src": "assets/enemigos/especiales/barras_river/patova/lateral_efecto.webp", "mira": "der", "ref": 695.7, "pie": 762.7, "ancla": 59.4, "origen": "patova-ataque-arco-lateral-derecha-efecto.png"},
+    lateral_recuperacion: {"src": "assets/enemigos/especiales/barras_river/patova/lateral_recuperacion.webp", "mira": "der", "ref": 695.7, "pie": 752.6, "ancla": 197.8, "origen": "patova-ataque-arco-lateral-derecha-recuperacion.png"}
   },
   anim: {
     quieto: 'guardia',
@@ -765,7 +768,8 @@ window.SPRITES_ENEMIGOS.patova = {
     caminaAbajo: ["cam_frente_01", "cam_frente_02", "cam_frente_03", "cam_frente_04", "cam_frente_05", "cam_frente_06"], caminaArriba: ["cam_espalda_01", "cam_espalda_02", "cam_espalda_03", "cam_espalda_04", "cam_espalda_05", "cam_espalda_06"],
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
-    suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota'
+    suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
+    secuencias: { lateral: ['lateral_anticipacion', 'lateral_efecto', 'lateral_efecto', 'lateral_recuperacion'] }   // v240: cadenazo lateral (la «continuación» dibujada está rota: se sostiene el efecto)
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
