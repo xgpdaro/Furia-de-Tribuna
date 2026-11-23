@@ -776,7 +776,7 @@ window.SPRITES_ENEMIGOS.patova = {
 };
 // VIKINGO (bate de aluminio) — v239 (PRUEBA JUGABLE), mismo armado que El Tano y EL FLACO: 15 % más grande (ref ÷ 1,15), caminata derecha
 // de 6 cuadros (01 · pierna izquierda despegue v4 · paso v4 · 04 izquierda adelante v2 · pierna derecha despegue v4 · paso v4); hacia la
-// izquierda, la misma espejada. Bloqueo v2 (a/b). Ataques con el bate: arco lateral y ascendente (hacia la izquierda, espejados).
+// izquierda, la misma espejada. Bloqueo v2 (a/b). v241: ataque con el bate v3 (4 cuadros propios por lado; el 02 «barrido» es el momento activo).
 window.SPRITES_ENEMIGOS.vikingo = {
   frames: {
     guardia: {"src": "assets/enemigos/especiales/barras_river/vikingo/guardia.webp", "mira": "der", "ref": 695.7, "pie": 800.5, "ancla": 93.2, "otroLado": "guardia_izq"},
@@ -799,14 +799,6 @@ window.SPRITES_ENEMIGOS.vikingo = {
     caida: {"src": "assets/enemigos/especiales/barras_river/vikingo/caida.webp", "mira": "der", "ref": 695.7, "pie": 619.3, "ancla": 278.1},
     levantarse: {"src": "assets/enemigos/especiales/barras_river/vikingo/levantarse.webp", "mira": "der", "ref": 695.7, "pie": 654.3, "ancla": 221.5},
     derrota: {"src": "assets/enemigos/especiales/barras_river/vikingo/derrota.webp", "mira": "der", "ref": 870.5, "pie": 332.7, "ancla": 516.6, "acostado": true},
-    lateral_anticipacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/lateral_anticipacion.webp", "mira": "der", "ref": 695.7, "pie": 796.3, "ancla": 94.8},
-    lateral_efecto: {"src": "assets/enemigos/especiales/barras_river/vikingo/lateral_efecto.webp", "mira": "der", "ref": 695.7, "pie": 794.7, "ancla": 99.1},
-    lateral_continuacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/lateral_continuacion.webp", "mira": "der", "ref": 695.7, "pie": 789.9, "ancla": 155.2},
-    lateral_recuperacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/lateral_recuperacion.webp", "mira": "der", "ref": 695.7, "pie": 798.9, "ancla": 86.9},
-    ascendente_anticipacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/ascendente_anticipacion.webp", "mira": "der", "ref": 695.7, "pie": 788.3, "ancla": 98.0},
-    ascendente_efecto: {"src": "assets/enemigos/especiales/barras_river/vikingo/ascendente_efecto.webp", "mira": "der", "ref": 695.7, "pie": 802.1, "ancla": 144.6},
-    ascendente_continuacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/ascendente_continuacion.webp", "mira": "der", "ref": 695.7, "pie": 797.4, "ancla": 101.2},
-    ascendente_recuperacion: {"src": "assets/enemigos/especiales/barras_river/vikingo/ascendente_recuperacion.webp", "mira": "der", "ref": 695.7, "pie": 802.1, "ancla": 103.8},
     camD_01: {"src": "assets/enemigos/especiales/barras_river/vikingo/camD_01.webp", "mira": "der", "ref": 695.7, "pie": 787.3, "ancla": 209.2, "origen": "vikingo-caminar-derecha-01.png"},
     camD_02: {"src": "assets/enemigos/especiales/barras_river/vikingo/camD_02.webp", "mira": "der", "ref": 695.7, "pie": 785.2, "ancla": 209.8, "origen": "vikingo-caminar-derecha-pierna-izquierda-despegue-v4.png"},
     camD_03: {"src": "assets/enemigos/especiales/barras_river/vikingo/camD_03.webp", "mira": "der", "ref": 695.7, "pie": 749.7, "ancla": 156.8, "origen": "vikingo-caminar-derecha-pierna-izquierda-paso-v4.png"},
@@ -814,7 +806,15 @@ window.SPRITES_ENEMIGOS.vikingo = {
     camD_05: {"src": "assets/enemigos/especiales/barras_river/vikingo/camD_05.webp", "mira": "der", "ref": 695.7, "pie": 785.7, "ancla": 216.6, "origen": "vikingo-caminar-derecha-pierna-derecha-despegue-v4.png"},
     camD_06: {"src": "assets/enemigos/especiales/barras_river/vikingo/camD_06.webp", "mira": "der", "ref": 695.7, "pie": 796.3, "ancla": 208.2, "origen": "vikingo-caminar-derecha-pierna-derecha-paso-v4.png"},
     bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/vikingo/bloqueo_a.webp", "mira": "der", "ref": 695.7, "pie": 789.4, "ancla": 250.6, "origen": "vikingo-bloqueo-derecha-v2.png"},
-    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/vikingo/bloqueo_b.webp", "mira": "der", "ref": 695.7, "pie": 793.6, "ancla": 287.4, "origen": "vikingo-bloqueo-izquierda-v2.png"}
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/vikingo/bloqueo_b.webp", "mira": "der", "ref": 695.7, "pie": 793.6, "ancla": 287.4, "origen": "vikingo-bloqueo-izquierda-v2.png"},
+    bate_der_01: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_01.webp", "mira": "der", "ref": 695.7, "pie": 563.4, "ancla": 247.4, "origen": "vikingo-bate-derecha-01-preparacion-v3.png"},
+    bate_der_02: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_02.webp", "mira": "der", "ref": 695.7, "pie": 585.7, "ancla": 320.1, "origen": "vikingo-bate-derecha-02-barrido-v3.png"},
+    bate_der_03: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_03.webp", "mira": "der", "ref": 695.7, "pie": 588.1, "ancla": 285.9, "origen": "vikingo-bate-derecha-03-continuacion-v3.png"},
+    bate_der_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_04.webp", "mira": "der", "ref": 695.7, "pie": 589.8, "ancla": 169.4, "origen": "vikingo-bate-derecha-04-recuperacion-v3.png"},
+    bate_izq_01: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_01.webp", "mira": "izq", "ref": 695.7, "pie": 575.7, "ancla": 332.6, "origen": "vikingo-bate-izquierda-01-preparacion-v3.png"},
+    bate_izq_02: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_02.webp", "mira": "izq", "ref": 695.7, "pie": 588.7, "ancla": 422.1, "origen": "vikingo-bate-izquierda-02-barrido-v3.png"},
+    bate_izq_03: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_03.webp", "mira": "izq", "ref": 695.7, "pie": 588.7, "ancla": 327.0, "origen": "vikingo-bate-izquierda-03-continuacion-v3.png"},
+    bate_izq_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_04.webp", "mira": "izq", "ref": 695.7, "pie": 628.6, "ancla": 337.9, "origen": "vikingo-bate-izquierda-04-recuperacion-v3.png"}
   },
   anim: {
     quieto: 'guardia',
@@ -823,7 +823,7 @@ window.SPRITES_ENEMIGOS.vikingo = {
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
-    secuencias: {"lateral": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "ascendente": ["ascendente_anticipacion", "ascendente_efecto", "ascendente_continuacion", "ascendente_recuperacion"]}
+    secuencias: { bate: { der: ['bate_der_01', 'bate_der_02', 'bate_der_03', 'bate_der_04'], izq: ['bate_izq_01', 'bate_izq_02', 'bate_izq_03', 'bate_izq_04'] } }   // v241: preparación → barrido (momento activo) → continuación → recuperación
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
