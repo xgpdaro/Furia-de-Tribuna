@@ -225,11 +225,9 @@
     // medida en el cuadro de efecto hasta la punta del objeto. Cuadros en js/sprites_enemigos.js. PATOVA: sinAtaque hasta que llegue
     // una secuencia de cadena completa (la lateral tiene la «continuación» rota y la ascendente solo 2 de 4 cuadros).
     el_tano:           { id: 'el_tano', tipo: 'barra_river_especial', nombre: 'El Tano', especial: true, sprite: null, mira: 1,
-                         soloGolpe: 'pina', nombreGolpe: 'Golpe de micrófono', alcance: { pina: [40, 150] }, distancia: 115,
-                         alcanceSecu: { lateral: { der: [40, 150], izq: [60, 265] } } },   // v227: hacia la izquierda, el brazo extendido (punta del micrófono ≈ 273)
+                         soloGolpe: 'pina', nombreGolpe: 'Golpe de micrófono', alcance: { pina: [40, 150] }, distancia: 115, velFactor: 1.33 },   // v228: sin alcance propio por golpe: usa el configurado (alcance.pina). velFactor: 200 px/s, sincronizado con su paso
     el_flaco:          { id: 'el_flaco', tipo: 'barra_river_especial', nombre: 'EL FLACO', especial: true, sprite: null, mira: 1,
-                         soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125,
-                         alcanceSecu: { lateral: [40, 180], ascendente: [40, 160], estocada: { der: [80, 430], izq: [80, 340] } } },   // v227: punta del caño medida en cada cuadro de impacto (escala corregida)
+                         soloGolpe: 'pina', nombreGolpe: 'Cañazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 1.53 },   // v228: sin alcance propio por golpe: usa el configurado (alcance.pina). velFactor: 230 px/s, sincronizado con su paso
     patova:            { id: 'patova', tipo: 'barra_river_especial', nombre: 'PATOVA', especial: true, sprite: null, mira: 1,
                          soloGolpe: 'pina', nombreGolpe: 'Cadenazo', sinAtaque: true, alcance: { pina: [40, 160] }, distancia: 120 },
     vikingo:           { id: 'vikingo', tipo: 'barra_river_especial', nombre: 'VIKINGO', especial: true, sprite: null, mira: 1,

@@ -312,7 +312,7 @@
       jefe: !!def.jefe, especial: !!def.especial, agarrable: st.agarrable, dolor: st.dolor,
       // v193: velocidad de caminata propia (px/s a escala 1). Barras comunes (tipo 'comun', no jefes ni especiales) × 0,85;
       // referentes/jefes, policías y especiales sin cambio. velRefPaso = la velocidad con la que se diseñó su cadencia (la anterior).
-      velCaminar: VEL_ENEMIGO * (def.jefe ? 0.8 : 1) * (esBarraComun(def) ? FACTOR_CAMINATA_BARRAS : 1), velRefPaso: VEL_ENEMIGO * (def.jefe ? 0.8 : 1),
+      velCaminar: VEL_ENEMIGO * (def.jefe ? 0.8 : 1) * (esBarraComun(def) ? FACTOR_CAMINATA_BARRAS : 1) * (def.velFactor || 1), velRefPaso: VEL_ENEMIGO * (def.jefe ? 0.8 : 1) * (def.velFactor || 1),   // v228: velFactor (El Tano / EL FLACO: velocidad sincronizada con su paso)
       barraComun: esBarraComun(def),
       barrasExtra: (st.barras || 1) - 1, fase: 1,   // v29: El Abuelo = 1 barra extra (una sola recuperación)
       iaPolicia: def.tipo === 'policia', escudazosSeguidos: 0, golpesSinAccion: 0, carga: 0,   // v32: IA propia del policía · v69: los cuatro + carga del especial
@@ -1942,8 +1942,9 @@
      exactamente lo mismo que antes (1 s por s); al 85 % da 0,85 s por s → el ciclo dura /0,85 (180 → 211,8 ms por cuadro) y el paso
      mide lo mismo; bloqueado no avanza. Tope 1,5 × dt (empujones). */
   function avanzarReloj(e, dx, dy, dt) {
-    const v = e.velRefPaso || VEL_ENEMIGO;
-    e.relojPaso = (e.relojPaso || 0) + Math.min(dt * 1.5, Math.hypot(dx, dy / 0.7) / v);
+    // v228: El Tano / EL FLACO (velFactor): el paso dibujado se achica con la profundidad → el reloj corre según la escala, así el pie apoyado no patina
+    const pe = e.luch && e.luch.def && e.luch.def.velFactor ? escalaEn(e.y) : 1, v = (e.velRefPaso || VEL_ENEMIGO) * pe;
+    e.relojPaso = (e.relojPaso || 0) + Math.min(dt * (pe < 1 ? 1.5 / pe : 1.5), Math.hypot(dx, dy / 0.7) / v);
   }
   const AND8 = { velNormal: VEL_ENEMIGO * FACTOR_CAMINATA_BARRAS, profundidad: 0.7, rango: [0.75, 1.35], arranca: 0.30, arrancaT: 0.04, frena: 0.12, frenaT: 0.10, giro: 32, snap: 100, sostener: 0.05, reinicio: 0.35 };
   function andar8(e, dx, dy, dt) {
@@ -2045,7 +2046,14 @@
         e.rmOff = pos - c - RZ.total / (2 * RZ.d.length); e.rmCuadro = i; return lista[i];   // desfase CONSTANTE: entre cuadros el dibujo salta justo d
       }
       const nom = lista === an.caminaAbajo ? 'caminaAbajo' : lista === an.caminaArriba ? 'caminaArriba' : lista === an.caminaIzq ? 'caminaIzq' : 'caminaDer', ms = msPaso(D, nom);
-      if (ms) return lista[Math.floor((e.relojPaso || 0) * 1000 / ms) % lista.length];   // v93: por tiempo (El Gallego de frente)
+      if (ms) {
+        const fr = (e.relojPaso || 0) * 1000 / ms;
+        // v228 — PIE FIJO (El Tano / EL FLACO): el dibujo queda quieto en el piso mientras dura el cuadro y avanza de golpe al cambiar
+        // (con el pivote de cada cuadro, el salto = lo que retrocede el pie apoyado). Solo si camina hacia donde mira.
+        const PF = D.pieFijo && D.pieFijo[nom];
+        if (PF && (e.mx || 0) * e.face > 0) e.rmOff = ((fr % 1) - 0.5) * PF;
+        return lista[Math.floor(fr) % lista.length];   // v93: por tiempo (El Gallego de frente)
+      }
       return lista[Math.floor(e.recorrido / (z * escalaEn(e.y))) % lista.length];
     }
     return an.quieto;
