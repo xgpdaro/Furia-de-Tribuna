@@ -756,16 +756,16 @@ window.SPRITES_ENEMIGOS.patova = {
     camD_04: {"src": "assets/enemigos/especiales/barras_river/patova/camD_04.webp", "mira": "der", "ref": 764.5, "pie": 775.0, "ancla": 223.0, "origen": "patova-caminar-derecha-04-izquierda-adelante-v2.png"},
     camD_05: {"src": "assets/enemigos/especiales/barras_river/patova/camD_05.webp", "mira": "der", "ref": 695.7, "pie": 748.4, "ancla": 207.6, "origen": "patova-caminar-derecha-pierna-derecha-despegue-v4.png"},
     camD_06: {"src": "assets/enemigos/especiales/barras_river/patova/camD_06.webp", "mira": "der", "ref": 695.7, "pie": 746.2, "ancla": 149.6, "origen": "patova-caminar-derecha-pierna-derecha-paso-v4.png"},
-    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_a.webp", "mira": "der", "ref": 851.5, "pie": 746.2, "ancla": 181.5, "origen": "patova-bloqueo-derecha-v2.png"},
-    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_b.webp", "mira": "der", "ref": 818.5, "pie": 733.5, "ancla": 223.0, "origen": "patova-bloqueo-izquierda-v2.png"},
-    cadena_der_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_01.webp", "mira": "der", "ref": 695.7, "pie": 532.9, "ancla": 217.5, "origen": "patova-cadena-derecha-01-preparacion-v1.png"},
-    cadena_der_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_02.webp", "mira": "der", "ref": 695.7, "pie": 551.2, "ancla": 315.7, "origen": "patova-cadena-derecha-02-barrido-v1.png"},
-    cadena_der_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_03.webp", "mira": "der", "ref": 695.7, "pie": 549.4, "ancla": 293.2, "origen": "patova-cadena-derecha-03-continuacion-v1.png"},
-    cadena_der_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_04.webp", "mira": "der", "ref": 695.7, "pie": 558.9, "ancla": 166.7, "origen": "patova-cadena-derecha-04-recuperacion-v1.png"},
-    cadena_izq_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_01.webp", "mira": "izq", "ref": 695.7, "pie": 554.7, "ancla": 342.4, "origen": "patova-cadena-izquierda-01-preparacion-v1.png"},
-    cadena_izq_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_02.webp", "mira": "izq", "ref": 695.7, "pie": 554.7, "ancla": 480.2, "origen": "patova-cadena-izquierda-02-barrido-v1.png"},
-    cadena_izq_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_03.webp", "mira": "izq", "ref": 695.7, "pie": 553.0, "ancla": 309.9, "origen": "patova-cadena-izquierda-03-continuacion-v1.png"},
-    cadena_izq_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_04.webp", "mira": "izq", "ref": 695.7, "pie": 590.1, "ancla": 178.3, "origen": "patova-cadena-izquierda-04-recuperacion-v1.png"}
+    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_a.webp", "mira": "der", "ref": 747.1, "pie": 746.2, "ancla": 181.5, "origen": "patova-bloqueo-derecha-v2.png"},
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/patova/bloqueo_b.webp", "mira": "der", "ref": 727.0, "pie": 733.5, "ancla": 223.0, "origen": "patova-bloqueo-izquierda-v2.png"},
+    cadena_der_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_01.webp", "mira": "der", "ref": 594.4, "pie": 532.9, "ancla": 217.5, "origen": "patova-cadena-derecha-01-preparacion-v1.png"},
+    cadena_der_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_02.webp", "mira": "der", "ref": 602.2, "pie": 551.2, "ancla": 315.7, "origen": "patova-cadena-derecha-02-barrido-v1.png"},
+    cadena_der_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_03.webp", "mira": "der", "ref": 619.3, "pie": 549.4, "ancla": 293.2, "origen": "patova-cadena-derecha-03-continuacion-v1.png"},
+    cadena_der_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_04.webp", "mira": "der", "ref": 593.9, "pie": 558.9, "ancla": 166.7, "origen": "patova-cadena-derecha-04-recuperacion-v1.png"},
+    cadena_izq_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_01.webp", "mira": "izq", "ref": 574.2, "pie": 554.7, "ancla": 342.4, "origen": "patova-cadena-izquierda-01-preparacion-v1.png"},
+    cadena_izq_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_02.webp", "mira": "izq", "ref": 642.6, "pie": 554.7, "ancla": 480.2, "origen": "patova-cadena-izquierda-02-barrido-v1.png"},
+    cadena_izq_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_03.webp", "mira": "izq", "ref": 639.5, "pie": 553.0, "ancla": 309.9, "origen": "patova-cadena-izquierda-03-continuacion-v1.png"},
+    cadena_izq_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_04.webp", "mira": "izq", "ref": 603.9, "pie": 590.1, "ancla": 178.3, "origen": "patova-cadena-izquierda-04-recuperacion-v1.png"}
   },
   anim: {
     quieto: 'guardia',
@@ -774,7 +774,7 @@ window.SPRITES_ENEMIGOS.patova = {
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
-    secuencias: { cadena: { der: ['cadena_der_01', 'cadena_der_02', 'cadena_der_03', 'cadena_der_04'], izq: ['cadena_izq_01', 'cadena_izq_02', 'cadena_izq_03', 'cadena_izq_04'] } }   // v242: preparación → barrido con el brazo extendido (momento activo) → continuación → recuperación
+    secuencias: { cadena: { der: ['cadena_der_01', 'cadena_der_02', 'cadena_der_03', 'cadena_der_04'], izq: ['cadena_izq_01', 'cadena_izq_02', 'cadena_izq_03', 'cadena_izq_04'] } }   // v243: cadena y bloqueo a escala por torso (cabeza → cintura), ya no se achican · v242: preparación → barrido con el brazo extendido (momento activo) → continuación → recuperación
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
