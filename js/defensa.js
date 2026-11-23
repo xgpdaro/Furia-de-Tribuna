@@ -18,7 +18,7 @@
   const CONFIG = {
     /* ---- % del daño normal que entra MIENTRAS se cubre ---- */
     jugadorPct: 0,                                  // jugador: todos los niveles, por delante y por detrás
-    jefesPct: { cabeza_de_poronga: 0, el_abuelo: 0, matute: 0, el_chivo: 0, cacho: 0, el_gallego: 0, el_loco_tito: 0, el_toro: 0, el_tuerto_jefe: 0, muchinga_jefe: 0, el_paraguayo_jefe: 0, el_gordo_cadena_jefe: 0, pillin_jefe: 0, pimpi_jefe: 0 },   // v107: + El Toro   // v106: + El Loco Tito (jefe de Belgrano)   // v64: jefes de la campaña de River = bloqueo del Abuelo   // v56: Matute jefe = mismo bloqueo que El Abuelo
+    jefesPct: { cabeza_de_poronga: 0, el_abuelo: 0, matute: 0, el_chivo: 0, cacho: 0, el_gallego: 0, el_loco_tito: 0, el_toro: 0, el_tuerto_jefe: 0, muchinga_jefe: 0, el_paraguayo_jefe: 0, el_gordo_cadena_jefe: 0, pillin_jefe: 0, pimpi_jefe: 0, el_tano: 30, el_flaco: 30 },   // v232: El Tano y EL FLACO se cubren en cualquier nivel (IA de jefe) y bloqueando reciben el 30 %   // v107: + El Toro   // v106: + El Loco Tito (jefe de Belgrano)   // v64: jefes de la campaña de River = bloqueo del Abuelo   // v56: Matute jefe = mismo bloqueo que El Abuelo
     // por ID estable. Tienen prioridad sobre la tabla de comunes
     //            nivel:  1     2     3     4   5   6   7   8   9  10
     comunesPct:     [null, null, null, null, 60, 50, 40, 40, 30, 20, 10],   // null = en ese nivel NO se cubren

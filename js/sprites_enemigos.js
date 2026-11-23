@@ -616,25 +616,14 @@ window.SPRITES_ENEMIGOS.pimpi_jefe = {"frames":{"guardiaDer":{"src":"assets/refe
 // PENDIENTE (no se integra): El Tano arco ascendente (la «recuperación» es una hoja de 15 figuras); EL FLACO ataques a la izquierda (mezclan
 // vistas de frente y perfil); PATOVA arco lateral (la «continuación» está rota) y ascendente (faltan continuación y recuperación) → no ataca;
 // VIKINGO ataques a la izquierda (solo 2 de 4 cuadros). Guardias de frente/espalda: entregadas, el motor todavía no las usa.
-// El Tano (micrófono con pie) — v228 (PRUEBA JUGABLE): caminata derecha = 01 y 02 v2 · 03 «izquierda-avance» · 04 «izquierda-adelante» ·
-// 05 y 06 v2 (provisorios; falta el 05 de apoyo izquierdo). Izquierda = los 6 v2. Ritmo y pivote por el pie de apoyo (ver pasoMs y «pivote»).
-// Extensión del micrófono hacia la izquierda (ext_izq, prueba); hacia la derecha, pendiente.
-window.SPRITES_ENEMIGOS.el_tano = {   // v231: El Tano 15 % más grande (ref ÷ 1,15 en todos sus cuadros)
+// El Tano (micrófono con pie) — v232 (PRUEBA JUGABLE), 15 % más grande que el resto (ref ÷ 1,15).
+// Caminata derecha (6): 01 v2 derecha adelante · pierna izquierda despegue v4 · pierna izquierda paso v4 · 04 izquierda adelante · pierna
+// derecha despegue v4 · pierna derecha paso v4. Caminata izquierda (4): pierna izquierda despegue · paso · pierna derecha despegue · paso (v4).
+// Bloqueo v2: los dos dibujos miran a la derecha (a = derecha, b = «izquierda»); mirando a la izquierda el motor los espeja.
+window.SPRITES_ENEMIGOS.el_tano = {
   frames: {
     guardia: {"src": "assets/enemigos/especiales/barras_river/el_tano/guardia.webp", "mira": "der", "ref": 695.7, "pie": 801.9, "ancla": 64.7, "otroLado": "guardia_izq"},
     guardia_izq: {"src": "assets/enemigos/especiales/barras_river/el_tano/guardia_izq.webp", "mira": "izq", "ref": 695.7, "pie": 800.0, "ancla": 143.2},
-    cam_derecha_01: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_01.webp", "mira": "der", "ref": 695.7, "pie": 780.0, "ancla": 176.5, "origen": "el-tano-caminar-derecha-01-v2.png"},
-    cam_derecha_02: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_02.webp", "mira": "der", "ref": 695.7, "pie": 799.5, "ancla": 169.4, "origen": "el-tano-caminar-derecha-02-v2.png"},
-    cam_derecha_03: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_03.webp", "mira": "der", "ref": 695.7, "pie": 781.0, "ancla": 90.9, "origen": "el-tano-caminar-derecha-03-izquierda-avance.png"},
-    cam_derecha_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_04.webp", "mira": "der", "ref": 695.7, "pie": 773.8, "ancla": 176.5, "origen": "el-tano-caminar-derecha-04-izquierda-adelante.png"},
-    cam_derecha_05: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_05.webp", "mira": "der", "ref": 695.7, "pie": 786.7, "ancla": 188.0, "origen": "el-tano-caminar-derecha-05-v2.png"},
-    cam_derecha_06: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_derecha_06.webp", "mira": "der", "ref": 695.7, "pie": 771.4, "ancla": 107.5, "origen": "el-tano-caminar-derecha-06-v2.png"},
-    cam_izquierda_01: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_01.webp", "mira": "izq", "ref": 695.7, "pie": 774.8, "ancla": 200.8},
-    cam_izquierda_02: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_02.webp", "mira": "izq", "ref": 695.7, "pie": 798.6, "ancla": 181.7},
-    cam_izquierda_03: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_03.webp", "mira": "izq", "ref": 695.7, "pie": 778.1, "ancla": 160.8},
-    cam_izquierda_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_04.webp", "mira": "izq", "ref": 695.7, "pie": 700.8, "ancla": 258.9},
-    cam_izquierda_05: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_05.webp", "mira": "izq", "ref": 695.7, "pie": 802.4, "ancla": 187.5},
-    cam_izquierda_06: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_izquierda_06.webp", "mira": "izq", "ref": 695.7, "pie": 791.0, "ancla": 196.0},
     cam_frente_01: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_frente_01.webp", "mira": "frente", "ref": 695.7, "pie": 798.6, "ancla": 138.0},
     cam_frente_02: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_frente_02.webp", "mira": "frente", "ref": 695.7, "pie": 803.8, "ancla": 140.4},
     cam_frente_03: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_frente_03.webp", "mira": "frente", "ref": 695.7, "pie": 798.6, "ancla": 136.1},
@@ -647,8 +636,6 @@ window.SPRITES_ENEMIGOS.el_tano = {   // v231: El Tano 15 % más grande (ref ÷ 
     cam_espalda_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_espalda_04.webp", "mira": "frente", "ref": 695.7, "pie": 808.1, "ancla": 141.8},
     cam_espalda_05: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_espalda_05.webp", "mira": "frente", "ref": 695.7, "pie": 786.7, "ancla": 134.2},
     cam_espalda_06: {"src": "assets/enemigos/especiales/barras_river/el_tano/cam_espalda_06.webp", "mira": "frente", "ref": 695.7, "pie": 791.4, "ancla": 138.0},
-    cubrirse_der: {"src": "assets/enemigos/especiales/barras_river/el_tano/cubrirse_der.webp", "mira": "der", "ref": 695.7, "pie": 766.7, "ancla": 158.5},
-    cubrirse_izq: {"src": "assets/enemigos/especiales/barras_river/el_tano/cubrirse_izq.webp", "mira": "izq", "ref": 695.7, "pie": 762.9, "ancla": 147.5},
     recibe_golpe: {"src": "assets/enemigos/especiales/barras_river/el_tano/recibe_golpe.webp", "mira": "der", "ref": 695.7, "pie": 767.2, "ancla": 199.9},
     recibe_cuerpo: {"src": "assets/enemigos/especiales/barras_river/el_tano/recibe_cuerpo.webp", "mira": "frente", "ref": 695.7, "pie": 792.9, "ancla": 200.8},
     tambalear: {"src": "assets/enemigos/especiales/barras_river/el_tano/tambalear.webp", "mira": "der", "ref": 695.7, "pie": 708.1, "ancla": 192.3},
@@ -660,42 +647,38 @@ window.SPRITES_ENEMIGOS.el_tano = {   // v231: El Tano 15 % más grande (ref ÷ 
     lateral_continuacion: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_continuacion.webp", "mira": "der", "ref": 695.7, "pie": 807.1, "ancla": 42.1},
     lateral_recuperacion: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_recuperacion.webp", "mira": "der", "ref": 695.7, "pie": 794.3, "ancla": 54.0},
     ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_tano/ext_izq.webp", "mira": "izq", "ref": 695.7, "pie": 724.6, "ancla": 633.0, "prueba": true},
+    camD_01: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_01.webp", "mira": "der", "ref": 695.7, "pie": 780.0, "ancla": 176.5, "origen": "el-tano-caminar-derecha-01-v2.png"},
+    camD_02: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_02.webp", "mira": "der", "ref": 695.7, "pie": 770.5, "ancla": 179.4, "origen": "el-tano-caminar-derecha-pierna-izquierda-despegue-v4.png"},
+    camD_03: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_03.webp", "mira": "der", "ref": 695.7, "pie": 791.0, "ancla": 144.2, "origen": "el-tano-caminar-derecha-pierna-izquierda-paso-v4.png"},
+    camD_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_04.webp", "mira": "der", "ref": 695.7, "pie": 773.8, "ancla": 176.5, "origen": "el-tano-caminar-derecha-04-izquierda-adelante.png"},
+    camD_05: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_05.webp", "mira": "der", "ref": 695.7, "pie": 793.3, "ancla": 194.1, "origen": "el-tano-caminar-derecha-pierna-derecha-despegue-v4.png"},
+    camD_06: {"src": "assets/enemigos/especiales/barras_river/el_tano/camD_06.webp", "mira": "der", "ref": 695.7, "pie": 788.6, "ancla": 124.2, "origen": "el-tano-caminar-derecha-pierna-derecha-paso-v4.png"},
+    camI_01: {"src": "assets/enemigos/especiales/barras_river/el_tano/camI_01.webp", "mira": "izq", "ref": 695.7, "pie": 787.6, "ancla": 155.6, "origen": "el-tano-caminar-izquierda-pierna-izquierda-despegue-v4.png"},
+    camI_02: {"src": "assets/enemigos/especiales/barras_river/el_tano/camI_02.webp", "mira": "izq", "ref": 695.7, "pie": 800.5, "ancla": 177.0, "origen": "el-tano-caminar-izquierda-pierna-izquierda-paso-v4.png"},
+    camI_03: {"src": "assets/enemigos/especiales/barras_river/el_tano/camI_03.webp", "mira": "izq", "ref": 695.7, "pie": 771.4, "ancla": 160.8, "origen": "el-tano-caminar-izquierda-pierna-derecha-despegue-v4.png"},
+    camI_04: {"src": "assets/enemigos/especiales/barras_river/el_tano/camI_04.webp", "mira": "izq", "ref": 695.7, "pie": 775.7, "ancla": 145.1, "origen": "el-tano-caminar-izquierda-pierna-derecha-paso-v4.png"},
+    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_a.webp", "mira": "der", "ref": 695.7, "pie": 528.3, "ancla": 158.9, "origen": "el-tano-bloqueo-derecha-v2.png"},
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/el_tano/bloqueo_b.webp", "mira": "der", "ref": 695.7, "pie": 537.6, "ancla": 159.9, "origen": "el-tano-bloqueo-izquierda-v2.png"}
   },
   anim: {
     quieto: 'guardia',
-    caminaDer: ["cam_derecha_01", "cam_derecha_02", "cam_derecha_03", "cam_derecha_04", "cam_derecha_05", "cam_derecha_06"], caminaIzq: ["cam_izquierda_01", "cam_izquierda_02", "cam_izquierda_03", "cam_izquierda_04", "cam_izquierda_05", "cam_izquierda_06"],
+    caminaDer: ["camD_01", "camD_02", "camD_03", "camD_04", "camD_05", "camD_06"], caminaIzq: ["camI_01", "camI_02", "camI_03", "camI_04"],
     caminaAbajo: ["cam_frente_01", "cam_frente_02", "cam_frente_03", "cam_frente_04", "cam_frente_05", "cam_frente_06"], caminaArriba: ["cam_espalda_01", "cam_espalda_02", "cam_espalda_03", "cam_espalda_04", "cam_espalda_05", "cam_espalda_06"],
-    bloqueo: { der: 'cubrirse_der', izq: 'cubrirse_izq' },
+    bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
     secuencias: {"lateral": {"der": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
   },
-  // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
-  // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
-  raizMedida: {"der": {"d": [14.7, 30.6, 113.4, 26.3, 83.7, 31.5], "total": 300.2}, "izq": {"d": [9.9, 17.7, 121.6, 23.7, 87.1, 38.4], "total": 298.4}},
-  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // v230: cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
-  pieFijoMedido: { caminaDer: 43.7, caminaIzq: 49.7 },   // v229: NO se usa (con el dibujo quieto en cada cuadro la caminata se veía a los saltos)
+  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
 };
-// EL FLACO (caño de plomería) — v228 (PRUEBA JUGABLE): caminata derecha = 01 y 02 v2 · 03 «izquierda-avance» · 04 «izquierda-adelante» ·
-// 05 y 06 v2 (provisorios). Izquierda = los 6 v2 tal como se pidió: 01, 03, 04 y 06 están dibujados mirando a la DERECHA (mira 'der') y el
-// motor los espeja al caminar a la izquierda; 02 y 05 miran a la izquierda. Estocada con ext_der / ext_izq (prueba). Escala única (ref 800).
+// EL FLACO (caño de plomería) — v232 (PRUEBA JUGABLE). Caminata derecha (6): 01 v2 · pierna izquierda despegue v4 · paso v4 · 04 izquierda
+// adelante · pierna derecha despegue v4 · paso v4. Caminata izquierda (4): pierna izquierda despegue v5 · paso v4 · pierna derecha despegue v4
+// · paso v4. Bloqueo v2 (los dos miran a la derecha; mirando a la izquierda se espejan). Estocada ext_der / ext_izq (prueba). Escala única.
 window.SPRITES_ENEMIGOS.el_flaco = {
   frames: {
     guardia: {"src": "assets/enemigos/especiales/barras_river/el_flaco/guardia.webp", "mira": "der", "ref": 800, "pie": 802.1, "ancla": 70.4, "otroLado": "guardia_izq"},
     guardia_izq: {"src": "assets/enemigos/especiales/barras_river/el_flaco/guardia_izq.webp", "mira": "izq", "ref": 800, "pie": 792.5, "ancla": 196.4},
-    cam_derecha_01: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_01.webp", "mira": "der", "ref": 800, "pie": 774.5, "ancla": 238.2, "origen": "el-flaco-caminar-derecha-01-v2.png"},
-    cam_derecha_02: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_02.webp", "mira": "der", "ref": 800, "pie": 781.9, "ancla": 195.3, "origen": "el-flaco-caminar-derecha-02-v2.png"},
-    cam_derecha_03: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_03.webp", "mira": "der", "ref": 800, "pie": 786.6, "ancla": 106.6, "origen": "el-flaco-caminar-derecha-03-izquierda-avance.png"},
-    cam_derecha_04: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_04.webp", "mira": "der", "ref": 800, "pie": 782.9, "ancla": 254.6, "origen": "el-flaco-caminar-derecha-04-izquierda-adelante.png"},
-    cam_derecha_05: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_05.webp", "mira": "der", "ref": 800, "pie": 774.9, "ancla": 210.2, "origen": "el-flaco-caminar-derecha-05-v2.png"},
-    cam_derecha_06: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_derecha_06.webp", "mira": "der", "ref": 800, "pie": 782.9, "ancla": 133.4, "origen": "el-flaco-caminar-derecha-06-v2.png"},
-    cam_izquierda_01: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_01.webp", "mira": "der", "ref": 800, "pie": 777.5, "ancla": 205.5, "origen": "el-flaco-caminar-izquierda-01-v2.png"},
-    cam_izquierda_02: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_02.webp", "mira": "izq", "ref": 800, "pie": 786.7, "ancla": 188.9, "origen": "el-flaco-caminar-izquierda-02-v2.png"},
-    cam_izquierda_03: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_03.webp", "mira": "der", "ref": 800, "pie": 789.9, "ancla": 165.4, "origen": "el-flaco-caminar-izquierda-03-v2.png"},
-    cam_izquierda_04: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_04.webp", "mira": "der", "ref": 800, "pie": 790.4, "ancla": 173.4, "origen": "el-flaco-caminar-izquierda-04-v2.png"},
-    cam_izquierda_05: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_05.webp", "mira": "izq", "ref": 800, "pie": 778.7, "ancla": 194.3, "origen": "el-flaco-caminar-izquierda-05-v2.png"},
-    cam_izquierda_06: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_izquierda_06.webp", "mira": "der", "ref": 800, "pie": 772.8, "ancla": 141.9, "origen": "el-flaco-caminar-izquierda-06-v2.png"},
     cam_frente_01: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_frente_01.webp", "mira": "frente", "ref": 800, "pie": 811.2, "ancla": 121.1},
     cam_frente_02: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_frente_02.webp", "mira": "frente", "ref": 800, "pie": 802.7, "ancla": 124.9},
     cam_frente_03: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_frente_03.webp", "mira": "frente", "ref": 800, "pie": 801.1, "ancla": 122.7},
@@ -708,8 +691,6 @@ window.SPRITES_ENEMIGOS.el_flaco = {
     cam_espalda_04: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_espalda_04.webp", "mira": "frente", "ref": 800, "pie": 802.1, "ancla": 145.7},
     cam_espalda_05: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_espalda_05.webp", "mira": "frente", "ref": 800, "pie": 792.5, "ancla": 131.8},
     cam_espalda_06: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cam_espalda_06.webp", "mira": "frente", "ref": 800, "pie": 794.7, "ancla": 158.5},
-    cubrirse_der: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cubrirse_der.webp", "mira": "der", "ref": 800, "pie": 712.5, "ancla": 167.6},
-    cubrirse_izq: {"src": "assets/enemigos/especiales/barras_river/el_flaco/cubrirse_izq.webp", "mira": "izq", "ref": 800, "pie": 746.1, "ancla": 201.7},
     recibe_golpe: {"src": "assets/enemigos/especiales/barras_river/el_flaco/recibe_golpe.webp", "mira": "der", "ref": 800, "pie": 758.9, "ancla": 217.2},
     recibe_cuerpo: {"src": "assets/enemigos/especiales/barras_river/el_flaco/recibe_cuerpo.webp", "mira": "frente", "ref": 800, "pie": 795.7, "ancla": 132.9},
     tambalear: {"src": "assets/enemigos/especiales/barras_river/el_flaco/tambalear.webp", "mira": "der", "ref": 800, "pie": 780.8, "ancla": 235.4},
@@ -726,21 +707,29 @@ window.SPRITES_ENEMIGOS.el_flaco = {
     ascendente_recuperacion: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ascendente_recuperacion.webp", "mira": "der", "ref": 800, "pie": 805.3, "ancla": 212.9},
     ext_der: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_der.webp", "mira": "der", "ref": 800, "pie": 772.7, "ancla": 313.8, "prueba": true},
     ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_izq.webp", "mira": "izq", "ref": 800, "pie": 744.6, "ancla": 811.4, "prueba": true},
+    camD_01: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_01.webp", "mira": "der", "ref": 800, "pie": 774.5, "ancla": 238.2, "origen": "el-flaco-caminar-derecha-01-v2.png"},
+    camD_02: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_02.webp", "mira": "der", "ref": 800, "pie": 773.3, "ancla": 195.8, "origen": "el-flaco-caminar-derecha-pierna-izquierda-despegue-v4.png"},
+    camD_03: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_03.webp", "mira": "der", "ref": 800, "pie": 788.3, "ancla": 141.4, "origen": "el-flaco-caminar-derecha-pierna-izquierda-paso-v4.png"},
+    camD_04: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_04.webp", "mira": "der", "ref": 800, "pie": 782.9, "ancla": 254.6, "origen": "el-flaco-caminar-derecha-04-izquierda-adelante.png"},
+    camD_05: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_05.webp", "mira": "der", "ref": 800, "pie": 787.7, "ancla": 212.9, "origen": "el-flaco-caminar-derecha-pierna-derecha-despegue-v4.png"},
+    camD_06: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camD_06.webp", "mira": "der", "ref": 800, "pie": 788.3, "ancla": 140.3, "origen": "el-flaco-caminar-derecha-pierna-derecha-paso-v4.png"},
+    camI_01: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camI_01.webp", "mira": "izq", "ref": 800, "pie": 780.8, "ancla": 140.4, "origen": "el-flaco-caminar-izquierda-pierna-izquierda-despegue-v5.png"},
+    camI_02: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camI_02.webp", "mira": "izq", "ref": 800, "pie": 782.9, "ancla": 155.3, "origen": "el-flaco-caminar-izquierda-pierna-izquierda-paso-v4.png"},
+    camI_03: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camI_03.webp", "mira": "izq", "ref": 800, "pie": 776.0, "ancla": 212.4, "origen": "el-flaco-caminar-izquierda-pierna-derecha-despegue-v4.png"},
+    camI_04: {"src": "assets/enemigos/especiales/barras_river/el_flaco/camI_04.webp", "mira": "izq", "ref": 800, "pie": 768.0, "ancla": 217.7, "origen": "el-flaco-caminar-izquierda-pierna-derecha-paso-v4.png"},
+    bloqueo_a: {"src": "assets/enemigos/especiales/barras_river/el_flaco/bloqueo_a.webp", "mira": "der", "ref": 800, "pie": 751.4, "ancla": 218.5, "origen": "el-flaco-bloqueo-derecha-v2.png"},
+    bloqueo_b: {"src": "assets/enemigos/especiales/barras_river/el_flaco/bloqueo_b.webp", "mira": "der", "ref": 800, "pie": 726.4, "ancla": 242.8, "origen": "el-flaco-bloqueo-izquierda-v2.png"}
   },
   anim: {
     quieto: 'guardia',
-    caminaDer: ["cam_derecha_01", "cam_derecha_02", "cam_derecha_03", "cam_derecha_04", "cam_derecha_05", "cam_derecha_06"], caminaIzq: ["cam_izquierda_01", "cam_izquierda_02", "cam_izquierda_03", "cam_izquierda_04", "cam_izquierda_05", "cam_izquierda_06"],
+    caminaDer: ["camD_01", "camD_02", "camD_03", "camD_04", "camD_05", "camD_06"], caminaIzq: ["camI_01", "camI_02", "camI_03", "camI_04"],
     caminaAbajo: ["cam_frente_01", "cam_frente_02", "cam_frente_03", "cam_frente_04", "cam_frente_05", "cam_frente_06"], caminaArriba: ["cam_espalda_01", "cam_espalda_02", "cam_espalda_03", "cam_espalda_04", "cam_espalda_05", "cam_espalda_06"],
-    bloqueo: { der: 'cubrirse_der', izq: 'cubrirse_izq' },
+    bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
     secuencias: {"lateral": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "ascendente": ["ascendente_anticipacion", "ascendente_efecto", "ascendente_continuacion", "ascendente_recuperacion"], "estocada": {"der": ["lateral_anticipacion", "ext_der", "ext_der", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
   },
-  // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
-  // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
-  raizMedida: {"der": {"d": [11.6, 87.1, 50.0, 10.8, 99.6, 44.9], "total": 304.0}},
-  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // v230: cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
-  pieFijoMedido: { caminaDer: 57.2, caminaIzq: 45.3 },   // v229: NO se usa (con el dibujo quieto en cada cuadro la caminata se veía a los saltos)
+  pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
 };
 // PATOVA (cadena)
