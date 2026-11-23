@@ -658,7 +658,7 @@ window.SPRITES_ENEMIGOS.el_tano = {
     lateral_efecto: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_efecto.webp", "mira": "der", "ref": 800, "pie": 801.9, "ancla": 55.4},
     lateral_continuacion: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_continuacion.webp", "mira": "der", "ref": 800, "pie": 807.1, "ancla": 42.1},
     lateral_recuperacion: {"src": "assets/enemigos/especiales/barras_river/el_tano/lateral_recuperacion.webp", "mira": "der", "ref": 800, "pie": 794.3, "ancla": 54.0},
-    ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_tano/ext_izq.webp", "mira": "izq", "ref": 800, "pie": 647.0, "ancla": 561.2, "prueba": true}
+    ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_tano/ext_izq.webp", "mira": "izq", "ref": 800, "pie": 724.6, "ancla": 633.0, "prueba": true},
   },
   anim: {
     quieto: 'guardia',
@@ -669,9 +669,10 @@ window.SPRITES_ENEMIGOS.el_tano = {
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
     secuencias: {"lateral": {"der": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
   },
-  // v226 — caminata lateral con raíz en el pie: d = cuánto avanza el cuerpo (px a escala 1) mientras se ve cada cuadro = lo que el pie de
-  // apoyo retrocede respecto del cuerpo entre ese cuadro y el siguiente (medido en los dibujos). Así el pie apoyado no patina.
-  raiz: {"der": {"d": [14.7, 30.6, 113.4, 26.3, 83.7, 31.5], "total": 300.2}, "izq": {"d": [9.9, 17.7, 121.6, 23.7, 87.1, 38.4], "total": 298.4}},
+  // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
+  // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
+  raizMedida: {"der": {"d": [14.7, 30.6, 113.4, 26.3, 83.7, 31.5], "total": 300.2}, "izq": {"d": [9.9, 17.7, 121.6, 23.7, 87.1, 38.4], "total": 298.4}},
+  pasoMs: { caminaDer: 140, caminaIzq: 140 },   // v227: cadencia por tiempo (140 ms por cuadro, como los referentes)
   zancada: 34, zancadaLado: 38
 };
 // EL FLACO (caño de plomería) — v226: caminata lateral v2 hacia la DERECHA con pivote en el pie de apoyo (raiz). La v2 hacia la izquierda
@@ -722,8 +723,8 @@ window.SPRITES_ENEMIGOS.el_flaco = {
     ascendente_efecto: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ascendente_efecto.webp", "mira": "der", "ref": 800, "pie": 800.5, "ancla": 79.7},
     ascendente_continuacion: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ascendente_continuacion.webp", "mira": "der", "ref": 800, "pie": 814.4, "ancla": 72.8},
     ascendente_recuperacion: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ascendente_recuperacion.webp", "mira": "der", "ref": 800, "pie": 805.3, "ancla": 212.9},
-    ext_der: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_der.webp", "mira": "der", "ref": 800, "pie": 551.9, "ancla": 231.6, "prueba": true},
-    ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_izq.webp", "mira": "izq", "ref": 800, "pie": 625.7, "ancla": 664.3, "prueba": true}
+    ext_der: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_der.webp", "mira": "der", "ref": 800, "pie": 772.7, "ancla": 313.8, "prueba": true},
+    ext_izq: {"src": "assets/enemigos/especiales/barras_river/el_flaco/ext_izq.webp", "mira": "izq", "ref": 800, "pie": 744.6, "ancla": 811.4, "prueba": true},
   },
   anim: {
     quieto: 'guardia',
@@ -734,9 +735,10 @@ window.SPRITES_ENEMIGOS.el_flaco = {
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
     secuencias: {"lateral": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "ascendente": ["ascendente_anticipacion", "ascendente_efecto", "ascendente_continuacion", "ascendente_recuperacion"], "estocada": {"der": ["lateral_anticipacion", "ext_der", "ext_der", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
   },
-  // v226 — caminata lateral con raíz en el pie: d = cuánto avanza el cuerpo (px a escala 1) mientras se ve cada cuadro = lo que el pie de
-  // apoyo retrocede respecto del cuerpo entre ese cuadro y el siguiente (medido en los dibujos). Así el pie apoyado no patina.
-  raiz: {"der": {"d": [11.6, 87.1, 50.0, 10.8, 99.6, 44.9], "total": 304.0}},
+  // v226 — raizMedida: lo que el pie de apoyo retrocede entre cuadros (px a escala 1), medido en los dibujos. v227: NO se usa — con el pie
+  // clavado algunos cuadros quedaban quietos casi 1 s (los dibujos no tienen pasos parejos) y la caminata se veía trabada.
+  raizMedida: {"der": {"d": [11.6, 87.1, 50.0, 10.8, 99.6, 44.9], "total": 304.0}},
+  pasoMs: { caminaDer: 140, caminaIzq: 140 },   // v227: cadencia por tiempo (140 ms por cuadro, como los referentes)
   zancada: 34, zancadaLado: 38
 };
 // PATOVA (cadena)
