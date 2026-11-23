@@ -663,7 +663,7 @@ window.SPRITES_ENEMIGOS.el_tano = {
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
-    secuencias: {"lateral": {"der": ["lateral_anticipacion", "lateral_efecto", "lateral_continuacion", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
+    secuencias: {"lateral": {"der": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"], "izq": ["lateral_anticipacion", "ext_izq", "ext_izq", "lateral_recuperacion"]}}   /* v234: hacia la derecha también el brazo extendido (ext_izq espejado) */   // {der, izq}: cada lado con sus cuadros; un cuadro que mira al otro lado se espeja
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
