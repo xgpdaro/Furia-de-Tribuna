@@ -761,11 +761,11 @@ window.SPRITES_ENEMIGOS.patova = {
     cadena_der_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_01.webp", "mira": "der", "ref": 594.4, "pie": 532.9, "ancla": 217.5, "origen": "patova-cadena-derecha-01-preparacion-v1.png"},
     cadena_der_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_02.webp", "mira": "der", "ref": 602.2, "pie": 551.2, "ancla": 315.7, "origen": "patova-cadena-derecha-02-barrido-v1.png"},
     cadena_der_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_03.webp", "mira": "der", "ref": 619.3, "pie": 549.4, "ancla": 293.2, "origen": "patova-cadena-derecha-03-continuacion-v1.png"},
-    cadena_der_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_04.webp", "mira": "der", "ref": 593.9, "pie": 558.9, "ancla": 166.7, "origen": "patova-cadena-derecha-04-recuperacion-v1.png"},
+    cadena_der_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_der_04.webp", "mira": "der", "ref": 516.4, "pie": 558.9, "ancla": 166.7, "origen": "patova-cadena-derecha-04-recuperacion-v1.png"},
     cadena_izq_01: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_01.webp", "mira": "izq", "ref": 574.2, "pie": 554.7, "ancla": 342.4, "origen": "patova-cadena-izquierda-01-preparacion-v1.png"},
     cadena_izq_02: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_02.webp", "mira": "izq", "ref": 642.6, "pie": 554.7, "ancla": 480.2, "origen": "patova-cadena-izquierda-02-barrido-v1.png"},
     cadena_izq_03: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_03.webp", "mira": "izq", "ref": 639.5, "pie": 553.0, "ancla": 309.9, "origen": "patova-cadena-izquierda-03-continuacion-v1.png"},
-    cadena_izq_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_04.webp", "mira": "izq", "ref": 603.9, "pie": 590.1, "ancla": 178.3, "origen": "patova-cadena-izquierda-04-recuperacion-v1.png"}
+    cadena_izq_04: {"src": "assets/enemigos/especiales/barras_river/patova/cadena_izq_04.webp", "mira": "izq", "ref": 525.1, "pie": 590.1, "ancla": 178.3, "origen": "patova-cadena-izquierda-04-recuperacion-v1.png"}
   },
   anim: {
     quieto: 'guardia',
@@ -774,7 +774,7 @@ window.SPRITES_ENEMIGOS.patova = {
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
-    secuencias: { cadena: { der: ['cadena_der_01', 'cadena_der_02', 'cadena_der_03', 'cadena_der_04'], izq: ['cadena_izq_01', 'cadena_izq_02', 'cadena_izq_03', 'cadena_izq_04'] } }   // v243: cadena y bloqueo a escala por torso (cabeza → cintura), ya no se achican · v242: preparación → barrido con el brazo extendido (momento activo) → continuación → recuperación
+    secuencias: { cadena: { der: ['cadena_der_01', 'cadena_der_02', 'cadena_der_03', 'cadena_der_04'], izq: ['cadena_izq_01', 'cadena_izq_02', 'cadena_izq_03', 'cadena_izq_04'] } }   // v245: recuperación (04) +15 % · v243: cadena y bloqueo a escala por torso (cabeza → cintura), ya no se achican · v242: preparación → barrido con el brazo extendido (momento activo) → continuación → recuperación
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
@@ -815,11 +815,11 @@ window.SPRITES_ENEMIGOS.vikingo = {
     bate_der_01: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_01.webp", "mira": "der", "ref": 607.7, "pie": 563.4, "ancla": 247.4, "origen": "vikingo-bate-derecha-01-preparacion-v3.png"},
     bate_der_02: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_02.webp", "mira": "der", "ref": 633.3, "pie": 585.7, "ancla": 320.1, "origen": "vikingo-bate-derecha-02-barrido-v3.png"},
     bate_der_03: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_03.webp", "mira": "der", "ref": 635.5, "pie": 588.1, "ancla": 285.9, "origen": "vikingo-bate-derecha-03-continuacion-v3.png"},
-    bate_der_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_04.webp", "mira": "der", "ref": 587.0, "pie": 589.8, "ancla": 169.4, "origen": "vikingo-bate-derecha-04-recuperacion-v3.png"},
+    bate_der_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_der_04.webp", "mira": "der", "ref": 510.4, "pie": 589.8, "ancla": 169.4, "origen": "vikingo-bate-derecha-04-recuperacion-v3.png"},
     bate_izq_01: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_01.webp", "mira": "izq", "ref": 621.2, "pie": 575.7, "ancla": 332.6, "origen": "vikingo-bate-izquierda-01-preparacion-v3.png"},
     bate_izq_02: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_02.webp", "mira": "izq", "ref": 635.5, "pie": 588.7, "ancla": 422.1, "origen": "vikingo-bate-izquierda-02-barrido-v3.png"},
     bate_izq_03: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_03.webp", "mira": "izq", "ref": 635.5, "pie": 588.7, "ancla": 327.0, "origen": "vikingo-bate-izquierda-03-continuacion-v3.png"},
-    bate_izq_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_04.webp", "mira": "izq", "ref": 624.4, "pie": 628.6, "ancla": 337.9, "origen": "vikingo-bate-izquierda-04-recuperacion-v3.png"}
+    bate_izq_04: {"src": "assets/enemigos/especiales/barras_river/vikingo/bate_izq_04.webp", "mira": "izq", "ref": 543.0, "pie": 628.6, "ancla": 337.9, "origen": "vikingo-bate-izquierda-04-recuperacion-v3.png"}
   },
   anim: {
     quieto: 'guardia',
@@ -828,7 +828,7 @@ window.SPRITES_ENEMIGOS.vikingo = {
     bloqueo: { der: 'bloqueo_a', izq: 'bloqueo_b' },
     dolores: ['recibe_golpe', 'recibe_cuerpo'], desequilibrio: ['tambalear', 'caida'], caida: 'caida',
     suelo: 'derrota', levantarse: 'levantarse', arrodillado: { der: 'levantarse', izq: 'levantarse' }, muerto: 'derrota',
-    secuencias: { bate: { der: ['bate_der_01', 'bate_der_02', 'bate_der_03', 'bate_der_04'], izq: ['bate_izq_01', 'bate_izq_02', 'bate_izq_03', 'bate_izq_04'] } }   // v244: bate a escala de la caminata (ya no queda enano) · v241: preparación → barrido (momento activo) → continuación → recuperación
+    secuencias: { bate: { der: ['bate_der_01', 'bate_der_02', 'bate_der_03', 'bate_der_04'], izq: ['bate_izq_01', 'bate_izq_02', 'bate_izq_03', 'bate_izq_04'] } }   // v245: recuperación (04) +15 % · v244: bate a escala de la caminata (ya no queda enano) · v241: preparación → barrido (momento activo) → continuación → recuperación
   },
   pasoMs: { caminaDer: 145, caminaIzq: 145 },   // cuerpo continuo; un cuadro cada 145 ms con el reloj de paso de su velocidad
   zancada: 34, zancadaLado: 38
