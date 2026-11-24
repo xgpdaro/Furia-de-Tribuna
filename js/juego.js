@@ -2022,10 +2022,14 @@
     if (e.st === 'golpear' && e.t < TIEMPO.golpeVisible) { const a = (e.var && an[e.golpe + e.var]) || an[e.golpe]; if (a) return typeof a === 'string' ? a : a[lado]; }   // v83: variante A/B
     if (an.camina8 && D.camina8v2) {                       // v192: estado de caminata calculado en la ACTUALIZACIÓN (andar8), no al dibujar
       const anda = e.st === 'acercarse' || e.st === 'retirada' || e.st === 'esperar';   // 'esperar' incluido: la IA alterna acercarse/esperar junto al objetivo
-      if (anda && e.w8on && tiempo - (e.w8ult || -9) < 0.15) return pose8v2(e, D, an.camina8);
-      if (e.st === 'acercarse' || e.st === 'retirada') return an.quieto;   // sin desplazamiento real (frenado o contra un límite): reposo
+      // v246: caminata PARCIAL (barras de Boca 2–10): solo las direcciones con su ciclo completo de 8 usan camina8; en las demás
+      // sigue la caminata vigente de abajo (de costado), sin congelarse ni repetir un único cuadro.
+      const d8 = DIR8[e.w8d != null ? e.w8d : (e.face < 0 ? 4 : 0)], tiene8 = an.camina8[d8] && an.camina8[d8].length === 8;
+      if (anda && e.w8on && tiempo - (e.w8ult || -9) < 0.15 && tiene8) return pose8v2(e, D, an.camina8);
+      if (tiene8 || !D.camina8parcial) { if (e.st === 'acercarse' || e.st === 'retirada') return an.quieto; }   // sin desplazamiento real (frenado o contra un límite): reposo
     }
-    if ((e.st === 'acercarse' || e.st === 'retirada') && an.camina8) return pose8(e, D, an.camina8);   // v190: River 1–4, 8 direcciones
+    if (D.camina8parcial && (e.st === 'acercarse' || e.st === 'retirada') && !e.w8on) return an.quieto;
+    if ((e.st === 'acercarse' || e.st === 'retirada') && an.camina8 && !D.camina8v2) return pose8(e, D, an.camina8);   // v190: River 1–4, 8 direcciones
     if (e.st === 'acercarse' || e.st === 'retirada') {
       // de frente / de espaldas si camina sobre todo en profundidad y tiene esos cuadros; si no, de costado hacia donde mira
       const vertical = Math.abs(e.my || 0) > Math.abs(e.mx || 0) * 1.3;
