@@ -33,6 +33,13 @@
   const VEL_JUGADOR = 300;               // px/s. TODO: aplicar Velocidad cuando exista la fórmula (R.modificadorVelocidad)
   const VEL_ENEMIGO = 150;
   const PROF_GOLPE = 42;
+  /* v249 — LÍNEA DE PELEA DE LOS RIVALES. Antes un rival largaba el golpe con hasta 40 px de diferencia de profundidad con el jugador
+     y conectaba hasta 42 px (se veía pegar desde otra línea). Ahora: se pone en la línea del jugador y recién ahí pega (≤ LINEA_ATAQUE);
+     el golpe conecta solo si al impacto siguen en la misma línea (≤ LINEA_IMPACTO): si el jugador se corre arriba/abajo durante el aviso,
+     el golpe pasa de largo. px a escala 1, reducidos en los planos de atrás igual que PROF_GOLPE (factorProf). Los golpes del jugador no cambian. */
+  const LINEA_ATAQUE = 12, LINEA_IMPACTO = 18;
+  // pega recién al llegar a la línea (quieto en su puesto) o si ya pasa casi encima de ella (≤ la mitad): no larga el golpe mientras todavía se está alineando
+  const enLinea = (e, p) => { const d = Math.abs(p.y - e.y), l = LINEA_ATAQUE * factorProf(e.y); return d < l && (e.st === 'esperar' || d < l / 2); };
   const SECUENCIA_ATAQUE = [0.22, 0.45];   // v225: s en 'golpear' hasta pasar de efecto → continuación → recuperación
   // v226: franja de impacto (px a escala 1 delante del enemigo) de una secuencia, según hacia dónde mira. El tamaño del PNG no interviene.
   const franjaSecu = (e, t) => { const A = e.luch.def.alcanceSecu && e.luch.def.alcanceSecu[t]; const b = A ? (Array.isArray(A) ? A : A[e.face < 0 ? 'izq' : 'der'] || A.der) : null; return b || e.franja[e.soloGolpe]; };
@@ -275,7 +282,7 @@
   const registroAtaques = [];
   const DIAG = { ia: /[?&]debug=ia/.test(location.search) };   // v194: diagnóstico de IA (apagado; BB_DEBUG.diagIA = true o ?debug=ia)
   function motivoIA(e, p) {
-    const s = escalaEn(e.y), tol = PROF_GOLPE * factorProf(e.y), alc = ALCANCE.patada * s, dx = Math.abs(p.x - e.x), dy = Math.abs(p.y - e.y);
+    const s = escalaEn(e.y), tol = LINEA_ATAQUE * factorProf(e.y), alc = ALCANCE.patada * s, dx = Math.abs(p.x - e.x), dy = Math.abs(p.y - e.y);
     if (e.st === 'preparar') return 'preparando';
     if (!e.ficha) return e.enfriar > 0 ? 'enfriando' : 'sin turno (cupo lleno)';
     if (e.enfriar > 0) return 'enfriando';
@@ -1098,15 +1105,15 @@
         const fr = e.secu ? franjaSecu(e, e.secu) : e.franja && e.franja[e.golpe], dxF = (p.x - e.x) * e.face;   // v226: la del golpe que se está dibujando
         const llega = fr ? dxF >= fr[0] * s && dxF <= fr[1] * s : Math.abs(p.x - e.x) < alc && (p.x - e.x) * e.face > 0;
         // v194: registro de cada ataque (aviso → golpe = contacto: el daño se aplica en este mismo cuadro). Pruebas / diagnóstico.
-        registroAtaques.push({ id: e.luch.def.id, aviso: e.prepHechas[e.prepHechas.length - 1], llega: !!(llega && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y)), dx: Math.round(Math.abs(p.x - e.x) / s), dy: Math.round(Math.abs(p.y - e.y)), t: +tiempo.toFixed(2), golpe: e.golpe, alc: Math.round(alc / s), frente: (p.x - e.x) * e.face > 0 });
+        registroAtaques.push({ id: e.luch.def.id, aviso: e.prepHechas[e.prepHechas.length - 1], llega: !!(llega && Math.abs(p.y - e.y) < LINEA_IMPACTO * factorProf(e.y)), dx: Math.round(Math.abs(p.x - e.x) / s), dy: Math.round(Math.abs(p.y - e.y)), t: +tiempo.toFixed(2), golpe: e.golpe, alc: Math.round(alc / s), frente: (p.x - e.x) * e.face > 0 });
         if (registroAtaques.length > 400) registroAtaques.shift();
         if (e.iaPolicia) {                                  // v43: registro del golpe (pruebas): una entrada por palazo/escudazo, nunca por cuadro
           e.ataquesHechos = (e.ataquesHechos || 0) + 1;
           if (e.golpe === 'especial') { e.carga = 0; e.especialesHechos = (e.especialesHechos || 0) + 1; }   // v69: consume la carga al soltarlo
           else e.carga = Math.min(DC.policia.especial.carga, e.carga + 1);
-          console.info(`[Policía] ${e.luch.nombreHUD}: ${e.golpe === 'especial' ? 'GOLPE ESPECIAL' : e.golpe === 'pina' ? 'ataque primario' : 'ataque secundario'} (carga ${e.carga}/${DC.policia.especial.carga}) · distancia ${Math.round(dxF / s)} px (escala 1) · ${llega && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) ? 'en la zona' : 'fuera de la zona'}`);
+          console.info(`[Policía] ${e.luch.nombreHUD}: ${e.golpe === 'especial' ? 'GOLPE ESPECIAL' : e.golpe === 'pina' ? 'ataque primario' : 'ataque secundario'} (carga ${e.carga}/${DC.policia.especial.carga}) · distancia ${Math.round(dxF / s)} px (escala 1) · ${llega && Math.abs(p.y - e.y) < LINEA_IMPACTO * factorProf(e.y) ? 'en la zona' : 'fuera de la zona'}`);
         }
-        if (p.st !== 'ko' && p.st !== 'poder' && p.st !== 'damajuana' && p.inv <= 0 && !invencibleDebug && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && llega) {
+        if (p.st !== 'ko' && p.st !== 'poder' && p.st !== 'damajuana' && p.inv <= 0 && !invencibleDebug && Math.abs(p.y - e.y) < LINEA_IMPACTO * factorProf(e.y) && llega) {   // v249: misma línea al impacto
           const cubierto = p.st === 'defensa';
           const r = C.golpeEnemigo(e.luch, p.luch, e.golpe, pctJugador());
           const nombreGolpe = e.soloGolpe ? (e.luch.def.nombreGolpe || 'Escobazo') : { pina: 'Piña', patada: 'Patada', cabezazo: 'Cabezazo', especial: 'Golpe especial' }[e.golpe];
@@ -1151,10 +1158,10 @@
        los demás esperando ese turno para siempre. Ahora el que tiene turno: va a la línea del jugador (desvío ≤ 40 % de la
        tolerancia), sin empuje lateral de la separación; si el otro atacante ya ocupa su lado y el otro lado cabe en el piso, va
        al otro lado; si no avanza de verdad (desplazamiento medido) cambia de lado, y si en 4 s no consigue atacar, devuelve el turno. */
-    const tolP = PROF_GOLPE * factorProf(e.y), dist = e.ficha ? (e.distancia || 125) * s : 290 * s;   // v34: el GORDO ESCOBA se para a la distancia de la escoba
+    const tolP = LINEA_ATAQUE * factorProf(e.y), dist = e.ficha ? (e.distancia || 125) * s : 290 * s;   // v34: el GORDO ESCOBA se para a la distancia de la escoba
     let lado = e.x >= p.x ? 1 : -1, tx, ty;
     if (e.ficha) {
-      ty = limitar(p.y + limitar(e.carril, -0.4 * tolP, 0.4 * tolP), PISO.yMin, PISO.yMax);
+      ty = limitar(p.y, PISO.yMin, PISO.yMax);   // v249: con turno va justo a la línea del jugador
       const cabe = l => { const x = p.x + l * dist; return x >= xMinEn(ty) + 8 && x <= xMaxEn(ty) - 8; };
       if (e.ladoFijo && tiempo < e.ladoFijoHasta) lado = e.ladoFijo;
       else {
@@ -1167,7 +1174,7 @@
 
       // dos atacantes del mismo lado (contra una pared): uno un poco arriba y otro un poco abajo, siempre dentro de la tolerancia
       const par = enemigos.find(o => o !== e && o.ficha && enJuego(o) && Math.hypot(o.x - e.x, o.y - e.y) < 95);
-      if (par) ty = limitar(p.y + (enemigos.indexOf(e) < enemigos.indexOf(par) ? -0.4 : 0.4) * tolP, PISO.yMin, PISO.yMax);
+      if (par) ty = limitar(p.y + (enemigos.indexOf(e) < enemigos.indexOf(par) ? -0.25 : 0.25) * tolP, PISO.yMin, PISO.yMax);
     } else {
       // sin turno: espera a distancia, del lado donde ESE puesto entra en el piso (contra una pared, del otro lado)
       ty = limitar(p.y + e.carril, PISO.yMin, PISO.yMax);
@@ -1198,7 +1205,7 @@
       const A = DC.policia.ataque, dxF = (p.x - e.x) * e.face;
       const aTiro = gp => { if (!e.luch.golpes[gp]) return false; const fr = e.franja && e.franja[gp];
         return fr ? dxF >= fr[0] * s && dxF <= fr[1] * s * 0.95 : dxF > 0 && Math.abs(p.x - e.x) < ALCANCE[gp] * s * 0.95; };
-      if (e.ficha && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && e.enfriar <= 0) {
+      if (e.ficha && p.st !== 'ko' && enLinea(e, p) && e.enfriar <= 0) {   // v249: en la línea del jugador
         let gp = null;
         if (e.carga >= DC.policia.especial.carga && aTiro('especial') && (e.st === 'esperar' || (aTiro('pina') && aTiro('patada')))) gp = 'especial';
         else {
@@ -1219,7 +1226,7 @@
     if (e.soloGolpe) {
       // v34: GORDO ESCOBA — un solo ataque (escobazo). Lo larga cuando el jugador queda dentro de la franja de la paja.
       const dxF = (p.x - e.x) * e.face, alguna = franjasDe(e).some(fr => dxF >= (fr[0] + 20) * s && dxF <= (fr[1] - 20) * s);
-      if (e.ficha && !e.sinAtaque && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) && alguna && e.enfriar <= 0) {
+      if (e.ficha && !e.sinAtaque && p.st !== 'ko' && enLinea(e, p) && alguna && e.enfriar <= 0) {   // v249
         e.golpe = e.soloGolpe; e.st = 'preparar'; e.t = inicioAviso(e);
         // v225: barras especiales de River — cada ataque es UNA secuencia completa con su objeto (lateral / ascendente), elegida al azar
         const SQ = ((window.SPRITES_ENEMIGOS || {})[e.luch.def.id] || {}).anim;
@@ -1229,7 +1236,7 @@
       }
     } else
     // v194: decide con un 5 % de margen dentro del alcance y la tolerancia reales (antes, justo en el borde, el golpe salía y no llegaba)
-    if (e.ficha && p.st !== 'ko' && Math.abs(p.y - e.y) < PROF_GOLPE * factorProf(e.y) * 0.95 && Math.abs(p.x - e.x) < ALCANCE.patada * s * 0.95 && e.enfriar <= 0) {
+    if (e.ficha && p.st !== 'ko' && enLinea(e, p) && Math.abs(p.x - e.x) < ALCANCE.patada * s * 0.95 && e.enfriar <= 0) {   // v249: en la línea del jugador
       e.golpe = Math.abs(p.x - e.x) > ALCANCE.pina * s * 0.9 || Math.random() < 0.3 ? 'patada' : 'pina';
       if (e.luch.golpes.cabezazo && Math.abs(p.x - e.x) < ALCANCE.cabezazo * s && Math.random() < 0.45) e.golpe = 'cabezazo';
       elegirVariante(e, Math.abs(p.x - e.x) / s);
