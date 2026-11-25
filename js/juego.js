@@ -1001,6 +1001,21 @@
       }
     }
     if (e.st === 'esperaEntrar') { if (e.tEspera === undefined) e.tEspera = 0; e.tEspera += dt; if (e.tEspera >= e.entraEn) { e.st = 'acercarse'; e.t = 0; } return; }
+    // v248 — PRUEBA DE CAMINATA (solo depuración: BB_DEBUG.forzarCaminata). Camina en UNA dirección del piso sin atacar, con el
+    // mismo paso, el mismo factor de profundidad (0,7) y los mismos límites del piso que la IA; después vuelve a la IA normal.
+    if (e.forzar8) {
+      const F = e.forzar8;
+      if (tiempo >= F.hasta || ['ko', 'fuera', 'dolor', 'derribado', 'recuperando', 'agarrado'].includes(e.st)) delete e.forzar8;
+      else {
+        const x0 = e.x, y0 = e.y, paso = e.velCaminar * dt;
+        e.x += F.ux * paso; e.y += F.uy * paso * 0.7; e.st = 'acercarse'; e.golpe = null; e.ficha = false; e.defPendiente = null;
+        if (e.adentro) encerrar(e);
+        andar8(e, e.x - x0, e.y - y0, dt); e.diag8 = { dx: e.x - x0, dy: e.y - y0, dt };
+        const d = Math.hypot(e.x - x0, e.y - y0); e.recorrido += d;
+        if (d > 0.01) { e.mx = e.x - x0; e.my = e.y - y0; if (e.ultMov == null || tiempo - e.ultMov > 0.15) e.tramo = 0; e.tramo = (e.tramo || 0) + d; e.ultMov = tiempo; avanzarReloj(e, e.x - x0, e.y - y0, dt); }
+        return;
+      }
+    }
     if (e.st === 'fuera' || e.st === 'agarrado') return;
     if (e.sinAgarre > 0) e.sinAgarre -= dt;
     if (e.enfriarDef > 0) e.enfriarDef -= dt;
@@ -1224,6 +1239,7 @@
     if (!e.adentro && adentroDelPiso(e)) e.adentro = true;
     if (e.adentro) encerrar(e);
     andar8(e, e.x - x0, e.y - y0, dt);                         // v192: caminata en 8 direcciones (solo River 1–4)
+    e.diag8 = { dx: e.x - x0, dy: e.y - y0, dt };              // v248: desplazamiento real de este fotograma (después de los límites del piso)
     vigilarTurno(e, p, s, dt, Math.hypot(e.x - x0, e.y - y0), dd, paso);   // v194: progreso real con el turno tomado
     e.recorrido += Math.hypot(e.x - x0, e.y - y0);            // los pasos avanzan con lo que camina
     e.avanceLat = (e.avanceLat || 0) + (e.x - x0) * e.face / escalaEn(e.y);   // v226: avance de costado hacia donde mira (px a escala 1; atrás = negativo)
@@ -1946,7 +1962,7 @@
     const pe = e.luch && e.luch.def && e.luch.def.velFactor ? escalaEn(e.y) : 1, v = (e.velRefPaso || VEL_ENEMIGO) * pe;
     e.relojPaso = (e.relojPaso || 0) + Math.min(dt * (pe < 1 ? 1.5 / pe : 1.5), Math.hypot(dx, dy / 0.7) / v);
   }
-  const AND8 = { velNormal: VEL_ENEMIGO * FACTOR_CAMINATA_BARRAS, profundidad: 0.7, rango: [0.75, 1.35], arranca: 0.30, arrancaT: 0.04, frena: 0.12, frenaT: 0.10, giro: 32, snap: 100, sostener: 0.05, reinicio: 0.35 };
+  const AND8 = { velNormal: VEL_ENEMIGO * FACTOR_CAMINATA_BARRAS, profundidad: 0.7, rango: [0.75, 1.35], arranca: 0.30, arrancaT: 0.04, frena: 0.12, frenaT: 0.10, giro: 26, snap: 100, sostener: 0.05, reinicio: 0.35 };   // v248: giro 32 → 26° — con 32 quedaba en el dibujo de costado aunque bajara/subiera en diagonal (la diagonal empieza a 22,5°)
   function andar8(e, dx, dy, dt) {
     const A = animEnemigos[e.luch.def.id], D = A && A.def; if (!D || !D.camina8v2 || dt <= 0) return;
     const s = escalaEn(e.y), gy = dy / AND8.profundidad, dist = Math.hypot(dx, gy) / s, v = dist / dt;
@@ -2066,6 +2082,7 @@
   function dibujarEnemigoAnimado(e, A, alpha) {
     let id = poseEnemigo(e, A.def, A);
     if (!A.imgs[id]) { avisarFalta(A, id); id = A.def.anim.quieto; }   // nunca desaparece: usa la guardia
+    e.dibujado = id;   // v248: para el indicador de caminata
     let m = A.def.frames[id];
     // v225: si el cuadro tiene su versión dibujada del otro lado (guardia izquierda de las barras especiales de River), se usa esa en vez de espejar
     if (m.otroLado && A.imgs[m.otroLado] && (m.mira === 'der' ? 1 : m.mira === 'izq' ? -1 : 0) === -e.face) { id = m.otroLado; m = A.def.frames[id]; }
@@ -2438,6 +2455,21 @@
 
   // v68 — depuración de perspectiva (APAGADA en el juego normal): piso transitable, pies (ancla), alto/escala y alcance de golpe.
   let debugPersp = /[?&]debug=perspectiva\b/.test(location.search);
+  // v248 — INDICADOR DE CAMINATA (solo depuración: ?debug=caminata o BB_DEBUG.caminata = true): por cada rival animado, el desplazamiento
+  // real en X e Y de este fotograma (px/s, después de los límites del piso), la dirección elegida, el cuadro y el PNG que se dibuja.
+  let debugCam = /[?&]debug=caminata\b/.test(location.search);
+  function dibujarDebugCaminata() {
+    g.save(); g.font = 'bold 15px monospace'; g.textAlign = 'left'; g.lineWidth = 3;
+    for (const e of enemigos) {
+      const A = animEnemigos[e.luch.def.id]; if (!A || !enJuego(e)) continue;
+      const s = escalaEn(e.y), h = ALTO_PERSONAJE * s, d = e.diag8 || { dx: 0, dy: 0, dt: 1 }, id = e.dibujado || '', m = A.def.frames[id];
+      const vx = d.dt ? d.dx / d.dt : 0, vy = d.dt ? d.dy / d.dt : 0, c8 = /^c8_([A-Z]+)_(\d+)$/.exec(id);
+      const L = [`${e.luch.def.id}  ${e.st}`, `X ${vx >= 0 ? '+' : ''}${vx.toFixed(0)}  Y ${vy >= 0 ? '+' : ''}${vy.toFixed(0)} px/s`,
+                 `dir ${e.w8on ? DIR8[e.w8d] : '-'}  ${c8 ? 'cuadro ' + c8[2] + ' (' + c8[1] + ')' : 'sin 8 dir'}`, m ? m.src.split('/').slice(-2).join('/') : id];
+      L.forEach((txt, i) => { const yy = e.y - h - 70 + i * 17; g.strokeStyle = '#000'; g.strokeText(txt, e.x - 90, yy); g.fillStyle = c8 ? '#7CFC00' : '#ffd166'; g.fillText(txt, e.x - 90, yy); });
+    }
+    g.restore();
+  }
   function dibujarDebugPerspectiva(todos) {
     g.save(); g.lineWidth = 2; g.strokeStyle = '#00ff88'; g.fillStyle = 'rgba(0,255,136,.08)';
     g.beginPath(); g.moveTo(xMinEn(PISO.yMin), PISO.yMin); g.lineTo(xMaxEn(PISO.yMin), PISO.yMin);
@@ -2487,6 +2519,7 @@
       g.beginPath(); for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * 0.45 : r, an = i / 10 * Math.PI * 2; g.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } g.fill(); g.restore();
     }
     if (debugPersp) dibujarDebugPerspectiva(todos);   // v68: solo con BB_DEBUG.perspectiva = true o ?debug=perspectiva
+    if (debugCam) dibujarDebugCaminata();             // v248: solo con BB_DEBUG.caminata = true o ?debug=caminata
     dibujarPoder();
     hud();
     if (estado === 'intro') dibujarIntro();
@@ -2584,6 +2617,9 @@
                        pasarDeNivel, ganarBanderas, banderasDe, irASala, get campana() { return CAMP ? { ...CAMP.estado, bloque: CAMP.bloqueActual() && CAMP.bloqueActual().id, trofeos: CAMP.trofeos(), terminada: CAMP.terminada(), set: N.activo.set, transicion: galpon.transicion, fondoListo: !!galpon.fondo, fondo: galpon.fondoSrc, referente: sel.id, mate: !!galpon.mate, capas: Object.keys(galpon.capas), sala: galpon.sala, moviendo: !!galpon.mov, cuadro: galpon.cuadro, radio: !!galpon.radio, radioActiva: estado === 'menu' && galpon.sala === 0 && radioSonando() && !movReducido.matches, faltas: galpon.faltas, foco: galpon.foco, hover: galpon.hover, reposo: poseReposo(), refListo: !!(galpon.ref && galpon.ref.imgs[galpon.ref.def.anim.quieto[0]]) } : null; },   // v64
                        continuarCampana, nuevaCampana,
                        get perspectiva() { return debugPersp; }, set perspectiva(v) { debugPersp = !!v; },   // v68: depuración visual
+                       get caminata() { return debugCam; }, set caminata(v) { debugCam = !!v; },   // v248: indicador de caminata
+                       forzarCaminata(e, dir, seg) { const V = { E: [1, 0], W: [-1, 0], N: [0, -1], S: [0, 1], NE: [1, -1], NW: [-1, -1], SE: [1, 1], SW: [-1, 1] }[dir], n = Math.hypot(V[0], V[1]);
+                         e.forzar8 = { ux: V[0] / n, uy: V[1] / n, hasta: tiempo + seg, dir }; },   // v248: prueba de caminata (sin atacar)
                        get perfil() { return PERSP; }, get avisoTruco() { return avisoTruco && avisoTruco.texto; },
                        get galpon() { return { sala: galpon.sala, piezas: Object.keys(galpon.piezas).length, lista: Object.keys(galpon.piezas), mov: !!galpon.mov }; }, get huecos() { return huecosDebug; }, set huecos(v) { huecosDebug = !!v; },
                        ganarNivel() { if (estado === 'jugando' || estado === 'intro') { cola.length = 0; enemigos = []; empezarConteo(); } },   // v64: solo para pruebas (consola): gana la pantalla actual
