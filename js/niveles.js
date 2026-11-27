@@ -172,11 +172,13 @@
   const MIRA_IZQ = [2, 14];                   // las imágenes de barra_02 y barra_14 miran a la IZQUIERDA; las demás a la derecha (v26: 14 corregido)
   // v26b — PLANTEL DE DARÍO: solo estos 9 hinchas salen en los niveles. La clave es el archivo del
   // juego (barra_XX) y el valor el número que usa Darío en sus carpetas ("Barra 5" = barra_14, etc.).
-  // Los otros 7 PNG del paquete v1 (barra_05, 06, 07, 10, 12, 13, 15) quedan en la carpeta pero ya no salen.
+  // Los otros PNG del paquete v1 (barra_05, 06, 07, 10) quedan registrados pero no salen · v252: barra_12, 13 y 15 retirados.
   const PLANTEL = { barra_01: 1, barra_02: 2, barra_03: 3, barra_04: 4, barra_14: 5, barra_08: 6, barra_09: 7, barra_11: 9, barra_16: 10 };
   // v102: barra_01/02/03.webp eran copias idénticas (mismo SHA-256) de su guardia animada → se usa esa y se libera espacio en la web
   const MISMA_IMAGEN = { '01': 'assets/enemigos/animados/barra_01/barra_01_guardia_original.webp', '02': 'assets/enemigos/animados/barra_02/barra_02_guardia_original.webp', '03': 'assets/enemigos/animados/barra_03/barra_03_guardia_original.webp', '04': 'assets/enemigos/animados/barra_04/barra_04_guardia_original.webp', '08': 'assets/enemigos/animados/barra_08/barra_08_guardia_original.webp', '09': 'assets/enemigos/animados/barra_09/barra_09_guardia_original.webp', '11': 'assets/enemigos/animados/barra_11/barra_11_guardia_original.webp', '14': 'assets/enemigos/animados/barra_14/barra_14_guardia_original.webp', '16': 'assets/enemigos/animados/barra_16/barra_16_guardia_original.webp' };   // v104: + 04, 08, 09, 11, 14 y 16 (también idénticas)
-  const TODOS_LOS_HINCHAS = Array.from({ length: 16 }, (_, i) => {
+  // v252: retirados del juego barra_12, barra_13 y barra_15 (imágenes del paquete v1 que nunca salían). barra_14 (Barra 5) y barra_16 (Barra 10) siguen.
+  const RETIRADOS = [12, 13, 15];
+  const TODOS_LOS_HINCHAS = Array.from({ length: 16 }, (_, i) => i).filter(i => !RETIRADOS.includes(i + 1)).map(i => {
     const num = String(i + 1).padStart(2, '0');
     const espejo = CON_NUMERO.includes(i + 1) ? `assets/enemigos/barra_${num}_espejo.webp` : null;
     return { id: `barra_${num}`, tipo: 'comun', nombre: `Barra ${num}`, sprite: MISMA_IMAGEN[num] || `assets/enemigos/barra_${num}.webp`,
