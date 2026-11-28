@@ -241,8 +241,9 @@
     // v258 — HERMANOS MOREIRA (Racing, nivel 7 de su recorrido): entran JUNTOS cuando cae el último barra común (especialesAlFinal).
     // tipo 'moreira' = números del policía (UNA barra del Abuelo en ese nivel, su piña y su patada, sus tiempos; una sola vida).
     // Piñas con las dos manos y patadas con las dos piernas (variantes A = derecha, B = izquierda), cuadros en js/caminatas_racing.js.
-    moreira_a:         { id: 'moreira_a', tipo: 'moreira', nombre: 'A. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },
-    moreira_m:         { id: 'moreira_m', tipo: 'moreira', nombre: 'M. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },
+    // v261: Darío aclaró que M. Moreira (MAXI) es el SIN barba = paquete «a»; el CON barba (paquete «m») es A. Moreira. Se corrigen los nombres.
+    moreira_a:         { id: 'moreira_a', tipo: 'moreira', nombre: 'M. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },   // sin barba (Maxi)
+    moreira_m:         { id: 'moreira_m', tipo: 'moreira', nombre: 'A. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },   // con barba
     // v64 — jefes rivales de la CAMPAÑA DE RIVER (cuadros en js/sprites_enemigos.js, los mismos del referente jugable). Miran a la derecha.
     el_chivo:          { id: 'el_chivo', tipo: 'el_chivo', nombre: 'El Chivo', sprite: null, mira: 1, jefe: true, lema: 'Defiende los trapos del Cuervo.' },
     cacho:             { id: 'cacho', tipo: 'cacho', nombre: 'Cacho', sprite: null, mira: 1, jefe: true, lema: 'Defiende los trapos de la Academia.' },
