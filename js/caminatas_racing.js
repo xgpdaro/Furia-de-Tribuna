@@ -26,6 +26,6 @@
   // v261 — TAMAÑOS (pedido de Darío). moreira_a = el SIN barba (paquete «a») = MAXI MOREIRA: 15 % más grande que su tamaño base.
   //        moreira_m = el CON barba (paquete «m»): venía × 1,21 (v259 + v260) y se achica 15 % → × 1,0285. Todos sus cuadros, misma
   //        proporción entre poses. Solo cambia el dibujo (vida, daño, alcance y velocidad iguales).
-  const TAM = { moreira_a: 1.15 * 1.05, moreira_m: 1.21 * 0.85 };   // v262: Maxi (sin barba) otro 5 % más grande
+  const TAM = { moreira_a: 1.15, moreira_m: 1.21 * 0.85 * 1.05 };   // v263: Alexis (A. Moreira, con barba) 5 % más grande; Maxi queda como en v261
   for (const [id, f] of Object.entries(TAM)) if (S[id]) for (const m of Object.values(S[id].frames)) m.ref = +(m.ref / f).toFixed(2);
 })();
