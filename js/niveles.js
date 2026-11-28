@@ -79,6 +79,8 @@
     //   escobazo = UNA piña del Abuelo (no su patada ni su cabezazo). Sin patada ni cabezazo.
     // Tiempos de preparación/recuperación del escobazo: los del Abuelo (se ve venir). Se lo puede agarrar.
     // Al cubrirse usa la regla de los comunes del nivel 8 (30 %, js/defensa.js): NO es inmune como los jefes.
+    // v258 — HERMANOS MOREIRA (Racing 7): los dos a la vez, con los números de un policía de ese nivel (como los cuatro del nivel 5).
+    if (tipo === 'moreira') return statsEnemigo('policia', nivel);
     if (tipo === 'gordo_escoba') {
       const a = statsEnemigo('el_abuelo', 10);
       return { vida: a.vida, pina: a.pina, patada: null, cabezazo: null,
@@ -236,6 +238,11 @@
                          soloGolpe: 'pina', nombreGolpe: 'Batazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 0.85 },   // v239: como El Tano / EL FLACO
     matute:            { id: 'matute', tipo: 'matute', nombre: 'Matute', sprite: null, mira: 1, jefe: true,
                          lema: 'Defiende los trapos del Tablón.' },
+    // v258 — HERMANOS MOREIRA (Racing, nivel 7 de su recorrido): entran JUNTOS cuando cae el último barra común (especialesAlFinal).
+    // tipo 'moreira' = números del policía (UNA barra del Abuelo en ese nivel, su piña y su patada, sus tiempos; una sola vida).
+    // Piñas con las dos manos y patadas con las dos piernas (variantes A = derecha, B = izquierda), cuadros en js/caminatas_racing.js.
+    moreira_a:         { id: 'moreira_a', tipo: 'moreira', nombre: 'A. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },
+    moreira_m:         { id: 'moreira_m', tipo: 'moreira', nombre: 'M. Moreira', especial: true, juntos: true, sprite: null, mira: 1 },
     // v64 — jefes rivales de la CAMPAÑA DE RIVER (cuadros en js/sprites_enemigos.js, los mismos del referente jugable). Miran a la derecha.
     el_chivo:          { id: 'el_chivo', tipo: 'el_chivo', nombre: 'El Chivo', sprite: null, mira: 1, jefe: true, lema: 'Defiende los trapos del Cuervo.' },
     cacho:             { id: 'cacho', tipo: 'cacho', nombre: 'Cacho', sprite: null, mira: 1, jefe: true, lema: 'Defiende los trapos de la Academia.' },
@@ -453,7 +460,8 @@
     return o;
   };
   const CAMPANA_RACING = JEFE_10(PANTALLAS_RACING.map(FINAL('racing', 'racing_09_cuatro_banderas_cacho_observando_v2.webp',
-    'racing_10_duelo_cuatro_banderas_sin_personajes_v3.webp', 700, 700)), 'cacho', '«Los trapos de la Academia no se los lleva nadie.»');
+    'racing_10_duelo_cuatro_banderas_sin_personajes_v3.webp', 700, 700)), 'cacho', '«Los trapos de la Academia no se los lleva nadie.»')
+    .map(P => P.n === 7 ? { ...P, especialesAlFinal: ['moreira_a', 'moreira_m'] } : P);   // v258: después de sus barras, los hermanos Moreira juntos
   const CAMPANA_INDEPENDIENTE = JEFE_10(PANTALLAS_INDEPENDIENTE.map(FINAL('independiente', 'independiente_09_seis_banderas_gallego_observando_v2.webp',
     'independiente_10_seis_banderas_sin_personajes_v2.webp', 705, 705)), 'el_gallego', '«Los trapos del Rojo se quedan en Avellaneda.»');
   // Boca: toda la escena son escalones amarillos debajo del telón LA BARRA DE JOSE → piso de popular desde y 420 (borde inferior del telón).

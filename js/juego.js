@@ -346,6 +346,7 @@
     const c = P.oleadas.length ? N.armarCamadas(n) : [];
     if (P.policias) c.push(P.policias.map(id => N.ESPECIALES[id]));   // v69: nivel 5 = los cuatro policías, una sola tanda (la unidad guía+perro cuenta 1)
     if (P.especialAlFinal) c.push([N.ESPECIALES[P.especialAlFinal]]);
+    if (P.especialesAlFinal) c.push(P.especialesAlFinal.map(id => N.ESPECIALES[id]));   // v258: varios especiales JUNTOS al final (Racing 7: los hermanos Moreira)
     if (P.guardaespaldas) c.push([N.ESPECIALES[P.guardaespaldas]]);   // v30: el policía, solo; el Abuelo recién en la oleada siguiente
     if (P.jefe) c.push([N.ESPECIALES[P.jefe]]);
     return c;
@@ -423,6 +424,7 @@
     if (n > N.TOTAL) return;
     const P = N.pantalla(n), ids = [...(P.animados || [])];
     for (const k of ['especialAlFinal', 'guardaespaldas', 'jefe']) if (P[k]) ids.push(P[k]);
+    if (P.especialesAlFinal) ids.push(...P.especialesAlFinal);
     if (P.policias) ids.push(...P.policias);
     const archivos = manifiestoNivel(n, ids).filter(f => !registro.has(f));
     archivos.forEach(f => pedir(f, 'baja'));
@@ -463,9 +465,14 @@
   function siguienteOleada() {
     const lista = cola.shift(); if (!lista) return false;
     oleada++;
+    // v258 — PAREJA (def.juntos: los hermanos Moreira): entran en el MISMO momento, ya dentro del piso y separados
+    // (uno a la derecha arriba, el otro a la izquierda abajo). El resto entra como siempre, escalonado desde las entradas.
+    const juntos = lista.length > 1 && lista.every(d => d.juntos);
     lista.forEach((def, i) => {
       const ent = NIV.entradas[(i + oleada) % NIV.entradas.length];
-      const e = crearEnemigo(def, { x: ent.x + (i % 2 ? 40 : 0), y: ent.y + (i % 3) * 18 }, i, i * 0.8);
+      let pos = { x: ent.x + (i % 2 ? 40 : 0), y: ent.y + (i % 3) * 18 }, demora = i * 0.8;
+      if (juntos) { const y = PISO.yMin + (PISO.yMax - PISO.yMin) * (i % 2 ? 0.72 : 0.30); pos = { x: i % 2 ? xMinEn(y) + 170 : xMaxEn(y) - 170, y }; demora = 0; }
+      const e = crearEnemigo(def, pos, i, demora);
       enemigos.push(e);
       console.info(`[Nivel ${nivel}] ${def.nombre}: vida ${e.luch.vidaMax} · piña ${e.luch.golpes.pina} · patada ${e.luch.golpes.patada}`);
     });
@@ -1133,7 +1140,7 @@
     if (e.st === 'golpear') { if (e.t > (e.golpe === 'especial' ? DC.policia.especial.recuperacion : e.tiempos.recuperacion)) { e.st = 'acercarse'; e.t = 0; e.ficha = false; e.golpesSinAccion = 0; e.enfriar = PAUSA_ENTRE_ATAQUES[0] + Math.random() * (PAUSA_ENTRE_ATAQUES[1] - PAUSA_ENTRE_ATAQUES[0]);
         // v83: los referentes rivales con golpes A/B a veces ENCADENAN (piña-piña, piña-patada, patada-piña): un solo golpe extra, con
         // la misma preparación (se puede bloquear o esquivar) y sin quedarse con la ficha de ataque.
-        if (variantesDe(e) && !e.encadenado && Math.random() < COMBO_RIVAL.prob) { e.encadenado = true; e.enfriar = COMBO_RIVAL.pausa; e.ficha = true; } else e.encadenado = false;
+        if (variantesDe(e) && !variantesDe(e).sinCombo && !e.encadenado && Math.random() < COMBO_RIVAL.prob) { e.encadenado = true; e.enfriar = COMBO_RIVAL.pausa; e.ficha = true; } else e.encadenado = false;
       } return; }
 
     // acercarse / esperar su turno: solo MAX_ATACANTES encaran; el resto se queda a distancia (el jefe siempre encara)
