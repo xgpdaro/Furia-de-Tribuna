@@ -1,10 +1,10 @@
-/* v264 — BECHU DE COPELLO, barra común de Boca (nivel 6 del recorrido de Boca de la campaña: campana_boca). Generado por work/t264.
+/* v264 — BECHU DE COPELLO, PERSONAJE de Boca (v265: pelea SOLO al final del nivel 6 del recorrido de Boca, campana_boca). Generado por work/t264.
    Paquete BOCA_BECHU_DE_COPELLO_81_PNG (81 PNG 1122 × 1402): 64 cuadros de caminata (8 direcciones × 01–08) + 17 poses. Recursos en
    assets/enemigos/animados/bechu_de_copello/ (c8/ caminata, poses/ pelea). Último modelo: zapatillas azules con líneas amarillas y tatuaje
    en la pantorrilla izquierda. Caminata: mira «frente» (nunca se espeja), dirección por el desplazamiento real en X e Y, 01→08 por reloj
    propio. Guardia, bloqueo, reacciones, desequilibrio, caída y suelo miran a la derecha (se espejan a la izquierda); piñas y patadas vienen
    dibujadas para los dos lados (_e / _w). Variantes A = mano/pierna derecha, B = izquierda (alternan, sin combo). Tamaño = el de los barras
-   comunes de Boca (guardia 325,5 px a escala 1). IA, combate, vida y derrota: las de un barra común (tipo 'comun'). */
+   comunes de Boca (guardia 325,5 px a escala 1). Números de personaje (js/niveles.js → tipo 'personaje'). */
 (function () {
   const S = window.SPRITES_ENEMIGOS || (window.SPRITES_ENEMIGOS = {});
   const MS8 = [110, 110, 110, 110, 110, 110, 110, 110].map(v => +(v / 0.85).toFixed(1));
