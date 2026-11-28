@@ -238,6 +238,9 @@
                          soloGolpe: 'pina', nombreGolpe: 'Batazo', alcance: { pina: [40, 170] }, distancia: 125, velFactor: 0.85 },   // v239: como El Tano / EL FLACO
     matute:            { id: 'matute', tipo: 'matute', nombre: 'Matute', sprite: null, mira: 1, jefe: true,
                          lema: 'Defiende los trapos del Tablón.' },
+    // v264 — BECHU DE COPELLO: barra COMÚN de Boca (tipo 'comun': IA, números, defensa y derrota de los comunes). No sale por sorteo:
+    // se suma UNA vez a la última oleada del nivel 6 del recorrido de Boca (comunExtra). Cuadros en js/caminatas_bechu.js.
+    bechu_de_copello:  { id: 'bechu_de_copello', tipo: 'comun', nombre: 'Bechu de Copello', sprite: null, mira: 1, club: 'boca' },
     // v258 — HERMANOS MOREIRA (Racing, nivel 7 de su recorrido): entran JUNTOS cuando cae el último barra común (especialesAlFinal).
     // tipo 'moreira' = números del policía (UNA barra del Abuelo en ese nivel, su piña y su patada, sus tiempos; una sola vida).
     // Piñas con las dos manos y patadas con las dos piernas (variantes A = derecha, B = izquierda), cuadros en js/caminatas_racing.js.
@@ -468,7 +471,7 @@
   // Boca: toda la escena son escalones amarillos debajo del telón LA BARRA DE JOSE → piso de popular desde y 420 (borde inferior del telón).
   const BOCA_POP = { piso: { ...TRIBU, yMin: 420 }, escala: [0.74, 1.04], inicio: { x: 300, y: 820 }, entradas: LADOS(470, 680, 885) };   // entran por los costados: no caminan por encima del telón
   const CAMPANA_BOCA = JEFE_10(PANTALLAS_BOCA.map(sinBoca).map(P => P.n === 7 ? { ...P, especialAlFinal: 'cabeza_de_poronga' }
-    : P.n === 8 ? { ...P, especialAlFinal: 'gordo_escoba' } : P)
+    : P.n === 8 ? { ...P, especialAlFinal: 'gordo_escoba' } : P.n === 6 ? { ...P, comunExtra: ['bechu_de_copello'] } : P)   // v264: Bechu en la 6
     .map(FINAL('boca', 'boca_09_barra_jose_cuatro_trapos_abuelo_v3.webp', 'boca_10_barra_jose_cuatro_trapos_sin_personajes_v3.webp', BOCA_POP, BOCA_POP)),
     'el_abuelo', '«El trapo de la 12 no se lo lleva nadie. Vas a tener que pasar por encima mío.»').map(P => P.n === 10
       ? { ...P, nombre: '¡Por los trapos de la 12!', entradas: [ { x: 1300, y: 470 } ] } : P);

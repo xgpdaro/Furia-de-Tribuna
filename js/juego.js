@@ -344,6 +344,8 @@
   function armarCola(n) {
     const P = N.pantalla(n);
     const c = P.oleadas.length ? N.armarCamadas(n) : [];
+    // v264: barras comunes fijos que no salen por sorteo (Bechu de Copello en el 6 de Boca): UNA vez, sumados a la última oleada de barras
+    if (P.comunExtra && c.length) for (const id of P.comunExtra) { const d = N.ESPECIALES[id]; if (d) c[c.length - 1].push(d); }
     if (P.policias) c.push(P.policias.map(id => N.ESPECIALES[id]));   // v69: nivel 5 = los cuatro policías, una sola tanda (la unidad guía+perro cuenta 1)
     if (P.especialAlFinal) c.push([N.ESPECIALES[P.especialAlFinal]]);
     if (P.especialesAlFinal) c.push(P.especialesAlFinal.map(id => N.ESPECIALES[id]));   // v258: varios especiales JUNTOS al final (Racing 7: los hermanos Moreira)
@@ -425,6 +427,7 @@
     const P = N.pantalla(n), ids = [...(P.animados || [])];
     for (const k of ['especialAlFinal', 'guardaespaldas', 'jefe']) if (P[k]) ids.push(P[k]);
     if (P.especialesAlFinal) ids.push(...P.especialesAlFinal);
+    if (P.comunExtra) ids.push(...P.comunExtra);
     if (P.policias) ids.push(...P.policias);
     const archivos = manifiestoNivel(n, ids).filter(f => !registro.has(f));
     archivos.forEach(f => pedir(f, 'baja'));
